@@ -1,0 +1,3395 @@
+﻿@model ShineWebMobile.Models.SingleMasterModel
+@{
+    ViewBag.Title = ViewData["FormName"];
+    Layout = "~/Views/Shared/_LayoutReport.cshtml";
+}
+<link href="~/Content/5.3.8/bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/navbar.css" rel="stylesheet" />
+<link href="~/Content/buttonTop.css" rel="stylesheet" />
+<link href="~/Content/dataTables.dataTables.2.2.2.css" rel="stylesheet" />
+<link rel="stylesheet" href="~/Content/jquery-ui.css">
+<link href="~/GKBS_GRID_2.0/css/gridui.css" rel="stylesheet" />
+
+<script src="~/Scripts/5.3.8/bootstrap.min.js"></script>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+@*<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>*@
+<script src="~/Scripts/jquery-3.6.4.min.js"></script>
+<script src="~/Scripts/bootstrap-typeahead.min.js"></script>
+<script src="~/Scripts/dataTables.2.2.2.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/GKBS_GRID_2.0/js/gridui.js"></script>
+<script src="~/Scripts/multiselect/GKBSmultiselectiondropdown.js"></script>
+<script src="~/Scripts/xlsx.bundle.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<style>
+    .modal-body {
+        padding: 0px 10px 10px 10px !important;
+    }
+
+    table.dataTable > tbody > tr > th, table.dataTable > tbody > tr > td {
+        padding: 1px 2px !important;
+    }
+
+    .each {
+        border-bottom: 1px solid #555 !important;
+        padding: 3px 0 !important;
+    }
+
+    .acItem .name {
+        font-size: 11px !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+        color: var(--acitemname, black);
+    }
+
+    .acItem .desc {
+        font-size: 11px !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+        font-weight: bold !important;
+        color: var(--acitemdesc, black);
+    }
+
+    .ui-autocomplete {
+        max-height: 245px !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        z-index: 500 !important;
+    }
+
+    .ui-menu-item-wrapper.ui-state-active {
+        /*background-color: red;*/
+        background-color: var(--dynamic-bg, orangered);
+        font-size: 12px !important;
+        color: black !important;
+        border-radius: 4px !important;
+        font-weight: bold !important;
+        /*#f3f2f2*/
+    }
+
+    td {
+        font-size: 10px;
+        padding-bottom: 7px;
+    }
+
+    input[type=number] {
+        text-align: right;
+    }
+
+        input[type=number]::placeholder {
+            text-align: left;
+        }
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+
+    .modal-header, .modal-footer {
+        padding: 10px;
+    }
+    /* The Modal (background) */
+    .modalReportColumnSettings {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 500; /* Sit on top */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+
+    /* Modal Content/Box */
+    @@media only screen and (min-width: 800px) {
+        .modalReportColumnSettings-content {
+            background-color: #ffffff;
+            margin: 1% auto; /* 15% from the top and centered */
+            padding: 0px;
+            border: 1px solid #888;
+            border-radius: 10px;
+            width: 85%; /* Could be more or less, depending on screen size */
+            max-height: 60% !important;
+            top: 2% !important;
+            overflow: auto;
+        }
+    }
+
+    @@media only screen and (max-width: 600px) {
+        .modalReportColumnSettings-content {
+            background-color: #ffffff;
+            margin: 10% auto; /* 15% from the top and centered */
+            padding: 3px;
+            border: 1px solid #888;
+            width: 95%; /* Could be more or less, depending on screen size */
+            height: 70%;
+            top: 20%;
+            overflow: auto;
+        }
+    }
+    /*
+    .modal-dialog {
+        width: 80%
+    }*/
+    /* The Close Button */
+    .closemodalReportColumnSettings {
+        color: #aaa;
+        float: right;
+        font-size: 10px;
+        font-weight: bold;
+    }
+
+        .closemodalReportColumnSettings:hover,
+        .closemodalReportColumnSettings:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    .dg-toolbar-report-name {
+        font-size: 1.2em !important;
+    }
+</style>
+<style>
+    #loader {
+        display: none
+    }
+
+    .labelup {
+        -webkit-transform: translateY(50%);
+        -moz-transform: translateY(-50%);
+        -ms-transform: translateY(-50%);
+        -o-transform: translateY(-50%);
+        transform: translateY(50%);
+        -webkit-transition: all 0.2s ease-in-out;
+        -moz-transition: all 0.2s ease-in-out;
+        transition: all 0.2s ease-in-out;
+        position: absolute;
+        top: -58%;
+        left: 1em;
+        background: rgba(255,255,255,0.15);
+        color: #2b2828;
+        font-size: 1.1em;
+        cursor: text;
+        pointer-events: none;
+        font-family: sans-serif;
+    }
+
+    .form-label {
+        position: relative;
+        display: block;
+        clear: both;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+</style>
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        padding: 20px 0px 0px 0px;
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+    }
+
+    .container {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .left-section {
+        flex: 0.75;
+        min-width: 150px;
+    }
+
+    .right-section {
+        flex: 2;
+        min-width: 300px;
+        display: flex;
+        flex-direction: column;
+        gap: 0px;
+    }
+
+    .party-box {
+        background-color: #d1e8dd1a;
+        padding: 2px;
+        min-height: 550px;
+        border: 1px solid #ccc;
+        box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .party-info-box {
+        background-color: #fffde8;
+        padding: 10px;
+        min-height: 100px;
+        border: 1px solid #ccc;
+        box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .documents-box {
+        background-color: #ffffff;
+        padding: 2px;
+        min-height: 400px;
+        border: 1px solid #ccc;
+        box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+    }
+
+    @@media (max-width: 768px) {
+        .container {
+            flex-direction: column;
+        }
+
+        .left-section,
+        .right-section {
+            flex: 1 0 100%;
+        }
+    }
+
+    @@media (min-width: 1200px) {
+        .container {
+            max-width: 100% !important;
+            gap: 1px !important;
+        }
+    }
+
+    .main {
+        padding-left: 0px !important;
+        padding-top: 40px !important;
+        padding-bottom: 30px !important;
+        width: 100% !important;
+        margin-left: 0px !important;
+    }
+
+    .form-control {
+        height: 28px !important;
+        font-size: 12px !important;
+    }
+    /*.e-toolbar-items .report-header-toolbar .e-tbar-btn-text {
+        font-weight: bold !important;
+        font-size: 16px !important;
+    }*/
+    /* Style only the Report Header item */
+    .e-toolbar-items .report-header-toolbar {
+        flex: 1; /* take available space */
+        text-align: center; /* center text inside */
+    }
+
+        .e-toolbar-items .report-header-toolbar .e-tbar-btn-text {
+            font-weight: bold !important;
+            font-size: 16px !important;
+        }
+
+        /* Remove button-like background & borders */
+        .e-toolbar-items .report-header-toolbar.e-tbar-btn {
+            background: transparent !important;
+            border: none !important;
+            cursor: default !important;
+            box-shadow: none !important;
+        }
+</style>
+<style>
+    /* Snackbar container */
+    .RepLoadersnackbar {
+        visibility: hidden; /* hidden by default */
+        min-width: 250px;
+        background-color: #333;
+        color: #fff;
+        text-align: left;
+        border-radius: 8px;
+        padding: 12px 20px;
+        position: fixed;
+        top: 50px; /* ⬅️ instead of bottom */
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 14px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.25);
+    }
+
+        /* Show animation */
+        .RepLoadersnackbar.show {
+            visibility: visible;
+            animation: slideDown 0.3s, fadeout 0.3s 3s;
+        }
+
+    /* Slide from top */
+    @@keyframes slideDown {
+        from {
+            top: 0;
+            opacity: 0;
+        }
+
+        to {
+            top: 20px;
+            opacity: 1;
+        }
+    }
+
+    @@keyframes fadeout {
+        from {
+            top: 20px;
+            opacity: 1;
+        }
+
+        to {
+            top: 0;
+            opacity: 0;
+        }
+    }
+
+    /* Spinner */
+    .Reploader {
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #4caf50;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        animation: spin 0.8s linear infinite;
+    }
+
+    @@keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    ul li > .menu-name:hover {
+        font-weight: bold;
+        color: var(--report-menu-hover);
+    }
+</style>
+<style title="Export Model Style">
+
+    /* Export Modal Styles */
+    .export-modal {
+        display: none;
+        position: fixed;
+        z-index: 10000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        animation: fadeIn 0.3s ease;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    .export-modal-content {
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        margin: 1% auto;
+        padding: 0;
+        border: none;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 500px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        animation: slideDown 0.3s ease;
+    }
+
+    @@keyframes slideDown {
+        from {
+            transform: translateY(-50px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .export-modal-header {
+        padding: 20px 25px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 12px 12px 0 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .export-modal-header h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+    .export-modal-close {
+        color: white;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.2s;
+        line-height: 1;
+        padding: 0 5px;
+    }
+
+        .export-modal-close:hover,
+        .export-modal-close:focus {
+            color: #f1f1f1;
+            transform: scale(1.2);
+        }
+
+    .export-modal-body {
+        padding: 25px;
+    }
+
+    .export-option {
+        margin-bottom: 5px;
+        padding: 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+        .export-option:hover {
+            border-color: #667eea;
+            background-color: #f8f9ff;
+            transform: translateX(5px);
+        }
+
+        .export-option label {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            margin: 0;
+        }
+
+        .export-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+            .export-option input[type="radio"] + .radio-label::before {
+                content: '';
+                display: inline-block;
+                width: 20px;
+                height: 20px;
+                border: 2px solid #667eea;
+                border-radius: 50%;
+                margin-right: 12px;
+                vertical-align: middle;
+                transition: all 0.2s;
+            }
+
+            .export-option input[type="radio"]:checked + .radio-label::before {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                box-shadow: inset 0 0 0 3px white;
+            }
+
+        .export-option .radio-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .export-option small {
+            display: block;
+            color: #666;
+            margin-left: 32px;
+            font-size: 0.875rem;
+        }
+
+        .export-option input[type="radio"]:checked ~ small {
+            color: #764ba2;
+            font-weight: 500;
+        }
+
+    .export-modal-footer {
+        padding: 20px 25px;
+        background-color: #f8f9fa;
+        border-radius: 0 0 12px 12px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    .export-btn {
+        padding: 10px 25px;
+        border: none;
+        border-radius: 6px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .export-btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+        .export-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+    .export-btn-secondary {
+        background: #e0e0e0;
+        color: #333;
+    }
+
+        .export-btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+    .dg-label {
+        font-size: 11px !important;
+        border: 0px solid transparent !important;
+    }
+
+    table.dataTable.table-bordered > :not(caption) > * > * {
+        border-width: 1px !important;
+    }
+
+    button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+</style>
+
+<body>
+    <div id="RepLoadersnackbar" class="RepLoadersnackbar">
+        <table>
+            <tr>
+                <td>
+                    <div class="Reploader"></div>
+                </td>
+                <td style="padding-left:10px;font-size:16px;">
+                    <span>Loading... Please wait</span>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div>
+        @Html.HiddenFor(model => model.FormID, new { @autocomplete = "off", @class = "form-control", @id = "txtFormID" })
+        @Html.HiddenFor(model => model.FormName, new { @autocomplete = "off", @class = "form-control", @id = "txtFormName" })
+        @Html.HiddenFor(model => model.ID, new { @autocomplete = "off", @class = "form-control FormclrField", @id = "txtID" })
+        @Html.HiddenFor(model => model.TransType, new { @autocomplete = "off", @class = "form-control FormclrField", @id = "txtTransType" })
+        <h4 hidden id="MainHeading">@ViewData["FormName"]</h4>
+        <div class="toastBox"></div>
+        <textarea hidden id="txtcomplogo"></textarea>
+        <div class="container">
+            <div class="right-section">
+                <div id="Grid" style="width: 100%;"></div>
+                <div id="DetailGrid" style="width: 100%;"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modalReportColumnSettings" id="mymodalReportColumnSettings" tabindex="-1">
+        <div @*class="modal-dialog modal-dialog-centered modal-lg"*@>
+            <div class="modalReportColumnSettings-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h5 class="modal-title" id="lblReportPopupheading"><b>@ViewData["FormName"]</b></h5>
+                    <button type="button" class="btn-close closemodalReportColumnSettings" aria-label="Close"></button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    <div id="dvAssign" class="w-100 pb-2">
+                        <table class="table table-bordered table-striped align-middle" id="tblReportSettings">
+                            <thead>
+                                <tr class="trclrforcolheader" style="font-size:10px;">
+                                    <th style="width:0%">ReportID</th>
+                                    <th style="width:0%">TableID</th>
+                                    <th style="width:0%">ColumnID</th>
+                                    <th style="width:0%">FormorReport</th>
+                                    <th style="width:25%">Column Name</th>
+                                    <th style="width:25%">Original Name</th>
+                                    <th style="width:30%">Display Name</th>
+                                    <th style="width:9%">Width</th>
+                                    <th style="width:12%">Visible</th>
+                                    <th style="width:12%">Alignment</th>
+                                    <th style="width:12%">Display Index</th>
+                                    <th style="width:12%">Total</th>
+                                    <th style="width:12%">Sum</th>
+                                    <th style="width:12%">Average</th>
+                                    <th style="width:12%">Count</th>
+                                    <th style="width:12%">Unique</th>
+                                    <th style="width:12%">Column Menu</th>
+                                    <th style="width:12%">Show Column Option</th>
+                                    <th style="width:12%">Print</th>
+                                    <th style="width:12%">Print Name</th>
+                                    <th style="width:12%">Print Width</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="19"></th>
+                                    <th class="text-end">Total Print Width :</th>
+                                    <th class="text-end">
+                                        <label id="lblPrintWidth"></label>
+                                    </th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <div class="text-end w-100">
+                        <button type="button" class="btn btn-success" id="btnSubmitmodalReportColumnSettings">
+                            <i class="bi bi-save"></i> Accept
+                        </button>
+                        <button type="button" class="btn btn-warning" id="btnClosemodalReportColumnSettings">
+                            <i class="bi bi-x-circle"></i> Close
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- Export Options Modal -->
+    <div id="exportOptionsModal" class="export-modal">
+        <div class="export-modal-content">
+            <div class="export-modal-header">
+                <h3>Export Options</h3>
+                <span class="export-modal-close" onclick="closeExportModal()">&times;</span>
+            </div>
+            <div class="export-modal-body">
+                <div class="export-option" id="rdoHeaderonly">
+                    <label>
+                        <input type="radio" name="exportType" value="header" checked>
+                        <span class="radio-label">Header</span>
+                        <small>Export header grid data only with filters</small>
+                    </label>
+                </div>
+                <div class="export-option" id="rdoFooteronly">
+                    <label>
+                        <input type="radio" name="exportType" value="footer">
+                        <span class="radio-label">Footer</span>
+                        <small>Export detail grid data only with filters</small>
+                    </label>
+                </div>
+
+                <div class="export-option" id="rdoHeaderFooterSaperate">
+                    <label>
+                        <input type="radio" name="exportType" value="separate">
+                        <span class="radio-label">Header & Footer (Separate)</span>
+                        <small>Header in Sheet 1, all footer data in Sheet 2</small>
+                    </label>
+                </div>
+                <div class="export-option" id="rdoHeaderFooterCombined">
+                    <label>
+                        <input type="radio" name="exportType" value="combined">
+                        <span class="radio-label">Header & Footer (Combined)</span>
+                        <small>Header and footer data combined in single sheet</small>
+                    </label>
+                </div>
+            </div>
+            <div class="export-modal-footer">
+                <button class="export-btn export-btn-primary" onclick="handleExport()">Export</button>
+                <button class="export-btn export-btn-secondary" onclick="closeExportModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Print Options Modal -->
+    <div id="printOptionsModal" class="export-modal">
+        <div class="export-modal-content">
+            <div class="export-modal-header">
+                <h3>Print Options</h3>
+                <span class="export-modal-close" onclick="closePrintModal()">&times;</span>
+            </div>
+            <div class="export-modal-body">
+                <div class="export-option" id="rdoPrintHeaderonly">
+                    <label>
+                        <input type="radio" name="printType" value="header" checked>
+                        <span class="radio-label">Header</span>
+                        <small>Print header grid data with filter information</small>
+                    </label>
+                </div>
+                <div class="export-option" id="rdoPrintFooteronly">
+                    <label>
+                        <input type="radio" name="printType" value="footer">
+                        <span class="radio-label">Footer</span>
+                        <small>Print footer grid data with filter information</small>
+                    </label>
+                </div>
+                <div class="export-option" id="rdoPrintHeaderFooterCombined">
+                    <label>
+                        <input type="radio" name="printType" value="combined">
+                        <span class="radio-label">Header & Footer (Combined)</span>
+                        <small>Print both header and footer data combined</small>
+                    </label>
+                </div>
+            </div>
+            <div class="export-modal-footer">
+                <button class="export-btn export-btn-primary" onclick="handlePrint()">Print</button>
+                <button class="export-btn export-btn-secondary" onclick="closePrintModal()">Close</button>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+            var UID = '@Session["LoginUserID"]';
+    var FID = $("#txtFormID").val();
+    var Aurl = '@Session["APIurl"]';
+    var CompanyName = '@Session["CompanyName"]';
+    var RID = '@Session["LoginRoleID"]';
+    var ItemsperPage =   parseInt('@Session["ItemsperPage"]', 10) < 0 ? 'All' :parseInt('@Session["ItemsperPage"]', 10)  || 10;
+    var strCompanyCode = '@Session["CompanyCode"]';
+    var tblReportSettings = $('#tblReportSettings').DataTable({
+        "bFilter": false,
+        "bSearchable": false,
+        "bInfo": false,
+        "bPaginate": false,
+        "ordering": false,
+        scrollY: "250px",
+        "columnDefs": [{ "targets": [0, 1, 2,3], "visible": false, searchable: false }],
+    });
+    if (UID != 1) {
+        $("#btnScript").hide();
+    }
+    var SelectTableID = 1;
+    var Frames = 1;
+    var arrReportDeatils = [], IsDynamicReport = 0,nSendFilterstoDetail = 0;
+    var arrAllFooterData = [];
+
+    var modalReportColumnsetting = document.getElementById("mymodalReportColumnSettings");
+    var spanRepCSClode = document.getElementsByClassName("closemodalReportColumnSettings")[0];
+    spanRepCSClode.onclick = function () {
+        modalReportColumnsetting.style.display = "none";
+    }
+    $('#btnClosemodalReportColumnSettings').click(function (e) {
+        modalReportColumnsetting.style.display = "none";
+    });
+
+    $("#btnFilters,#btnGenerate,#btnExport").hide();
+    if (FID != 0) {
+        $("#btnFilters,#btnGenerate,#btnExport,#dvAssign").show();
+    }
+    getAllReports();
+    function getAllReports() {
+        $.ajax({
+            url: Aurl + "mobiledevicelogin/Reportpermissions",
+            type: 'get',
+            contentType: 'json',
+            data: { CompanyCode: strCompanyCode, RID: RID, UID: UID },
+            async: false,
+            success: function (data) {
+                var repdata = JSON.parse(data);
+                console.log(repdata);
+                var ParentMenus = repdata.ParentRepMenu;
+                var ChildMenus = repdata.UserRepMenus;
+                //$.each(ParentMenus, function (i, items) {
+                //    var childs = ChildMenus.filter(ch => ch.ParentId == items.ReportID)
+                //    //console.log("childs ", childs);
+                //});
+                // Build final JSON with hierarchy
+                var finalData = ParentMenus.map(parent => {
+                    // Attach children under each parent
+                    var childs = ChildMenus.filter(ch => ch.ParentId == parent.ReportID);
+                    return {
+                        ReportID: parent.ReportID,
+                        MenuName: parent.MenuName,
+                        // any other parent properties you want to keep
+                        ...parent,
+                        Children: childs
+                    };
+                });
+                //console.log("Hierarchical JSON:", finalData);
+                document.getElementById('menuContainer').appendChild(createMenu(finalData));
+
+            }
+        });
+    }
+    function getMenuIcon(name, hasChildren) {
+        if (!name) return hasChildren ? 'fa-folder' : 'fa-file-lines';
+
+        const lowerName = name.toLowerCase();
+        if (lowerName == "sales reports") return 'fa-cart-shopping';
+        if (lowerName == "purchase reports") return 'fas fa-shopping-bag';
+        if (lowerName == "inventory reports") return 'fa-warehouse';
+        if (lowerName == "accounts reports") return 'fa-calculator';
+        if (lowerName == "outstanding report") return 'fa-file-invoice-dollar';
+        if (lowerName == "analysis reports") return 'fa-chart-pie';
+        if (lowerName == "master management") return 'fas fa-database';
+        if (lowerName == "margin reports") return 'fa-chart-line';
+        if (lowerName == "favourite") return 'fa-regular fa-star';
+
+    }
+    function createMenu(data) {
+        const ul = document.createElement('ul');
+        data.forEach(item => {
+            const li = document.createElement('li');
+            li.dataset.reportId = item.ReportID || "";
+            li.dataset.menuName = item.ReportName;
+
+            const hasChildren = item.Children && item.Children.length > 0;
+
+            // Toggle symbol
+            const toggle = document.createElement('span');
+            toggle.classList.add('toggle');
+            toggle.textContent = hasChildren ? '+' : '•';
+            li.appendChild(toggle);
+
+            // 🔹 Add Icon
+            const icon = document.createElement('i');
+            icon.className = 'fa-solid ' + getMenuIcon(item.ReportName, hasChildren);
+            icon.style.marginRight = hasChildren ? '8px' : '4px';
+            icon.style.width = hasChildren ? '16px' : '0px';
+            icon.style.textAlign = 'center';
+            icon.style.color = '#555';
+            li.appendChild(icon);
+
+            // Menu text
+            const name = document.createElement('span');
+            name.textContent = item.ReportName;
+            name.classList.add('menu-name');
+            li.appendChild(name);
+
+            if (hasChildren) {
+                const childUl = createMenu(item.Children);
+                childUl.classList.add('collapsed');
+                li.appendChild(childUl);
+
+                li.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    const isCollapsed = childUl.classList.contains('collapsed');
+
+                    const siblings = li.parentElement.querySelectorAll(':scope > li > ul');
+                    const siblingToggles = li.parentElement.querySelectorAll(':scope > li > .toggle');
+                    const siblingIcons = li.parentElement.querySelectorAll(':scope > li > i');
+
+                    siblings.forEach(s => s.classList.add('collapsed'));
+                    siblingToggles.forEach(t => t.textContent = '+');
+                    // Reset icons of siblings to closed folder if they have children
+                    siblingIcons.forEach((ic, idx) => {
+                        const sibLi = li.parentElement.querySelectorAll(':scope > li')[idx];
+                        const sibHasChildren = sibLi.querySelector('ul') !== null;
+                        if (sibHasChildren) {
+                            ic.className = 'fa-solid ' + getMenuIcon(sibLi.dataset.menuName, true);
+                        }
+                    });
+
+                    if (isCollapsed) {
+                        childUl.classList.remove('collapsed');
+                        toggle.textContent = '−';
+                        // Update this icon to open folder or specific active icon
+                        icon.className = 'fa-solid ' + getMenuIcon(item.ReportName, true);
+                        icon.style.color = '#007acc';
+                    } else {
+                        toggle.textContent = '+';
+                        icon.style.color = '#555';
+                    }
+                });
+            } else {
+                li.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    //console.log(li.dataset);
+                    $("#Grid").html("");
+                    $("#DetailGrid").html("");
+                    FID = li.dataset.reportId;
+                    GetData(0);
+                    GetData(1);
+                    //ColumnDetails(2, FID, 1);
+                    GetColumnSettingsData(2, FID, 1);
+                    $("#MainHeading,#RepMainHeading").html(li.dataset.menuName);
+                    $("#txtFormName").val(li.dataset.menuName);
+                    if (FID != 0) {
+                        $("#btnFilters,#btnGenerate,#btnExport,#dvAssign").show();
+                        openTabs(null, 'FilterDetails', 1);
+                    }
+
+                    // Highlight active leaf
+                    li.parentElement.querySelectorAll('li').forEach(l => l.style.backgroundColor = 'transparent');
+                    li.style.backgroundColor = '#eef';
+                });
+            }
+
+            ul.appendChild(li);
+        });
+        return ul;
+    }
+    var DirectReportID = 80;
+    var DirectReportName = "Cheque In Hand";
+    var nTypeID = 1;
+        var grid;
+    var Detailsgrid;
+    var columnsettings = [], detailcolumnsettings = [],arrParamHiddenColumns = [];
+    //ColumnDetails(2, FID, 1);
+    //GetColumnSettingsData(2, FID, 1);
+    function GetColumnSettingsData(nMode, nFormID, nTableID) {
+        $.ajax({
+            url: Aurl + "columnsettings/getcolumnsettings",
+            type: 'get',
+            contentType: 'json',
+            data: { Mode: nMode, FormID: nFormID, TableID: nTableID, FormorReport: 1 },
+            xhrFields: {
+                withCredentials: true
+            },
+            async: false,
+            success: function (data) {
+                if (data.length > 0) {
+                    columnsettings = (data);
+                    //console.log("columns : ", columnsettings);
+                    if (nTableID == 1) {
+                        columnsettings = (data);
+                        //console.log("Header Columns : ", columnsettings);
+                        if (columnsettings.length) {
+                            arrParamHiddenColumns = columnsettings.filter(hd => hd.ShowinColumnOption == false);
+                            //console.log("Hidden param : ", arrParamHiddenColumns);
+                        }
+                    } else if (nTableID == 2) {
+                        detailcolumnsettings = data;
+                        //console.log("Detail Columns : ", detailcolumnsettings);
+                    }
+                } else {
+                    showErrorSnackbar("No column data found");
+                }
+            }
+        });
+    }
+    function ColumnDetails(nMode, nReportID, nTableID) {
+        $.ajax({
+            url: Aurl + "reportcolumnsettings/getRepColumnSettings",
+            type: 'get',
+            contentType: 'json',
+            data: { Mode: nMode, ReportID: nReportID, TableID: nTableID },
+            xhrFields: {
+                withCredentials: true
+            },
+            async : false,
+            success: function (data) {
+                //arrParamHiddenColumns = [];
+                var jsData = eval(data);
+                if (nTableID == 1) {
+                    columnsettings = jsData;
+                    //console.log(columnsettings);
+                    if (columnsettings.length) {
+                        arrParamHiddenColumns = columnsettings.filter(hd => hd.showInColumnChooser == false);
+                        //console.log("Hidden param : ", arrParamHiddenColumns);
+                    }
+                } else if (nTableID == 2) {
+                    detailcolumnsettings = jsData;
+                    //console.log("Detail COlumns : ", detailcolumnsettings);
+                }
+            }
+        });
+    }
+    function ColumnSettings(nMode, nReportID, nTableID) {
+        $.ajax({
+            url: Aurl + "columnsettings/getcolumnsettings",
+            type: 'get',
+            contentType: 'json',
+            data: { Mode: nMode, FormID: nReportID, TableID: nTableID, FormorReport: 1 },
+            xhrFields: {
+                withCredentials: true
+            },
+            success: function (data) {
+                var jsData = JSON.parse(data);
+                $('#tblReportSettings').DataTable({
+                    scrollY: "275px",
+                    scrollX: true,
+                    scrollCollapse: true,
+                    paging: false,
+                    destroy: true,
+                    data: jsData,
+                    fixedColumns: false,
+                    searching: false,
+                    ordering: false,
+                    sorting: false,
+                    columns: [
+
+                        //ReportID	TableID	ColumnID	ColumnName	DisplayColumnName	Width	Visible	Alignment	DisplayIndex	IsHiddenColumn
+                        { "data": "FormID", "autoWidth": true, "visible": false, className: "dt-body-left" },//0
+                        { "data": "TableID", "autoWidth": true, "visible": false, className: "dt-body-left" },//1
+                        { "data": "ColumnID", "autoWidth": true, "visible": false, className: "dt-body-left" },//2
+                        { "data": "FormorReport", "autoWidth": true, "visible": false, className: "dt-body-left" },//2
+                        { "data": "ColumnName", "autoWidth": true, "visible": false, className: "dt-body-left" },//3
+                        { "data": "OriginalColumnName", "autoWidth": true, width: "10%", className: "dt-body-left" },//3
+                        {
+                            className: "dt-body-left", width: "20%",
+                            "mRender": function (data, type, value, meta) {
+                                var rowIndex = meta.row;
+                                return '<input type="text" value="' + value.DisplayColumnName + '" name ="DisplayColumnName" class="form-control" id="txtDisplayColumnName' + rowIndex + '"/>';
+                            }
+                        },
+                        {
+                            className: "dt-body-left", width: "6%",
+                            "mRender": function (data, type, value, meta) {
+                                var rowIndex = meta.row;
+                                return '<input type="number" value="' + value.Width + '" name ="Width" class="form-control" id="txtWidth' + rowIndex + '" min="1" oninput="javascript: if (this.value < this.min) { this.value = 0 }"/>';
+                            }
+                        },
+                        {
+                            className: "dt-body-center", width: "5%",
+                            "mRender": function (data, type, value, meta) {
+                                var rowIndex = meta.row;
+                                var isFalseSelect = value.Visible == '0' ? 'selected' : '';
+                                var isTrueSelect = value.Visible == '1' ? 'selected' : '';
+
+                                //var field = "<select name='Visible' class='form-control' id='cmbVisible" + rowIndex + "'><option value= '0' " + isFalseSelect + ">False</option><option value= '1'" + isTrueSelect + ">True</option></select>";
+                                var ischk = value.Visible == '1' ? 'checked' : '';
+                                field = '<input type="checkbox"  name ="Visible" ' + ischk + ' id="cmbVisible' + rowIndex + '"/>';
+                                return field;
+                            }
+                        },
+                        {
+                            className: "dt-body-left", width: "8%",
+                            "mRender": function (data, type, value, meta) {
+                                var rowIndex = meta.row;
+                                var isLeftSelect = value.Alignment == '1' ? 'selected' : '';
+                                var isRightSelect = value.Alignment == '2' ? 'selected' : '';
+                                var isCenterSelect = value.Alignment == '3' ? 'selected' : '';
+                                var field = "<select name='Alignment' class='form-control' id='cmbAlignment" + rowIndex + "'><option value= '1'" + isLeftSelect + ">Left</option><option value= '3'" + isCenterSelect + ">Center</option><option value= '2'" + isRightSelect + ">Right</option></select>";
+                                return field;
+                            }
+                        },
+                        {
+                            className: "dt-body-left", width: "8%",
+                            "mRender": function (data, type, value, meta) {
+                                var rowIndex = meta.row;
+                                return '<input type="number" value="' + value.DisplayIndex + '" name ="DisplayIndex" class="form-control" id="txtDisplayIndex' + rowIndex + '" min="0" oninput="javascript: if (this.value < this.min) { this.value = 0 }"/>';
+                            }
+                        },
+                        {
+                            className: "dt-body-center", width: "5%", "visible": true,
+                            "mRender": function (data, type, value, meta) {
+                                var rowIndex = meta.row;
+                                var isFalseSelect = value.TotalYN == '0' ? 'selected' : '';
+                                var isTrueSelect = value.TotalYN == '1' ? 'selected' : '';
+                                var isDisable = value.Total == '1' ? 'disabled' : '';
+                                var field = "<select " + isDisable + " name='Total' class='form-control' id='cmbTotal" + rowIndex + "'><option value= '0' " + isFalseSelect + ">No</option><option value= '1'" + isTrueSelect + ">Yes</option></select>";
+                                var ischk = value.TotalYN == '1' ? 'checked' : '';
+                                field = '<input type="checkbox"  name ="Total" ' + ischk + ' id="cmbTotal' + rowIndex + '" ' + isDisable + '/>';
+                                return field;
+                            }
+                        },
+                        {
+                            className: "dt-body-center", width: "4%", "visible": true,
+                            "mRender": function (data, type, value, meta) {
+                                var rowIndex = meta.row;
+                                var isDisable = value.Total == '1' ? 'disabled' : '';
+                                var isFalseSelect = value.EnableSum == '0' ? 'selected' : '';
+                                var isTrueSelect = value.EnableSum == '1' ? 'selected' : '';
+                                var field = "<select " + isDisable + " name='EnableSum' class='form-control' id='EnableSum" + rowIndex + "'><option value= '0' " + isFalseSelect + ">False</option><option value= '1'" + isTrueSelect + ">True</option></select>";
+
+                                var ischk = value.EnableSum == '1' ? 'checked' : '';
+                                field = '<input type="checkbox"  name ="EnableSum" ' + ischk + ' id="EnableSum' + rowIndex + '" ' + isDisable + '/>';
+                                return field;
+                            }
+                        },
+                        {
+                            className: "dt-body-center", width: "4%", "visible": true,
+                            "mRender": function (data, type, value, meta) {
+                                var rowIndex = meta.row;
+                                var isDisable = value.Total == '1' ? 'disabled' : '';
+                                var isFalseSelect = value.EnableAvg == '0' ? 'selected' : '';
+                                var isTrueSelect = value.EnableAvg == '1' ? 'selected' : '';
+                                var field = "<select " + isDisable + " name='EnableAvg' class='form-control' id='EnableAvg" + rowIndex + "'><option value= '0' " + isFalseSelect + ">False</option><option value= '1'" + isTrueSelect + ">True</option></select>";
+
+                                var ischk = value.EnableAvg == '1' ? 'checked' : '';
+                                field = '<input type="checkbox"  name ="EnableAvg" ' + ischk + ' id="EnableAvg' + rowIndex + '" ' + isDisable + '/>';
+
+                                return field;
+                            }
+                        },
+                        {
+                            className: "dt-body-center", width: "4%", "visible": true,
+                            "mRender": function (data, type, value, meta) {
+                                var rowIndex = meta.row;
+                                var isDisable = '';// value.Total == '1' ? 'disabled' : '';
+                                var isFalseSelect = value.EnableCount == '0' ? 'selected' : '';
+                                var isTrueSelect = value.EnableCount == '1' ? 'selected' : '';
+                                var field = "<select " + isDisable + " name='EnableCount' class='form-control' id='EnableCount" + rowIndex + "'><option value= '0' " + isFalseSelect + ">False</option><option value= '1'" + isTrueSelect + ">True</option></select>";
+
+                                var ischk = value.EnableCount == '1' ? 'checked' : '';
+                                field = '<input type="checkbox"  name ="EnableCount" ' + ischk + ' id="EnableCount' + rowIndex + '" ' + isDisable + '/>';
+                                return field;
+                            }
+                        },
+                        {
+                            className: "dt-body-center", width: "4%", "visible": true,
+                            "mRender": function (data, type, value, meta) {
+                                var rowIndex = meta.row;
+                                var isDisable = '';// value.Total == '1' ? 'disabled' : '';
+                                var isFalseSelect = value.EnableUnique == '0' ? 'selected' : '';
+                                var isTrueSelect = value.EnableUnique == '1' ? 'selected' : '';
+                                var field = "<select " + isDisable + " name='EnableUnique' class='form-control' id='EnableUnique" + rowIndex + "'><option value= '0' " + isFalseSelect + ">False</option><option value= '1'" + isTrueSelect + ">True</option></select>";
+
+                                var ischk = value.EnableUnique == '1' ? 'checked' : '';
+                                field = '<input type="checkbox"  name ="EnableUnique" ' + ischk + ' id="EnableUnique' + rowIndex + '" ' + isDisable + '/>';
+
+                                return field;
+                            }
+                        },
+                        {
+                            className: "dt-body-center", width: "5%", "visible": false,
+                            "mRender": function (data, type, value, meta) {
+                                var rowIndex = meta.row;
+                                var isFalseSelect = value.EnableColumnMenu == '0' ? 'selected' : '';
+                                var isTrueSelect = value.EnableColumnMenu == '1' ? 'selected' : '';
+                                var field = "<select name='EnableColumnMenu' class='form-control' id='EnableColumnMenu" + rowIndex + "'><option value= '0' " + isFalseSelect + ">False</option><option value= '1'" + isTrueSelect + ">True</option></select>";
+
+                                var ischk = value.EnableColumnMenu == '1' ? 'checked' : '';
+                                field = '<input type="checkbox"  name ="EnableColumnMenu" ' + ischk + ' id="EnableColumnMenu' + rowIndex + '" />';
+
+                                return field;
+                            }
+                        },
+                        {
+                            className: "dt-body-center", width: "5%", "visible": (RID == 1),
+                            "mRender": function (data, type, value, meta) {
+                                var rowIndex = meta.row;
+                                var isFalseSelect = value.ShowinColumnOption == '0' ? 'selected' : '';
+                                var isTrueSelect = value.ShowinColumnOption == '1' ? 'selected' : '';
+                                var field = "<select name='ShowinColumnOption' class='form-control' id='ShowinColumnOption" + rowIndex + "'><option value= '0' " + isFalseSelect + ">False</option><option value= '1'" + isTrueSelect + ">True</option></select>";
+
+                                var ischk = value.ShowinColumnOption == '1' ? 'checked' : '';
+                                field = '<input type="checkbox"  name ="ShowinColumnOption" ' + ischk + ' id="ShowinColumnOption' + rowIndex + '" />';
+
+
+                                return field;
+                            }
+                        },
+                        {
+                            className: "dt-body-center", width: "5%",
+                            "mRender": function (data, type, value, meta) {
+                                var rowIndex = meta.row;
+                                var isFalseSelect = value.PrintYN == '0' ? 'selected' : '';
+                                var isTrueSelect = value.PrintYN == '1' ? 'selected' : '';
+                                var field = "<select name='PrintYN' class='form-control' id='cmbPrintYN" + rowIndex + "'><option value= '0' " + isFalseSelect + ">False</option><option value= '1'" + isTrueSelect + ">True</option></select>";
+
+
+                                var ischk = value.PrintYN == '1' ? 'checked' : '';
+                                field = '<input type="checkbox" class="dgvPrintYN" name ="PrintYN" ' + ischk + ' id="cmbPrintYN' + rowIndex + '" />';
+
+                                return field;
+                            }
+                        },
+                        {
+                            className: "dt-body-left", width: "18%",
+                            "mRender": function (data, type, value, meta) {
+                                var rowIndex = meta.row;
+                                return '<input type="text" value="' + value.PrintColumnName + '" name ="PrintColumnName" class="form-control" id="txtPrintColumnName' + rowIndex + '"/>';
+                            }
+                        },
+                        {
+                            className: "dt-body-left", width: "8%",
+                            "mRender": function (data, type, value, meta) {
+                                var rowIndex = meta.row;
+                                return '<input type="number" value="' + value.PrintWidth + '" name ="Printwidth" class="form-control dgvPrintWidth" id="txtPrintwidth' + rowIndex + '" min="1" oninput="javascript: if (this.value < this.min) { this.value = 0 }"/>';
+                            }
+                        },
+                    ],
+                });
+                tblReportSettings = $('#tblReportSettings').DataTable();
+                GetPrintYesWidth();
+            }
+        });
+    }
+
+    $("#btnScript").click(function () {
+        location.href = Aurl + 'reportscript/get?ReportID=' + FID + "&ReportName=" + $("#MainHeading").text();
+    });
+    function GetData(nMode) {
+        if (FID != 0) {
+            $.ajax({
+                url: Aurl + "reportparameters/get",
+                type: 'get',
+                contentType: 'json',
+                data: { Mode: nMode, ReportID: FID },
+                xhrFields: {
+                    withCredentials: true
+                },
+                async:false,
+                success: function (data) {
+                    if (nMode == 0) {
+                        arrReportDeatils = eval(data);
+                        Frames = arrReportDeatils[0].Frames;
+                        IsDynamicReport = arrReportDeatils[0].IsDynamicReport;
+                        nSendFilterstoDetail = arrReportDeatils[0].SendFiltersDetail;
+                        if (Frames == 2) {
+                            //ColumnDetails(2, FID, 2);
+                            GetColumnSettingsData(2, FID, 2);
+                        }
+                    }
+                    if (nMode == 1) {
+                        Table.draw().clear(); Table.draw().clear();
+                        if (data.length > 0) {
+                            $.each(data, function (i, items) {
+                                var ParamType = items.ParameterType;
+                                var ParVal = "";
+                                var IsMand = items.IsMandatory;
+                                var defval = items.AutolistName == "1" ? "checked" : "";
+                                var isoddoreven = i % 2 == 0 ? "odd" : "even";
+                                if (ParamType == "Autolist") {
+                                    ParVal = '<input isMandatory =' + IsMand +' type="text" class="form-control" name=' + items.AutolistName + ' id=' + (items.AutolistName + i) + ' />';
+                                } else if (ParamType == "Multiselect") {
+                                    ParVal = '<input isMultiselection = "1" isMandatory ="' + IsMand + '" type="text" class="form-control" name="' + items.AutolistName + '" id="' + (items.AutolistName + i) + '" />';
+                                }
+                                else if (ParamType == "Dropdown") {
+                                    ParVal = '<select class="form-control" name=' + items.AutolistName + ' id=Combo' + (i) + '></select>'
+                                }
+                                else if (ParamType == "Date") {
+                                    ParVal = '<input isMandatory =' + IsMand +' type="date" class="form-control" name=' + items.AutolistName + ' id="dtp' + (items.AutolistName + i) + '" />';
+                                    var Datetype = items.AutolistName == "CD" ? 0 : items.AutolistName == "MF" ? 8 : 0;
+                                    setDate("dtp"+(items.AutolistName + i), Datetype);
+                                }
+                                else if (ParamType == "Checkbox") {
+                                   ParVal = '<input type="checkbox" name=' + items.AutolistName + ' id=chk' + (items.AutolistName + i) + ' ' + defval + ' />';
+                                }
+                                else if (ParamType == "Number") {
+                                    ParVal = '<input isMandatory =' + IsMand +' type="number" class="form-control" name=' + items.AutolistName + ' id=chk' + (items.AutolistName + i) + ' value =' + items.AutolistName + ' />';
+                                }
+                                else if (ParamType == "Text") {
+                                    ParVal = '<input isMandatory =' + IsMand +' type="text" class="form-control" name="text' + items.AutolistName + '" id="txt' + (items.AutolistName + i) + '" value ="' + items.AutolistName + '" />';
+                                }
+                                Table.row.add([
+                                    '<label id="lblparamName' + i + '"><b>' + items.ParameterName + '</b>' + (IsMand == 1 ? ' <label style="color:red"> * </label>' : '') + '</label>',
+                                    ParVal
+                                ]).draw(false);
+                            });
+                            LoadDataforAL();
+                        }
+                        else {
+                            //showErrorSnackbar("No Records Found");
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+function setDate(FieldID,Type) {
+    $.ajax({
+         url: "@Url.Action("setdate", "Home")",
+        type: 'get',
+        contentType: 'json',
+        data: { TypeID: Type },
+        success: function (data) {
+            $.each(data, function (i, items) {
+                $("#" + FieldID).attr("max", items.MaxDate);
+                $("#" + FieldID).attr("min", items.MinDate);
+                $("#" + FieldID).val(items.Value);
+            });
+        }
+    })
+    }
+    $("#btnClear").click(function () {
+        $('#tblFilterData tr td input[type=text],select').each(function (i, items) {
+            if (items.tagName == "INPUT") {
+                $(this).val("");
+            }
+            if (items.tagName == "SELECT") {
+                $(this).val(0);
+            }
+            if (items.tagName == "Checkbox") {
+                $(this).prop("checked", false);
+            }
+        });
+    });
+    function LoadDataforAL() {
+        $('#tblFilterData tr td input[type=text],select').each(function (i, items) {
+            //ShowMsgPopup(items.value + i);
+            //isGridEmpty++;
+            var strALName = items.name;
+            var id = items.id
+            var isMultiSelection = $("#" + id).attr('isMultiselection') == "1";
+            var arrData = [];
+            var arrMultiSelData = [];
+            $.ajax({
+                url: Aurl + "reportparameters/get",
+                type: 'get',
+                contentType: 'json',
+                data: { Mode: 2, ReportID: FID, ALName: strALName },
+                xhrFields: {
+                    withCredentials: true
+                },
+                success: function (data) {
+                    if (data.length > 0) {
+                        //Table.draw().clear();
+                        //console.log("Field AL : ", strALName, " Field ID : ", id, " tagName : ", items.tagName);
+                        if (items.tagName == "INPUT") {
+                            $.each(data, function (i, items) {
+                                //arrData[i] = items.Name
+                                var al = {
+                                    "label": items.Name,
+                                    "id": items.ID,
+                                }
+                                arrData.push(al);
+                                arrMultiSelData.push({ "label": items.Name, "value": items.ID });
+                            });
+                            if (isMultiSelection) {
+                                //~Multiselect
+                                GKBSPaginatedMultiSelect({
+                                    inputId: id,//'txtProducts',
+                                    data: arrMultiSelData,
+                                    onSelect: function (items) { /* optional live hook */ }
+                                });
+                            }
+                            else {
+                                //~AutoList
+                                PaginatedAutocomplete({
+                                    inputId: id,
+                                    data: arrData,
+                                    onSelect: function (item) {
+                                        $('#' + id + '').val(item.label);
+                                        return false;
+                                    }
+                                });
+                            }
+                        }
+                        else if (items.tagName == "SELECT") {
+                            $.each(data, function (i, items) {
+                                $('#' + id + '').append($('<option/>', {
+                                    value: items.ID,
+                                    text: items.Name,
+                                }));
+                            });
+                        }
+                    }
+                }
+            });
+        });
+    }
+    function CheckMandatory() {
+        var IsValid = true;
+        $('#tblFilterData tr td input').each(function (i, items) {
+            var FieldType = this.type;
+            var FieldID = this.id;
+            var FieldValue = this.value;
+
+            $(this).css("border-color", "");
+            if (FieldType == "text" || FieldType == "number" || FieldType == "date") {
+                var IsMand = document.getElementById(this.id).getAttribute('ismandatory');
+                var IsMultiSelection = $("#" + FieldID).attr('isMultiselection') == "1";
+                if (!IsMultiSelection) {
+                    if (IsMand == 1 && FieldValue == "") {
+                        $(this).css("border-color", "red");
+                        IsValid = false;
+                        showErrorSnackbar("Mandatory fields should not empty");
+                    }
+                }
+                else {
+                    //var hid = $(this).data('hid');
+                    var selected = getMultiSelectValues(FieldID);
+                    if (IsMand == '1' && (!selected || selected.length === 0)) {
+                        $(this).css("border-color", "red");
+                        IsValid = false;
+                        showErrorSnackbar("Mandatory fields should not be empty");
+                    }
+                }
+            }
+            ////console.log("Input Fields", this, "Type : ", this.type, "ID : ", this.id, "IsMand : ", );
+        });
+        return IsValid;
+    }
+    var arrParams = [], ParamIndex = 1;
+
+    //$('#btnPopupGenerate,#btnGenerate').click(function (e) {
+    $('#btnPopupGenerate,#btnGenerate').on("click",function (e) {
+        if (CheckMandatory()) {
+            arrParams = [], ParamIndex = 1;
+            $('#tblFilterData tr td').each(function (i, items) {
+                if (i % 2 == 1) {
+                    //console.log("Field Type : ", items.firstChild);
+                    var input = items.firstChild.id;
+                    var inputtype = items.firstChild.type;
+                    var s = inputtype == "checkbox" ? $("#" + input).is(":checked") : $("#" + input).val();
+                    var IsMultiSelection = $("#" + input).attr('isMultiselection') == "1";
+                    var multiselvalues = "";
+                    if (IsMultiSelection) {
+                        multiselvalues = getMultiSelectValues(input).map(function (i) {
+                            return i.value;
+                        }).join(',');
+                    }
+                    if (s == null) {
+                        //alert("No Value");
+                    }
+                    else {
+                        //alert("Values " + s);
+                        var strpv = "Param" + ParamIndex;
+                        var PV = {
+                            "Param1": IsMultiSelection ? multiselvalues : s
+                        }
+                        arrParams.push(PV);
+                        ParamIndex++;
+                    }
+                }
+            });
+            GenerateData();
+        }
+    });
+    function GenerateData() {
+        $("#Grid").html("");
+        $("#DetailGrid").html("");
+        var listParams = {
+            "ReportID": FID,
+            "ProcedureName": arrReportDeatils[0].ProcedureName,
+            "lstvFilters": arrParams
+        };
+        var Excelfilter = [];
+        var Col2Data = "";
+        $('#tblFilterData tr td').each(function (i, items) {
+            var insert = false;
+            if (i % 2 == 0) {
+                var lbl = items.firstChild.id;
+                Col1Data = $("#" + lbl).text();
+                ////console.log("Col 1", Col2Data);
+                insert = false;
+            }
+            else if (i % 2 == 1) {
+                var input = items.firstChild.id;
+                var inputtype = items.firstChild.type;
+                var IsMultiSelection = $("#" + input).attr('isMultiselection') == "1";
+
+                var ifselval = inputtype == "select-one" && $("#" + input).val() > 0 ? $("#" + input + " option:selected").text() : "";
+                var multiselvalues = "";
+                if (IsMultiSelection) {
+                    multiselvalues = getMultiSelectValues(input).map(function (i) {
+                        return i.label;
+                    }).join(',');
+                }
+                Col2Data = inputtype == "checkbox" ? $("#" + input).is(":checked") ? 1 : 0 : inputtype == "select-one" ? ifselval : IsMultiSelection ? multiselvalues : $("#" + input).val();
+                insert = true;
+            }
+            if (insert) {
+                var lst = {
+                    FilterName: Col1Data,
+                    Value: Col2Data
+                };
+                Excelfilter.push(lst);
+            }
+        });
+        let sb = document.getElementById("RepLoadersnackbar");
+        sb.classList.add("show");
+        $.ajax({
+            url: Aurl + "reportgenerate/get",
+            type: 'post',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(listParams),
+            xhrFields: {
+                withCredentials: true
+            },
+            success: function (data) {
+                sb.classList.remove("show");
+                if (data.length > 0) {
+                    if (IsDynamicReport == 1) {//FID == 14
+                        bindDataTableforDynamicReport(eval(data), Excelfilter);
+                    }
+                    else {
+                        bindDataTable(eval(data), Excelfilter);
+                    }
+                }
+                else {
+                    showErrorSnackbar("No data found");
+                }
+            },
+            error: function (errr) {
+                sb.classList.remove("show"); showErrorSnackbar("Error in data retrieval");
+            }
+        });
+    }
+    function bindDataTable(data, filterdata) {
+        if (data.length === 0) {
+            return; // No data to display
+        }
+        var Reporthd = $("#MainHeading").text();
+        var nHeight = Frames == 1 ? "400px" : "300px";
+        //console.log("columnsettings ", columnsettings);
+        var currentSearchValue = '';
+        //if (grid) {
+        //    currentSearchValue = grid ? grid.state.searchTerm : '';
+        //}
+        grid = new GKBSDynamicGrid('#Grid', columnsettings, data, {
+            enablePagination: true,
+            pageSize: ItemsperPage,
+            height: nHeight,
+            enableSearch: true,
+            stickyToWindow: true,
+            enableExport: false,
+            enablePrint: false,
+            enableColumnsBtn: true,
+            enableAddRow: false,
+            enableRemoveRow: false,
+            enableSorting: true,
+            searchTerm: currentSearchValue,
+            CompanyName: CompanyName,
+            ReportName: Reporthd,
+            fitersdata: filterdata,
+            singleIconAction: [],
+            rowActionsMenu: [],
+            //onCellChange: handleCellUpdate,
+            customButtons: [
+                {
+                    icon: '🛠️',
+                    text: 'Settings',
+                    title: 'Settings',
+                    onClick: (gridInstance, event) => {
+                        ////console.log("gridInstance : ", gridInstance);
+                        ////console.log("event : ", event);
+                        //alert('Settings clicked! Total rows: ' + gridInstance.originalData.length);
+                        SelectTableID = 1;
+                        modalReportColumnsetting.style.display = "block";
+                        ColumnSettings(1, FID, SelectTableID);
+                    }
+                },
+                {
+                    icon: '📥',
+                    text: 'Export',
+                    title: 'Export to Excel via Custom Button',
+                    onClick: (gridInstance, event) => {
+                        //console.log("Custom Export clicked");
+                        // Show the export options modal
+                        showExportOptionsModal(gridInstance);
+                        //rdoHeaderFooterSaperate,rdoHeaderFooterCombined
+                        $("#rdoFooteronly,#rdoHeaderandFooter,#rdoHeaderFooterSaperate,#rdoHeaderFooterCombined").hide();
+                        if (Frames == 1) {
+                            //$("#rdoFooteronly,#rdoHeaderandFooter").prop("disabled", true);
+                            $("#rdoHeaderonly").show();
+                        }
+                        else {
+                            $("#rdoHeaderonly,#rdoFooteronly,#rdoHeaderandFooter,#rdoHeaderFooterSaperate,#rdoHeaderFooterCombined").show();
+                        }
+                    }
+                },
+                {
+                    icon: '🖨️',
+                    text: 'Print',
+                    title: 'Print Grid Data',
+                    visible: true,
+                    onClick: (gridInstance, event) => {
+                        //console.log("Print clicked");
+                        // Show the print options modal
+                        showPrintOptionsModal(gridInstance);
+                        $("#rdoPrintFooteronly,#rdoPrintHeaderonly,#rdoPrintHeaderFooterCombined").hide();
+                        if (Frames == 1) {
+                            //$("#rdoFooteronly,#rdoHeaderandFooter").prop("disabled", true);
+                            $("#rdoPrintHeaderonly").show();
+                        }
+                        else {
+                            $("#rdoPrintFooteronly,#rdoPrintHeaderonly,#rdoPrintHeaderFooterCombined").show();
+                        }
+                    }
+                },
+            ],
+            onCellClick: (rowData, fieldName, cellValue, column) => {
+                if (Frames == 2) {
+                    arrParams = []
+                    //var rowData = args.rowData;
+                    //Hidden column set to parameters
+                    for (var i = 0; i < arrParamHiddenColumns.length; i++) {
+                        var values = arrParamHiddenColumns[i].field;
+                        var PV = {
+                            "Param1": rowData[values]
+                        }
+                        arrParams.push(PV);
+                    }
+                    if (nSendFilterstoDetail == 1) {
+                        //Filters set to parameters
+                        $('#tblFilterData tr td').each(function (i, items) {
+                            if (i % 2 == 1) {
+                                var input = items.firstChild.id;
+                                var inputtype = items.firstChild.type;
+                                var IsMultiSelection = $("#" + input).attr('isMultiselection') == "1";
+                                var multiselvalues = "";
+                                if (IsMultiSelection) {
+                                    multiselvalues = getMultiSelectValues(input).map(function (i) {
+                                        return i.value;
+                                    }).join(',');
+                                }
+                                var s = inputtype == "checkbox" ? $("#" + input).is(":checked") : $("#" + input).val();
+                                if (s == null) {
+                                    //alert("No Value");
+                                }
+                                else {
+                                    //alert("Values " + s);
+                                    var strpv = "Param" + ParamIndex;
+                                    var PV = {
+                                        "Param1": IsMultiSelection ? multiselvalues : s
+                                    }
+                                    arrParams.push(PV);
+                                    ParamIndex++;
+                                }
+                            }
+                        });
+                    }
+
+                    //console.log("Params ", arrParams);
+                    var DetailProc = arrReportDeatils[0].DetailProcedureName
+                    $("#DetailGrid").html("");
+                    var listParams = {
+                        "ReportID": FID,
+                        "ProcedureName": DetailProc,
+                        "lstvFilters": arrParams
+                    };
+                    $.ajax({
+                        url: Aurl + "reportgenerate/get",
+                        type: 'post',
+                        contentType: 'application/json; charset=utf-8',
+                        data: JSON.stringify(listParams),
+                        xhrFields: {
+                            withCredentials: true
+                        },
+                        async: false,
+                        success: function (data) {
+                            if (data.length > 0) {
+                                bindDetailDataTable(eval(data), eval(listParams));
+                            }
+                            else {
+                                showErrorSnackbar("No data found");
+                            }
+                        }
+                    });
+                }
+            },
+            customCellRenderer: (el, col, rowData) => {
+
+            },
+            onCellDoubleClick: (rowData, fieldName, cellValue, column) => {
+                // Double-click handler - shows JSON format
+                let message = `Double-Clicked Cell:\n`;
+                message += `• Field: ${fieldName}\n`;
+                message += `• Value: ${cellValue}\n\n`;
+                message += `Full Row Data:\n${JSON.stringify(rowData, null, 2)}`;
+                //alert(message);
+                navigator.clipboard.writeText(cellValue);
+
+                showSuccessSnackbar("Value Copied.");
+            },
+            onColumnResize: (colIndex, field, header, newWidth) => {
+                //alert(`Column Resized via Callback:\nIndex: ${colIndex}\nName: ${header}\nNew Width: ${newWidth}`);
+                UpdateColumnWidth(FID, 1, 1, colIndex, field, newWidth);
+            },
+        });
+    }
+
+    $("#Grid").on('onCellDoubleClick','div',function (rowData, fieldName, cellValue, column) {
+        navigator.clipboard.writeText(cellValue);
+
+        showSuccessSnackbar("Saperate Value Copied.");
+    });
+    function bindDetailDataTable(data, filterdata) {
+        if (data.length === 0) {
+            return; // No data to display
+        }
+        var Excelfilter = [];
+        var Col2Data = "";
+        $('#tblFilterData tr td').each(function (i, items) {
+            var insert = false;
+
+            if (i % 2 == 0) {
+                var lbl = items.firstChild.id;
+                Col1Data = $("#" + lbl).text();
+                ////console.log("Col 1", Col2Data);
+                insert = false;
+            }
+            else if (i % 2 == 1) {
+                var input = items.firstChild.id;
+                var inputtype = items.firstChild.type;
+                var IsMultiSelection = $("#" + input).attr('isMultiselection') == "1";
+                var multiselvalues = "";
+                if (IsMultiSelection) {
+                    multiselvalues = getMultiSelectValues(input).map(function (i) {
+                        return i.value;
+                    }).join(',');
+                }
+                var ifselval = inputtype == "select-one" && $("#" + input).val() > 0 ? $("#" + input + " option:selected").text() : "";
+                Col2Data = inputtype == "checkbox" ? $("#" + input).is(":checked") : inputtype == "select-one" ? ifselval : IsMultiSelection ? multiselvalues : $("#" + input).val();
+                insert = true;
+            }
+            if (insert) {
+                var lst = {
+                    FilterName: Col1Data,
+                    Value: Col2Data
+                };
+                Excelfilter.push(lst);
+            }
+        });
+        var Reporthd = $("#MainHeading").text();
+        Detailsgrid = new GKBSDynamicGrid('#DetailGrid', detailcolumnsettings, data, {
+            enablePagination: true,
+            pageSize: ItemsperPage,
+            height: "300px",
+            enableSearch: true,
+            stickyToWindow: true,
+            enableExport: false,
+            enablePrint: false,
+            enableColumnsBtn: true,
+            enableAddRow: false,
+            enableRemoveRow: false,
+            enableSorting: true,
+            CompanyName: CompanyName,
+            ReportName: Reporthd + " Details",
+            fitersdata: Excelfilter,
+            singleIconAction: [],
+            rowActionsMenu: [],
+            //onCellChange: handleCellUpdate,
+            customButtons: [
+                {
+                    icon: '🛠️',
+                    text: 'Settings',
+                    title: 'Settings',
+                    onClick: (gridInstance, event) => {
+                        ////console.log("gridInstance : ", gridInstance);
+                        ////console.log("event : ", event);
+                        //alert('Settings clicked! Total rows: ' + gridInstance.originalData.length);
+                        SelectTableID = 2;
+                        modalReportColumnsetting.style.display = "block";
+                        ColumnSettings(1, FID, SelectTableID);
+                    }
+                },
+            ],
+            onCellClick: (rowData, fieldName, cellValue, column) => {
+
+            },
+            customCellRenderer: (el, col, rowData) => {
+
+            },
+            onCellDoubleClick: (rowData, fieldName, cellValue, column) => {
+                // Double-click handler - shows JSON format
+                let message = `Double-Clicked Cell:\n`;
+                message += `• Field: ${fieldName}\n`;
+                message += `• Value: ${cellValue}\n\n`;
+                message += `Full Row Data:\n${JSON.stringify(rowData, null, 2)}`;
+                //alert(message);
+            },
+            onColumnResize: (colIndex, field, header, newWidth) => {
+                //alert(`Column Resized via Callback:\nIndex: ${colIndex}\nName: ${header}\nNew Width: ${newWidth}`);
+                UpdateColumnWidth(FID, 2, 1, colIndex, field, newWidth);
+            },
+        });
+    }
+    function bindDataTableforDynamicReport(data, filterdata) {
+        if (data.length === 0) {
+            return; // No data to display
+        }
+        //console.log("Col Setting", columnsettings);
+        let allcolumns = Object.keys(data[0]);
+        const obj1Fields = columnsettings.map(item => item.field);
+
+        // Get non-matching values
+        const columns = allcolumns.filter(
+            item => !obj1Fields.includes(item)
+        );
+
+        //console.log(columns);
+        var Reporthd = $("#MainHeading").text();
+        var nHeight = Frames == 1 ? "425px" : "200px";
+        //columnsettings = [];
+        for (var i = 0; i < columns.length; i++) {
+            var coldata = {
+                "field": columns[i],
+                "header": columns[i],
+                "type": "label",
+                "width": 100,
+                "align": "right",
+                "visible": true,
+                "EnableColumnMenu": true,
+                "ShowinColumnOption": true,
+                "Total": true,
+                "TotalYN": "1",
+                "EnableSum": true,
+                "EnableAvg": false,
+                "precision": "2",
+                "ClickPopup": false,
+                PrintColumnName: columns[i],
+                PrintYN: true,
+                Printwidth: 20,
+                "EnableCount": false,
+                "EnableUnique": false
+            }
+            columnsettings.push(coldata)
+        }
+        var ss = [];
+        //console.log("data", data, "const columns", columns);
+        grid = new GKBSDynamicGrid('#Grid', columnsettings, data, {
+            enablePagination: true,
+            pageSize: ItemsperPage,
+            height: nHeight,
+            enableSearch: true,
+            stickyToWindow: true,
+            enableExport: false,
+            enablePrint: false,
+            enableColumnsBtn: true,
+            enableAddRow: false,
+            enableRemoveRow: false,
+            enableSorting: true,
+            CompanyName: CompanyName,
+            ReportName: Reporthd,
+            fitersdata: filterdata,
+            singleIconAction: [],
+            rowActionsMenu: [],
+            //onCellChange: handleCellUpdate,
+            customButtons: [
+                {
+                    icon: '🛠️',
+                    text: 'Settings',
+                    title: 'Settings',
+                    onClick: (gridInstance, event) => {
+                        ////console.log("gridInstance : ", gridInstance);
+                        ////console.log("event : ", event);
+                        //alert('Settings clicked! Total rows: ' + gridInstance.originalData.length);
+                        SelectTableID = 1;
+                        modalReportColumnsetting.style.display = "block";
+                        ColumnSettings(1, FID, SelectTableID);
+                    }
+                },
+                {
+                    icon: '📥',
+                    text: 'Export',
+                    title: 'Export to Excel via Custom Button',
+                    onClick: (gridInstance, event) => {
+                        //console.log("Custom Export clicked");
+                        // Show the export options modal
+                        showExportOptionsModal(gridInstance);
+                        //rdoHeaderFooterSaperate,rdoHeaderFooterCombined
+                        $("#rdoFooteronly,#rdoHeaderandFooter,#rdoHeaderFooterSaperate,#rdoHeaderFooterCombined").hide();
+                        if (Frames == 1) {
+                            //$("#rdoFooteronly,#rdoHeaderandFooter").prop("disabled", true);
+                            $("#rdoHeaderonly").show();
+                        }
+                        else {
+                            $("#rdoHeaderonly,#rdoFooteronly,#rdoHeaderandFooter,#rdoHeaderFooterSaperate,#rdoHeaderFooterCombined").show();
+                        }
+                    }
+                },
+                {
+                    icon: '🖨️',
+                    text: 'Print',
+                    title: 'Print Grid Data',
+                    visible: true,
+                    onClick: (gridInstance, event) => {
+                        //console.log("Print clicked");
+                        // Show the print options modal
+                        showPrintOptionsModal(gridInstance);
+                        $("#rdoPrintFooteronly,#rdoPrintHeaderonly,#rdoPrintHeaderFooterCombined").hide();
+                        if (Frames == 1) {
+                            //$("#rdoFooteronly,#rdoHeaderandFooter").prop("disabled", true);
+                            $("#rdoPrintHeaderonly").show();
+                        }
+                        else {
+                            $("#rdoPrintFooteronly,#rdoPrintHeaderonly,#rdoPrintHeaderFooterCombined").show();
+                        }
+                    }
+                },
+
+            ],
+            onCellClick: (rowData, fieldName, cellValue, column) => {
+                if (Frames == 2) {
+                    arrParams = []
+                    //var rowData = args.rowData;
+                    //Hidden column set to parameters
+                    for (var i = 0; i < arrParamHiddenColumns.length; i++) {
+                        var values = arrParamHiddenColumns[i].field;
+                        var PV = {
+                            "Param1": rowData[values]
+                        }
+                        arrParams.push(PV);
+                    }
+                    if (nSendFilterstoDetail == 1) {
+                        //Filters set to parameters
+                        $('#tblFilterData tr td').each(function (i, items) {
+                            if (i % 2 == 1) {
+                                var input = items.firstChild.id;
+                                var inputtype = items.firstChild.type;
+                                var IsMultiSelection = $("#" + input).attr('isMultiselection') == "1";
+                                var multiselvalues = "";
+                                if (IsMultiSelection) {
+                                    multiselvalues = getMultiSelectValues(input).map(function (i) {
+                                        return i.value;
+                                    }).join(',');
+                                }
+                                var s = inputtype == "checkbox" ? $("#" + input).is(":checked") : $("#" + input).val();
+                                if (s == null) {
+                                    //alert("No Value");
+                                }
+                                else {
+                                    //alert("Values " + s);
+                                    var strpv = "Param" + ParamIndex;
+                                    var PV = {
+                                        "Param1": IsMultiSelection ? multiselvalues : s
+                                    }
+                                    arrParams.push(PV);
+                                    ParamIndex++;
+                                }
+                            }
+                        });
+                    }
+
+                    //console.log("Params ", arrParams);
+                    var DetailProc = arrReportDeatils[0].DetailProcedureName
+                    $("#DetailGrid").html("");
+                    var listParams = {
+                        "ReportID": FID,
+                        "ProcedureName": DetailProc,
+                        "lstvFilters": arrParams
+                    };
+                    $.ajax({
+                        url: Aurl + "reportgenerate/get",
+                        type: 'post',
+                        contentType: 'application/json; charset=utf-8',
+                        data: JSON.stringify(listParams),
+                        xhrFields: {
+                            withCredentials: true
+                        },
+                        async: false,
+                        success: function (data) {
+                            if (data.length > 0) {
+                                bindDetailDataTable(eval(data), eval(listParams));
+                            }
+                            else {
+                                showErrorSnackbar("No data found");
+                            }
+                        }
+                    });
+                }
+            },
+            customCellRenderer: (el, col, rowData) => {
+
+            },
+            onCellDoubleClick: (rowData, fieldName, cellValue, column) => {
+                // Double-click handler - shows JSON format
+                let message = `Double-Clicked Cell:\n`;
+                message += `• Field: ${fieldName}\n`;
+                message += `• Value: ${cellValue}\n\n`;
+                message += `Full Row Data:\n${JSON.stringify(rowData, null, 2)}`;
+                //alert(message);
+            },
+            onColumnResize: (colIndex, field, header, newWidth) => {
+                //alert(`Column Resized via Callback:\nIndex: ${colIndex}\nName: ${header}\nNew Width: ${newWidth}`);
+                UpdateColumnWidth(FID, 1, 1, colIndex, field, newWidth);
+            },
+        });
+    }
+    function ReportColumnValidation() {
+        var isValid = true;
+
+        var totwidth = $("#lblPrintWidth").text();
+        if (totwidth > 210) {
+            isValid = false;
+            showErrorSnackbar('Total Print Width (Print - Yes) cannot exceed 210');
+        }
+        if (isValid) {
+            $("#tblReportSettings tbody tr").each(function () {
+                rowdata = tblReportSettings.row($(this)).data();
+                var aPrintYN = false;
+                $(this).find("input").each(function (index) {
+                    const fieldName = $(this).attr("name");
+                    const fieldID = $(this).attr("id");
+                    if (fieldName == "PrintYN") {
+                        aPrintYN = this.checked;
+                    }
+                    if (fieldName == "Printwidth" && aPrintYN) {
+                        var PrintWidth = parseInt($(this).val());
+                        if (PrintWidth < 5) {
+                            isValid = false;
+                        }
+                    }
+                });
+            });
+            if (!isValid) {
+                showErrorSnackbar('Set Print Width greater 5');
+            }
+        }
+        return isValid;
+    }
+    var ColumnSettingData = [];
+    $("#btnSubmitmodalReportColumnSettings").click(function () {
+        var totwidth = $("#lblPrintWidth").text();
+        if (ReportColumnValidation()) {
+        ColumnSettingData = [];
+            $("#tblReportSettings tbody tr").each(function () {
+                var allValues = {};
+                rowdata = tblReportSettings.row($(this)).data();
+                //console.log("Row Data : ", rowdata);
+                //Printwidth,PrintColumnName,PrintYN
+                var aDisplayName = "", aWidth = "", aDisplayIndex = "", aAlign = "", aVisible = "",
+                    aPrintwidth = "0", aPrintColumnName = "", aPrintYN = false,
+                    aEnableColumnMenu = rowdata.EnableColumnMenu, aTotal = rowdata.Total,
+                    aEnableSum = rowdata.EnableSum, aEnableAvg = rowdata.EnableAvg, aEnableCount = rowdata.EnableCount,
+                    aEnableUnique = rowdata.EnableUnique,aShowinColumnOption = rowdata.ShowinColumnOption;
+                $(this).find("input").each(function (index) {
+                    const fieldName = $(this).attr("name");
+                    const fieldID = $(this).attr("id");
+                    if (fieldName == "DisplayColumnName") {
+                        aDisplayName = $(this).val();
+                    }
+                    if (fieldName == "Width") {
+                        aWidth = $(this).val();
+                    }
+                    if (fieldName == "DisplayIndex") {
+                        aDisplayIndex = $(this).val();
+                    }
+                    if (fieldName == "Printwidth") {
+                        aPrintwidth = $(this).val();
+                    }
+                    if (fieldName == "PrintColumnName") {
+                        aPrintColumnName = $(this).val();
+                    }
+
+                    if (fieldName == "Visible") {
+                        aVisible = this.checked ? "1" : "0";
+                    }
+                    if (fieldName == "Total") {
+                        aTotal = this.checked ? "1" : "0";
+                    }
+                    if (fieldName == "EnableColumnMenu") {
+                        aEnableColumnMenu = this.checked ? "1" : "0";
+                    }
+                    if (fieldName == "EnableSum") {
+                        aEnableSum = this.checked ? "1" : "0";
+                    }
+                    if (fieldName == "EnableAvg") {
+                        aEnableAvg = this.checked ? "1" : "0";
+                    }
+                    if (fieldName == "EnableCount") {
+                        aEnableCount = this.checked ? "1" : "0";
+                    }
+                    if (fieldName == "EnableUnique") {
+                        aEnableUnique = this.checked ? "1" : "0";
+                    }
+
+                    if (fieldName == "ShowinColumnOption") {
+                        aShowinColumnOption = this.checked ? "1" : "0";
+                    }
+                    if (fieldName == "PrintYN") {
+                        aPrintYN = this.checked;
+                    }
+
+                });
+                $(this).find("select").each(function (index) {
+                    const fieldName = $(this).attr("name");
+                    const fieldID = $(this).attr("id");
+                    if (fieldName == "Alignment") {
+                        aAlign = $(this).val();
+                    }
+                });
+
+                var coldata = {
+                    "FormID": rowdata.FormID,
+                    "TableID": rowdata.TableID,
+                    "ColumnID": rowdata.ColumnID,
+                    "FormorReport": 1,
+                    "ColumnName": rowdata.ColumnName,
+                    "DisplayColumnName": aDisplayName,
+                    "Width": aWidth,
+                    "Visible": aVisible,
+                    "Alignment": aAlign,
+                    "TotalYN": aTotal,
+                    "DisplayIndex": aDisplayIndex,
+                    "EnableColumnMenu": aEnableColumnMenu,
+                    "EnableAvg": aEnableAvg,
+                    "EnableSum": aEnableSum,
+                    "EnableColumnMenu": aEnableColumnMenu,
+                    "ShowinColumnOption": aShowinColumnOption,
+                    "PrintYN": aPrintYN,
+                    "PrintColumnName": aPrintColumnName,
+                    "Printwidth": aPrintwidth,
+                    "EnableCount": aEnableCount,
+                    "EnableUnique": aEnableUnique
+                };
+                ColumnSettingData.push(coldata);
+            });
+        //console.log("ColumnSettingData : ", ColumnSettingData);
+        $.ajax({
+            url: Aurl + "columnsettings/Savecolumnsettings",
+            type: 'POST',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(ColumnSettingData),
+            cache: false,
+            processData: false,
+            xhrFields: {
+                withCredentials: true
+            },
+            success: function (data) {
+                $.each(data, function (i, items) {
+                    if (items.MsgID == 0) {
+                        showSuccessSnackbar(items.Message);
+                        //ClearForm();
+                        modalReportColumnsetting.style.display = "none";
+                        GetColumnSettingsData(2, FID, SelectTableID);
+                        setTimeout(() => {
+                            if (SelectTableID == 1) {
+                                if (IsDynamicReport == 1) {
+                                    var PreviousColl = grid.columns
+                                    //let allcolumns = Object.keys(data[0]);
+                                    const obj1Fields = columnsettings.map(item => item.field);
+                                    let allcolumns = PreviousColl.map(item => item.field);
+                                    // Get non-matching values
+                                    const columns = allcolumns.filter(
+                                        item => !obj1Fields.includes(item)
+                                    );
+
+                                    for (var i = 0; i < columns.length; i++) {
+                                        var coldata = {
+                                            "field": columns[i],
+                                            "header": columns[i],
+                                            "type": "label",
+                                            "width": 100,
+                                            "align": "right",
+                                            "visible": true,
+                                            "EnableColumnMenu": true,
+                                            "ShowinColumnOption": true,
+                                            "Total": true,
+                                            "TotalYN": "1",
+                                            "EnableSum": true,
+                                            "EnableAvg": false,
+                                            "precision": "2",
+                                            "ClickPopup": false,
+                                            PrintColumnName: columns[i],
+                                            PrintYN: true,
+                                            Printwidth: 20,
+                                            "EnableCount": true,
+                                            "EnableUnique": true
+                                        }
+                                        columnsettings.push(coldata)
+                                    }
+                                }
+                                grid.columns = columnsettings;
+                                grid.refreshColumns();
+                            } else {
+                                Detailsgrid.columns = detailcolumnsettings;
+                                Detailsgrid.refreshColumns();
+                            }
+                        }, 500);
+                    }
+                    else {
+                        showErrorSnackbar(items.Message);
+                        //alert(items.Message);
+                    }
+                });
+            },
+            error: function (data) {
+                if (data.status == "401") {
+                    var msg = data.responseJSON.Message;
+                    ////showErrorSnackbar(msg + " Logout and Login again.");
+                }
+            }
+        });
+            ////console.log("Column Setting Data ", ColumnSettingData);
+        }
+    });
+    // Store grid instance globally for export
+    let currentGridInstance = null;
+    // Show export options modal
+    function showExportOptionsModal(gridInstance) {
+        currentGridInstance = gridInstance;
+        document.getElementById('exportOptionsModal').style.display = 'block';
+    }
+
+    // Close export modal
+    function closeExportModal() {
+        document.getElementById('exportOptionsModal').style.display = 'none';
+        // Reset to default selection
+        document.querySelector('input[name="exportType"][value="header"]').checked = true;
+    }
+
+    // Handle export based on selected option
+    function handleExport() {
+        var selectedOption = document.querySelector('input[name="exportType"]:checked').value;
+        //console.log('Export type selected:', selectedOption);
+        var Excelfilter = [];
+        var Col2Data = "";
+        $('#tblFilterData tr td').each(function (i, items) {
+            var insert = false;
+            if (i % 2 == 0) {
+                var lbl = items.firstChild.id;
+                Col1Data = $("#" + lbl).text();
+                ////console.log("Col 1", Col2Data);
+                insert = false;
+            }
+            else if (i % 2 == 1) {
+                var input = items.firstChild.id;
+                var inputtype = items.firstChild.type;
+                var IsMultiSelection = $("#" + input).attr('isMultiselection') == "1";
+                var multiselvalues = "";
+                if (IsMultiSelection) {
+                    multiselvalues = getMultiSelectValues(input).map(function (i) {
+                        return i.label;
+                    }).join(',');
+                }
+                var ifselval = inputtype == "select-one" && $("#" + input).val() > 0 ? $("#" + input + " option:selected").text() : "";
+                Col2Data = inputtype == "checkbox" ? $("#" + input).is(":checked") : inputtype == "select-one" ? ifselval : IsMultiSelection ? multiselvalues : $("#" + input).val();
+                insert = true;
+            }
+            if (insert) {
+                var lst = {
+                    FilterName: Col1Data,
+                    Value: Col2Data
+                };
+                Excelfilter.push(lst);
+            }
+        });
+        if (!currentGridInstance) {
+            alert('Grid instance not found!');
+            return;
+        }
+
+        switch (selectedOption) {
+            case 'header':
+                exportHeaderOnly(currentGridInstance);
+                break;
+            case 'footer':
+                exportFooterOnly(Excelfilter);
+                break;
+            case 'separate':
+                exportHeaderFooterSeparate(currentGridInstance, Excelfilter);
+                break;
+            case 'combined':
+                exportHeaderFooterCombined(currentGridInstance, Excelfilter);
+                break;
+        }
+
+        closeExportModal();
+    }
+
+    // Export Header Grid Only
+    function exportHeaderOnly(gridInstance) {
+        //console.log('Exporting Header Only');
+        gridInstance.exportToExcel();
+    }
+
+    // Export Footer/Detail Grid Only (All Records)
+    function exportFooterOnly(fitersdata) {
+        var ReportName = $("#MainHeading").text();
+        //console.log('Exporting Footer Only');
+        detailrows = Detailsgrid.getAllRowData();
+
+        if (!detailrows || detailrows.length === 0) {
+            alert('No footer data available');
+            return;
+        }
+        //console.log("detailsGrid ", detailrows);
+        //detailrows = detailsGrid.state.processedData;
+        if (typeof XLSX === 'undefined') {
+            console.error('SheetJS library not loaded');
+            alert('Export library not available');
+            return;
+        }
+
+        try {
+            var footerColumns = detailcolumnsettings.filter(col => col.field);
+
+            // Colors
+            var METADATA_BG = "E0F2F1"; // Light Teal
+            var HEADER_BG = "1A237E";   // Navy
+            var HEADER_FG = "FFFFFF";   // White
+
+            // Helper for styled cells
+            var createStyledCell = (val, bgColor = "FFFFFF", fgColor = "000000", isBold = false) => {
+                return {
+                    v: val,
+                    t: (typeof val === 'number') ? 'n' : 's',
+                    s: {
+                        fill: { fgColor: { rgb: bgColor } },
+                        font: { color: { rgb: fgColor }, bold: isBold },
+                        alignment: { vertical: "center" }
+                    }
+                };
+            };
+
+            var sheetData = [];
+
+            // Company Name
+            sheetData.push([
+                createStyledCell("Company Name", METADATA_BG, "000000", true),
+                createStyledCell(CompanyName, METADATA_BG)
+            ]);
+
+            // Report Name
+            sheetData.push([
+                createStyledCell("Report Name", METADATA_BG, "000000", true),
+                createStyledCell(ReportName + ' - Footer Details', METADATA_BG)
+            ]);
+            // Filter Data Rows
+            fitersdata.forEach(filter => {
+                sheetData.push([
+                    createStyledCell(filter.FilterName, METADATA_BG, "000000", true),
+                    createStyledCell(filter.Value, METADATA_BG)
+                ]);
+            });
+
+            // Empty Row
+            sheetData.push([]);
+
+            var gridHeaderRowIndex = sheetData.length;
+
+            // Header Row
+            sheetData.push(footerColumns.map(col => createStyledCell(col.header, HEADER_BG, HEADER_FG, true)));
+
+            // Data Rows - ALL footer data
+            detailrows.forEach(row => {
+                var rowValues = footerColumns.map(col => row[col.field] ?? '');
+                sheetData.push(rowValues);
+            });
+
+            var ws = XLSX.utils.aoa_to_sheet(sheetData);
+            var wb = XLSX.utils.book_new();
+
+            // Add autofilter
+            var range = XLSX.utils.decode_range(ws['!ref']);
+            ws['!autofilter'] = {
+                ref: XLSX.utils.encode_range({
+                    s: { r: gridHeaderRowIndex, c: 0 },
+                    e: { r: range.e.r, c: range.e.c }
+                })
+            };
+
+            XLSX.utils.book_append_sheet(wb, ws, 'Footer Data');
+
+            var now = new Date();
+            var timestamp =
+                now.getFullYear().toString() +
+                String(now.getMonth() + 1).padStart(2, '0') +
+                String(now.getDate()).padStart(2, '0') +
+                String(now.getHours()).padStart(2, '0') +
+                String(now.getMinutes()).padStart(2, '0') +
+                String(now.getSeconds()).padStart(2, '0') +
+                String(now.getMilliseconds()).padStart(3, '0');
+
+            XLSX.writeFile(wb, `${ReportName}_Footer_${timestamp}.xlsx`);
+            //console.log(`Exported ${detailrows.length} footer records`);
+        } catch (error) {
+            console.error('Export error:', error);
+            alert('Export failed: ' + error.message);
+        }
+    }
+
+    // Export Header and Footer in Separate Sheets
+    function exportHeaderFooterSeparate(gridInstance, fitersdata) {
+        var ReportName = $("#MainHeading").text();
+        //console.log('Exporting Header & Footer (Separate Sheets)');
+
+        try {
+            // Get filtered header data
+            var headerData = gridInstance.state.processedData || gridInstance.originalData;
+            var headerColumns = gridInstance.columns.filter(col =>
+                !col.specialColumn && col.visible && col.field
+            );
+            var compdata = [];
+            headerData.forEach(function (row) {
+                //console.log("Header row data : ", row);
+
+                getFooterAlldata(row);
+            })
+
+            compdata.push(...arrAllFooterData);
+            //console.log("Compdata : ", compdata);
+            // Get all footer data (all customer records)
+            var allFooterData = compdata;// detailrows || [];
+
+            var footerColumns = detailcolumnsettings.filter(col => col.field);
+
+            if (headerData.length > 0) {
+                var hidecolumns = columnsettings.filter(cl => cl.visible == false);
+                ////console.log("Hd Columns : ", arrParamHiddenColumns);
+                ////console.log("columnsettings : ", columnsettings);
+                ////console.log("Hidden column : ", hidecolumns);
+                for (var i = 0; i < hidecolumns.length; i++) {
+                    headerData.forEach(row => {
+                        delete row[hidecolumns[i].headerText];
+                    });
+                }
+
+            }
+            const flatArray = Array.from(arrAllFooterData).flat();
+
+            //console.log("flatArray Data ", flatArray);
+
+            // Clone to avoid mutating original data
+            //flatArray = flatArray.map(obj => ({ ...obj }));
+
+            // Remove the first column (by property order)
+            if (flatArray.length > 0) {
+                var hidecolumns = detailcolumnsettings.filter(cl => cl.visible == false);
+                for (var i = 0; i < hidecolumns.length; i++) {
+                    flatArray.forEach(row => {
+                        delete row[hidecolumns[i].headerText];
+                    });
+                }
+
+            }
+            // Create workbook
+            var wb = XLSX.utils.book_new();
+
+            // Colors from gridui.js
+            var METADATA_BG = "E0F2F1"; // Light Teal
+            var HEADER_BG = "1A237E";   // Navy
+            var HEADER_FG = "FFFFFF";   // White
+
+            // Helper for styled cells
+            var createStyledCell = (val, bgColor = "FFFFFF", fgColor = "000000", isBold = false) => {
+                return {
+                    v: val,
+                    t: (typeof val === 'number') ? 'n' : 's',
+                    s: {
+                        fill: { fgColor: { rgb: bgColor } },
+                        font: { color: { rgb: fgColor }, bold: isBold },
+                        alignment: { vertical: "center" }
+                    }
+                };
+            };
+
+            // ========== HEADER SHEET ==========
+            var filterRowCount = fitersdata.length;
+            var headerStartRow = 3 + filterRowCount; // Company + Report + Empty + Filters + Empty
+
+            // Create Header Sheet AOAs
+            var headerSheetData = [];
+            //headerSheetData.push([]);
+            // Row 1: Company Name
+            headerSheetData.push([
+                createStyledCell("Company Name", METADATA_BG, "000000", true),
+                createStyledCell(CompanyName, METADATA_BG)
+            ]);
+
+            // Row 2: Report Name
+            headerSheetData.push([
+                createStyledCell("Report Name", METADATA_BG, "000000", true),
+                createStyledCell(ReportName, METADATA_BG)
+            ]);
+
+            // Row 3: Empty
+            //headerSheetData.push([]);
+
+            // Filter Data Rows
+            fitersdata.forEach(filter => {
+                headerSheetData.push([
+                    createStyledCell(filter.FilterName, METADATA_BG, "000000", true),
+                    createStyledCell(filter.Value, METADATA_BG)
+                ]);
+            });
+
+            // Empty Row
+            headerSheetData.push([]);
+            // Grid Header Row
+            headerSheetData.push(headerColumns.map(col => createStyledCell(col.header, HEADER_BG, HEADER_FG, true)));
+
+            // Data Rows
+            headerData.forEach(row => {
+                var rowValues = headerColumns.map(col => {
+                    let value = row[col.field];
+                    // Strip HTML if present
+                    if (typeof value === 'string' && value.includes('<')) {
+                        var tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = value;
+                        value = tempDiv.textContent || tempDiv.innerText || '';
+                    }
+                    return value ?? '';
+                });
+                headerSheetData.push(rowValues);
+            });
+
+            var wsHeader = XLSX.utils.aoa_to_sheet(headerSheetData);
+
+            // Apply styling to header sheet (already handled by styled cells in AOA)
+            var headerRange = XLSX.utils.decode_range(wsHeader['!ref']);
+
+            // Add autofilter to header data (starting from header row)
+            wsHeader['!autofilter'] = {
+                ref: XLSX.utils.encode_range({
+                    s: { r: headerStartRow, c: 0 },
+                    e: { r: headerRange.e.r, c: headerRange.e.c }
+                })
+            };
+
+            XLSX.utils.book_append_sheet(wb, wsHeader, 'Header Data');
+
+            // ========== FOOTER SHEET ==========
+            // Create Footer Sheet starting from first row
+            var footerSheetData = [];
+
+            // Row 1: Header Row
+            footerSheetData.push(footerColumns.map(col => createStyledCell(col.header, HEADER_BG, HEADER_FG, true)));
+
+            // Data Rows - ALL footer data
+            flatArray.forEach(row => {
+                var rowValues = footerColumns.map(col => row[col.field] ?? '');
+                footerSheetData.push(rowValues);
+            });
+
+            var wsFooter = XLSX.utils.aoa_to_sheet(footerSheetData);
+
+            // Add autofilter to footer sheet
+            var footerRange = XLSX.utils.decode_range(wsFooter['!ref']);
+            wsFooter['!autofilter'] = {
+                ref: XLSX.utils.encode_range({
+                    s: { r: 0, c: 0 }, // Start from header row (row 0)
+                    e: { r: footerRange.e.r, c: footerRange.e.c }
+                })
+            };
+
+            XLSX.utils.book_append_sheet(wb, wsFooter, 'Footer Data');
+            var now = new Date();
+            var timestamp =
+                now.getFullYear().toString() +
+                String(now.getMonth() + 1).padStart(2, '0') +
+                String(now.getDate()).padStart(2, '0') +
+                String(now.getHours()).padStart(2, '0') +
+                String(now.getMinutes()).padStart(2, '0') +
+                String(now.getSeconds()).padStart(2, '0') +
+                String(now.getMilliseconds()).padStart(3, '0');
+
+            // Export
+            XLSX.writeFile(wb, `${ReportName}_Separate_${timestamp}.xlsx`);
+            //console.log('Export Separate Sheets completed');
+        } catch (error) {
+            console.error('Export error:', error);
+            alert('Export failed: ' + error.message);
+        }
+    }
+
+    // Export Header and Footer Combined in Single Sheet
+    function exportHeaderFooterCombined(gridInstance, fitersdata) {
+        var ReportName = $("#MainHeading").text();
+        //console.log('Exporting Header & Footer (Combined)');
+
+        try {
+
+            // Get filtered header data
+            var headerData = gridInstance.state.processedData || gridInstance.originalData;
+            var headerColumns = gridInstance.columns.filter(col =>
+                !col.specialColumn && col.visible && col.field
+            );
+
+            // Get footer columns
+            var footerColumns = detailcolumnsettings.filter(col => col.field);
+
+
+            // Colors from gridui.js
+            var METADATA_BG = "E0F2F1"; // Light Teal
+            var HEADER_BG = "1A237E";   // Navy
+            var HEADER_FG = "FFFFFF";   // White
+
+            // Helper for styled cells
+            var createStyledCell = (val, bgColor = "FFFFFF", fgColor = "000000", isBold = false) => {
+                return {
+                    v: val,
+                    t: (typeof val === 'number') ? 'n' : 's',
+                    s: {
+                        fill: { fgColor: { rgb: bgColor } },
+                        font: { color: { rgb: fgColor }, bold: isBold },
+                        alignment: { vertical: "center" }
+                    }
+                };
+            };
+
+            // Create combined columns (Header fields + Footer fields)
+            var combinedHeaders = [
+                ...headerColumns.map(col => createStyledCell(col.header + " (H)", HEADER_BG, HEADER_FG, true)),
+                ...footerColumns.map(col => createStyledCell(col.header + " (F)", HEADER_BG, HEADER_FG, true))
+            ];
+
+            // Create combined data rows
+            var combinedDataRows = [];
+
+            headerData.forEach(headerRow => {
+                // Get all footer rows for this header row (all customer records)
+                var relatedFooterRows = getHeadersFooterdataonly(headerRow);
+                relatedFooterRows = Array.from(relatedFooterRows).flat();
+                // Remove the first column (by property order)
+                //console.log("Footer data ", relatedFooterRows);
+                if (relatedFooterRows.length > 0) {
+                    var hidecolumns = detailcolumnsettings.filter(cl => cl.visible == false);
+                    for (var i = 0; i < hidecolumns.length; i++) {
+                        relatedFooterRows.forEach(row => {
+                            delete row[hidecolumns[i].headerText];
+                        });
+                    }
+
+                }
+                if (relatedFooterRows.length === 0) {
+                    // If no footer data, add header row with empty footer columns
+                    var rowData = [
+                        ...headerColumns.map(col => {
+                            let value = headerRow[col.field];
+                            if (typeof value === 'string' && value.includes('<')) {
+                                var tempDiv = document.createElement('div');
+                                tempDiv.innerHTML = value;
+                                value = tempDiv.textContent || tempDiv.innerText || '';
+                            }
+                            return value ?? '';
+                        }),
+                        ...footerColumns.map(() => '')
+                    ];
+                    combinedDataRows.push(rowData);
+                } else {
+                    // For each footer row, duplicate the header data
+                    relatedFooterRows.forEach(footerRow => {
+                        var rowData = [
+                            ...headerColumns.map(col => {
+                                let value = headerRow[col.field];
+                                if (typeof value === 'string' && value.includes('<')) {
+                                    var tempDiv = document.createElement('div');
+                                    tempDiv.innerHTML = value;
+                                    value = tempDiv.textContent || tempDiv.innerText || '';
+                                }
+                                return value ?? '';
+                            }),
+                            ...footerColumns.map(col => footerRow[col.field] ?? '')
+                        ];
+                        combinedDataRows.push(rowData);
+                    });
+                }
+            });
+
+            // Create workbook
+            var wb = XLSX.utils.book_new();
+
+            // Create sheet data
+            var sheetData = [];
+
+            // Row 1: Company Name
+            sheetData.push([
+                createStyledCell("Company Name", METADATA_BG, "000000", true),
+                createStyledCell(CompanyName, METADATA_BG)
+            ]);
+
+            // Row 2: Report Name
+            sheetData.push([
+                createStyledCell("Report Name", METADATA_BG, "000000", true),
+                createStyledCell(ReportName + ' - Combined', METADATA_BG)
+            ]);
+
+
+            // Filter Data Rows (Two-column layout)
+            fitersdata.forEach(filter => {
+                sheetData.push([
+                    createStyledCell(filter.FilterName, METADATA_BG, "000000", true),
+                    createStyledCell(filter.Value, METADATA_BG)
+                ]);
+            });
+
+            // Empty Row
+            sheetData.push([]);
+
+            var gridHeaderRowIndex = sheetData.length;
+
+            // Combined Header Row
+            sheetData.push(combinedHeaders);
+
+            // Combined Data Rows
+            sheetData.push(...combinedDataRows);
+
+            var ws = XLSX.utils.aoa_to_sheet(sheetData);
+
+            // Add autofilter to the combined grid data
+            var range = XLSX.utils.decode_range(ws['!ref']);
+            ws['!autofilter'] = {
+                ref: XLSX.utils.encode_range({
+                    s: { r: gridHeaderRowIndex, c: 0 },
+                    e: { r: range.e.r, c: range.e.c }
+                })
+            };
+
+            XLSX.utils.book_append_sheet(wb, ws, 'Combined Data');
+            var now = new Date();
+            var timestamp =
+                now.getFullYear().toString() +
+                String(now.getMonth() + 1).padStart(2, '0') +
+                String(now.getDate()).padStart(2, '0') +
+                String(now.getHours()).padStart(2, '0') +
+                String(now.getMinutes()).padStart(2, '0') +
+                String(now.getSeconds()).padStart(2, '0') +
+                String(now.getMilliseconds()).padStart(3, '0');
+            // Export
+            XLSX.writeFile(wb, `${ReportName}_Combined_${timestamp}.xlsx`);
+            //console.log('Export Combined completed');
+        } catch (error) {
+            console.error('Export error:', error);
+            alert('Export failed: ' + error.message);
+        }
+    }
+    function getFooterAlldata(rowData) {
+        //var rowData = args;
+        arrParams = []
+        //showErrorSnackbar("Doc ID " + rowData["Doc ID"])//.
+        for (var i = 0; i < arrParamHiddenColumns.length; i++) {
+            var values = arrParamHiddenColumns[i].field;
+            var PV = {
+                "Param1": rowData[values]
+            }
+            arrParams.push(PV);
+        }
+        var DetailProc = arrReportDeatils[0].DetailProcedureName
+        var listParams = {
+            "ReportID": FID,
+            "ProcedureName": DetailProc,
+            "lstvFilters": arrParams
+        };
+        $.ajax({
+            url: Aurl + "reportgenerate/get",
+            type: 'post',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(listParams),
+            xhrFields: {
+                withCredentials: true
+            },
+            async: false,
+            success: function (data) {
+                if (data.length > 0) {
+                    arrAllFooterData.push(eval(data))
+                    //console.log("arrAllFooterData : ", arrAllFooterData);
+                }
+                else {
+                    //showErrorSnackbar("No data found");
+                }
+            }
+        });
+    }
+    function getHeadersFooterdataonly(rowData) {
+        //var rowData = args;
+        arrParams = []
+        var footerrowdata = [];
+        //showErrorSnackbar("Doc ID " + rowData["Doc ID"])//.
+        for (var i = 0; i < arrParamHiddenColumns.length; i++) {
+            var values = arrParamHiddenColumns[i].field;
+            var PV = {
+                "Param1": rowData[values]
+            }
+            arrParams.push(PV);
+        }
+        var DetailProc = arrReportDeatils[0].DetailProcedureName
+        var listParams = {
+            "ReportID": FID,
+            "ProcedureName": DetailProc,
+            "lstvFilters": arrParams
+        };
+        $.ajax({
+            url: Aurl + "reportgenerate/get",
+            type: 'post',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(listParams),
+            xhrFields: {
+                withCredentials: true
+            },
+            async: false,
+            success: function (data) {
+                var FooterData = eval(data);
+                footerrowdata.push(FooterData)
+
+            }
+        });
+        return footerrowdata;
+    }
+    function UpdateColumnWidth(nFormID, nTableID, nFormorReport, nColumnID, strColumnName, dWidth) {
+        $.ajax({
+            url: Aurl + "columnsettings/updatecolumnwidth",
+            type: 'get',
+            contentType: 'json',
+            data: {
+                FormID: nFormID, TableID: nTableID, FormorReport: nFormorReport, ColumnID: nColumnID,
+                ColumnName: strColumnName, Width: dWidth
+            },
+            xhrFields: {
+                withCredentials: true
+            },
+            success: function (data) {
+                //showSuccessSnackbar("Width Updated successfully");
+            }, error: function (data) {
+                //console.log(data)
+                //showErrorSnackbar("Error when Width Update");
+            }
+        });
+    }
+
+
+    // ========== PRINT FUNCTIONS ==========
+
+    // Store grid instance globally for print
+    let currentPrintGridInstance = null;
+
+    // Show print options modal
+    function showPrintOptionsModal(gridInstance) {
+        currentPrintGridInstance = gridInstance;
+        document.getElementById('printOptionsModal').style.display = 'block';
+    }
+
+    // Close print modal
+    function closePrintModal() {
+        document.getElementById('printOptionsModal').style.display = 'none';
+        // Reset to default selection
+        document.querySelector('input[name="printType"][value="header"]').checked = true;
+    }
+
+    // Handle print based on selected option
+    function handlePrint() {
+        var selectedOption = document.querySelector('input[name="printType"]:checked').value;
+        //console.log('Print type selected:', selectedOption);
+        if (!currentPrintGridInstance) {
+            alert('Grid instance not found!');
+            return;
+        }
+        var Excelfilter = [];
+        var Col2Data = "";
+        $('#tblFilterData tr td').each(function (i, items) {
+            var insert = false;
+            if (i % 2 == 0) {
+                var lbl = items.firstChild.id;
+                Col1Data = $("#" + lbl).text();
+                ////console.log("Col 1", Col2Data);
+                insert = false;
+            }
+            else if (i % 2 == 1) {
+                var input = items.firstChild.id;
+                var inputtype = items.firstChild.type;
+                var IsMultiSelection = $("#" + input).attr('isMultiselection') == "1";
+
+                var multiselvalues = "";
+                if (IsMultiSelection) {
+                    multiselvalues = getMultiSelectValues(input).map(function (i) {
+                        return i.label;
+                    }).join(',');
+                }
+                var ifselval = inputtype == "select-one" && $("#" + input).val() > 0 ? $("#" + input + " option:selected").text() : "";
+                Col2Data = inputtype == "checkbox" ? $("#" + input).is(":checked") ? 'True' : 'False' : inputtype == "select-one" ? ifselval :
+                    IsMultiSelection ? multiselvalues :  $("#" + input).val();
+                insert = true;
+            }
+            if (insert) {
+                var lst = {
+                    FilterName: Col1Data,
+                    Value: Col2Data
+                };
+                Excelfilter.push(lst);
+            }
+        });
+        switch (selectedOption) {
+            case 'header':
+                printHeaderOnly(currentPrintGridInstance, Excelfilter);
+                break;
+            case 'footer':
+                printFooterOnly(Excelfilter);
+                break;
+            case 'combined':
+                printHeaderFooterCombined(currentPrintGridInstance, Excelfilter);
+                break;
+        }
+
+        closePrintModal();
+    }
+
+    // ========== PRINT IMPLEMENTATION ==========
+
+    function printHeaderOnly(gridInstance, fitersdata) {
+        var ReportName = $("#MainHeading").text();
+        //console.log('Printing Header Only');
+        var data = gridInstance.getCurrentData();
+        var cols = gridInstance.columns.filter(c => !c.specialColumn && c.visible && c.field);
+        var title = (ReportName || 'Grid Print');
+
+        var content = generatePrintContent(title, data, cols, fitersdata);
+        openPrintWindow(content);
+    }
+
+    function printFooterOnly(fitersdata) {
+        var ReportName = $("#MainHeading").text();
+        //console.log('Printing Footer Only');
+        if (!Detailsgrid) {
+            alert('Detail grid not available');
+            return;
+        }
+        var data = Detailsgrid.getCurrentData();
+        var cols = detailcolumnsettings.filter(c => c.field);
+        var title = (ReportName || 'Grid Print');
+
+        var content = generatePrintContent(title, data, cols, fitersdata);
+        openPrintWindow(content);
+    }
+
+    function printHeaderFooterCombined(gridInstance, fitersdata) {
+        //console.log('Printing Combined');
+        var ReportName = $("#MainHeading").text();
+        var headerData = gridInstance.getCurrentData();
+        var headerCols = gridInstance.columns.filter(c => !c.specialColumn && c.PrintYN && c.field);
+        var footerCols = detailcolumnsettings.filter(c => c.field && c.PrintYN);
+        var title = (ReportName || 'Grid Print') + " - Combined View";
+        //console.log("headerData", headerData);
+        // Build combined structure
+        var rows = [];
+        var combinedDataRows = [];
+        headerData.forEach(hRow => {
+            var relatedFooterRows = getHeadersFooterdataonly(hRow);
+            relatedFooterRows = Array.from(relatedFooterRows).flat();
+            // Remove the first column (by property order)
+            //console.log("Footer data ", relatedFooterRows, "Footer Cols ", footerCols);
+            //if (relatedFooterRows.length > 0) {
+            //    var hidecolumns = detailcolumnsettings.filter(cl => cl.PrintYN == false);
+            //    for (var i = 0; i < hidecolumns.length; i++) {
+            //        relatedFooterRows.forEach(row => {
+            //            delete row[hidecolumns[i].header];
+            //        });
+            //    }
+
+            //}
+            if (relatedFooterRows.length === 0) {
+                // If no footer data, add header row with empty footer columns
+                var rowData = [
+                    ...headerCols.map(col => {
+                        let value = hRow[col.field];
+                        if (typeof value === 'string' && value.includes('<')) {
+                            var tempDiv = document.createElement('div');
+                            tempDiv.innerHTML = value;
+                            value = tempDiv.textContent || tempDiv.innerText || '';
+                        }
+                        return value ?? '';
+                    }),
+                    //...footerCols.map(() => '')
+                ];
+                combinedDataRows.push(rowData);
+            } else {
+                // For each footer row, duplicate the header data
+                relatedFooterRows.forEach(footerRow => {
+                    //var rowData = [
+                    //    ...headerCols.map(col => {
+                    //        let value = hRow[col.field];
+                    //        if (typeof value === 'string' && value.includes('<')) {
+                    //            var tempDiv = document.createElement('div');
+                    //            tempDiv.innerHTML = value;
+                    //            value = tempDiv.textContent || tempDiv.innerText || '';
+                    //        }
+                    //        return value ?? '';
+                    //    }),
+                    //    ...footerCols.map(col => relatedFooterRows[col.field] ?? '')
+                    //];
+                    //console.log("Footer Row : ", footerRow)
+                    var nrowData = Object.fromEntries([
+                        ...headerCols.map(col => {
+                            let value = hRow[col.field];
+
+                            //if (typeof value === 'string' && value.includes('<')) {
+                            //    const tempDiv = document.createElement('div');
+                            //    tempDiv.innerHTML = value;
+                            //    value = tempDiv.textContent || tempDiv.innerText || '12';
+                            //}
+                            ////console.log("Key : ", col.field, " Value : ", value)
+                            return [col.field, hRow[col.field]];
+                        }),
+                        ...footerCols.map(fcol => {
+                            if (footerRow) {
+                                let fvalue = footerRow[fcol.field];
+                                //console.log("Footer Key : ", fcol.field, "Footer Value : ", fvalue)
+                                return [fcol.field, fvalue ?? '']
+                            }
+                            else {
+                                return [fcol.field, '']
+                            }
+                        })
+                    ]);
+                    //console.log("rowData ", nrowData);
+                    combinedDataRows.push(nrowData);
+                });
+            }
+        });
+        //console.log("combinedDataRows ", combinedDataRows);
+        // Combine columns for display
+        var displayCols = [
+            ...headerCols.map(c => ({ ...c, header: c.PrintColumnName + " (H)" })),
+            ...footerCols.map(c => ({ ...c, field: c.field, header: c.PrintColumnName + " (F)" }))
+        ];
+
+        var content = generatePrintContent(title, combinedDataRows, displayCols, fitersdata);//rows
+        openPrintWindow(content);
+    }
+
+    function generatePrintContent(title, data, columns, fitersdata) {
+        //console.log("Row Data ", data);
+        //console.log("columns Data ", columns)
+        // Calculate Totals for columns with EnableSum: true
+        var totals = {};
+        var hasTotals = false;
+
+        columns.forEach(c => {
+            if (c.PrintYN && c.EnableSum === true) {
+                totals[c.field] = 0;
+                hasTotals = true;
+            }
+        });
+
+        if (hasTotals) {
+            data.forEach(row => {
+                columns.forEach(c => {
+                    if (c.PrintYN && c.EnableSum === true) {
+                        var val = parseFloat(row[c.field]);
+                        if (!isNaN(val)) {
+                            totals[c.field] += val;
+                        }
+                    }
+                });
+            });
+        }
+        //console.log("data b4 print ", data);
+        var selectedOption = document.querySelector('input[name="printType"]:checked').value;
+        var html = `
+                <html>
+                <head>
+                    <title>${title}</title>
+                    <style>
+                        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; margin: 15mm; }
+                        .report-header { margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #1A237E; }
+                        .company-name { font-size: 24px; font-weight: bold; color: #1A237E; margin: 0; }
+                        .report-title { font-size: 18px; margin: 5px 0; color: #555; }
+                        .filters-section { background: #f5f5f5; padding: 10px; margin-bottom: 20px; border-radius: 4px; border: 1px solid #ddd; }
+                        .filters-title { font-weight: bold; margin-bottom: 5px; font-size: 14px; }
+                        .filter-item { font-size: 12px; margin-bottom: 2px; display: inline-block; width: 45%; }
+
+                        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
+                        th { background-color: #1A237E !important; color: white !important; text-align: left; padding: 8px; border: 1px solid #ddd; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+                        td { padding: 5px; border: 1px solid #ddd; color: #000; }
+                        td { padding: 5px; border: 1px solid #ddd; color: #000; }
+                        tr:nth-child(even) { background-color: #f9f9f9; }
+                        .total-row td { font-weight: bold; background-color: #e0e0e0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+                        @@page {
+                            /* Hide browser default header (Time, Title, URL) by removing top margin */
+                            margin-top: 5mm;
+                            margin-bottom: 10mm;
+                            margin-left: 5mm;
+                            margin-right: 5mm;
+
+                            @@bottom-right {
+                                content: "Page " counter(page) " of " counter(pages);
+                                font-size: 10px;
+                            }
+                        }
+
+                        @@media print {
+                            body { margin: 2mm; zoom: 80%; }
+                            button { display: none; }
+
+                            /* Page Numbering Fallback */
+                            .page-number-header {
+                                position: fixed;
+                                bottom: 0;
+                                right: 0;
+                                font-size: 10px;
+                                color: #555;
+                                background-color: white;
+                                padding: 5px;
+                            }
+                        }
+                        .wrap-text {
+    white-space: normal !important;
+    word-break: break-word;
+}
+                    </style>
+                </head>
+                <body>
+                    <!-- Fixed Header for Page Numbering -->
+                    <div class="page-number-header">
+
+                    </div>
+
+                    <div class="report-header">
+                        <p class="company-name">${CompanyName}</p>
+                        <p class="report-title">${title}</p>
+                    </div>
+
+                    <div class="filters-section">
+                        <div class="filters-title">Report Filters:</div>
+                        ${fitersdata.map(f => `
+                            <div class="filter-item">
+                                <strong>${f.FilterName}:</strong> ${f.Value}
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                ${columns.map(c => {
+                                    var width = c.Printwidth ? (typeof c.Printwidth === `number` ? (c.Printwidth * 3.78) + `px` : c.Printwidth) : `auto`;
+                                    //console.log(`width`, width);
+                                    return c.PrintYN ? `<th class="wrap-text" style="max-width: ${width} !important;min-width: ${width} !important;">${selectedOption == `combined` ? c.header : c.PrintColumnName}</th>` : '';
+        }).join('')}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.map(row => `
+                                <tr>
+                                    ${columns.map(c => {
+            var val = row[c.field];
+            // Strip HTML
+            if (typeof val === `string` && val.includes('<')) {
+                var tmp = document.createElement('div');
+                tmp.innerHTML = val;
+                val = tmp.textContent || tmp.innerText;
+            }
+                                        var valucolor = val == `Total` ? `blue` : val == `Opening Balance` ? `brown` : val == `Closing Balance` ? `darkorange` : `black`;
+                                        var fontwidth = Math.round((c.Printwidth * 3.78) / 12);
+                                        var width = c.Printwidth ? (typeof c.Printwidth === `number` ? (c.Printwidth * 3.78) + `px` : c.Printwidth) : `auto`;
+                                        return c.PrintYN ? `<td class="wrap-text" style="color:` + valucolor + `;max-width: ${width} !important;min-width: ${width} !important;" align=` + c.align + `>${val ?? ''}</td>` : '';
+        }).join('')}
+                                </tr>
+                            `).join('')}
+
+                            ${hasTotals ? `
+                                <tr class="total-row">
+                                    ${columns.map((c, index) => {
+            if (!c.PrintYN) return '';
+
+            if (c.EnableSum === true) {
+                var sum = totals[c.field] || 0;
+                return `<td align=` + c.align + `>${sum.toFixed(2)}</td>`;
+            } else if (index === 0 || (columns.filter(col => col.PrintYN)[0] === c)) {
+                // First printable column gets "Total" label
+                return `<td>Total</td>`;
+            } else {
+                return `<td></td>`;
+            }
+        }).join('')}
+                                </tr>
+                            ` : ''}
+                        </tbody>
+                    </table>
+
+                    <div class="no-print" style="margin-top: 20px; text-align: right;">
+                        <!-- Manual button removed for direct printing -->
+                    </div>
+                </body>
+                </html>
+            `;
+        return html;
+    }
+
+    function openPrintWindow(content) {
+        // Create a hidden iframe for direct printing
+        var iframe = document.createElement('iframe');
+        iframe.style.visibility = 'hidden';
+        iframe.style.position = 'fixed';
+        iframe.style.right = '0';
+        iframe.style.bottom = '0';
+        iframe.style.width = '0';
+        iframe.style.height = '0';
+        iframe.style.border = '0';
+        document.body.appendChild(iframe);
+
+        var doc = iframe.contentWindow.document;
+        doc.open();
+        doc.write(content);
+        doc.close();
+
+        // Trigger print once content is loaded
+        iframe.contentWindow.focus();
+        setTimeout(() => {
+            iframe.contentWindow.print();
+            // Cleanup: remove the iframe after the print dialog opens
+            setTimeout(() => {
+                document.body.removeChild(iframe);
+            }, 1000);
+        }, 500);
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function (event) {
+        var expModal = document.getElementById('exportOptionsModal');
+        var prntModal = document.getElementById('printOptionsModal');
+        if (event.target === expModal) {
+            closeExportModal();
+        }
+        if (event.target === prntModal) {
+            closePrintModal();
+        }
+    }
+    function GetPrintYesWidth() {
+        let totalWidth = 0;
+        $('#tblReportSettings tbody tr').each(function () {
+
+            // PrintYN checkbox in this row
+            let isPrintChecked = $(this).find('.dgvPrintYN').is(':checked');
+
+            if (isPrintChecked) {
+                let widthVal = parseInt(
+                    $(this).find('.dgvPrintWidth').val() || 0
+                );
+                totalWidth += widthVal;
+            }
+        });
+        $("#lblPrintWidth").text(totalWidth);
+    }
+    let prevPrintWidth = 0;
+
+    // store previous value before editing
+    $('#tblReportSettings').on('focus', '.dgvPrintWidth', function () {
+        prevPrintWidth = parseInt(this.value || 0);
+    });
+
+    // validate on change
+    $('#tblReportSettings').on('change', '.dgvPrintWidth,.dgvPrintYN', function () {
+        GetPrintYesWidth();
+        //let totalWidth = 0;
+        //const maxWidth = 210;
+
+        //$('#tblReportSettings tbody tr').each(function () {
+
+        //    // PrintYN checkbox in this row
+        //    let isPrintChecked = $(this).find('.dgvPrintYN').is(':checked');
+
+        //    if (isPrintChecked) {
+        //        let widthVal = parseInt(
+        //            $(this).find('.dgvPrintWidth').val() || 0
+        //        );
+        //        totalWidth += widthVal;
+        //    }
+        //});
+
+        //if (totalWidth > maxWidth) {
+        //    // revert only current input
+        //    this.value = prevPrintWidth;
+
+        //    $(this).addClass('is-invalid');
+
+        //    showErrorSnackbar(
+        //        'Total Print Width (PrintYN rows only) cannot exceed 210'
+        //    );
+        //} else {
+        //    $(this).removeClass('is-invalid');
+        //}
+    });
+    if ($("#txtFormID").val() > 0 && $("#txtTransType").val() == 1) {
+        var DirectReportID = $("#txtFormID").val();
+        var DirectReportName = $("#txtFormName").val();
+        FID = DirectReportID;
+        GetData(0);
+        GetData(1);
+        //ColumnDetails(2, FID, 1);
+        GetColumnSettingsData(2, FID, 1);
+        $("#MainHeading,#RepMainHeading").html(DirectReportName);
+        $("#txtFormName").val(DirectReportName);
+        if (FID != 0) {
+            $("#btnFilters,#btnGenerate,#btnExport,#dvAssign").show();
+        }
+
+        setTimeout(() => {
+            if (CheckMandatory()) {
+                arrParams = [], ParamIndex = 1;
+                $('#tblFilterData tr td').each(function (i, items) {
+                    if (i % 2 == 1) {
+                        //console.log("Field Type : ", items.firstChild);
+                        var input = items.firstChild.id;
+                        var inputtype = items.firstChild.type;
+                        var IsMultiSelection = $("#" + input).attr('isMultiselection') == "1";
+
+                        var multiselvalues = "";
+                        if (IsMultiSelection) {
+                            multiselvalues = getMultiSelectValues(input).map(function (i) {
+                                return i.value;
+                            }).join(',');
+                        }
+                        var s = inputtype == "checkbox" ? $("#" + input).is(":checked") :  $("#" + input).val();
+                        if (s == null) {
+                            //alert("No Value");
+                        }
+                        else {
+                            //alert("Values " + s);
+                            var strpv = "Param" + ParamIndex;
+                            var PV = {
+                                "Param1": IsMultiSelection ? IsMultiSelection : s
+                            }
+                            arrParams.push(PV);
+                            ParamIndex++;
+                        }
+                    }
+                });
+                GenerateData();
+            }
+
+            $(".sidenav,#sidenavfooter").css("width", "0%");
+            $(".main,.footerAction").css("width", "98%");
+            $(".main").css("margin-left", "0");
+            $("#sidenavfooter").hide();
+            $("#sidedivexpand").show();
+            $("#sidedivcollapsed").hide();
+
+        }, 1500);
+    }
+
+    ///////////////////////////////////////////////////
+    //Total CheckBox Validations
+    function validateSelections(rowIndex, event) {
+        const totalBox = $("#cmbTotal" + rowIndex);
+        const sumBox = $("#EnableSum" + rowIndex);
+        const avgBox = $("#EnableAvg" + rowIndex);
+        const countBox = $("#EnableCount" + rowIndex);
+        const uniqueBox = $("#EnableUnique" + rowIndex);
+
+        const clickedName = $(event.target).attr("name");
+        const clickedState = $(event.target).prop("checked");
+
+        // Case 1: User unchecked Total → force Sum & Avg off
+        if (clickedName === "Total" && !clickedState) {
+            sumBox.prop("checked", false);
+            avgBox.prop("checked", false);
+        }
+
+        // Refresh states
+        let sum = sumBox.prop("checked");
+        let avg = avgBox.prop("checked");
+        let count = countBox.prop("checked");
+        let unique = uniqueBox.prop("checked");
+
+        // Case 2: Only 2 selections allowed among Sum/Avg/Count/Unique
+        let selected = [sum, avg, count, unique].filter(x => x).length;
+        if (selected > 2) {
+            $(event.target).prop("checked", false); // undo last action
+            showErrorSnackbar("Only 2 selections allowed among Sum, Avg, Count, Unique.");
+            return; // stop here — don’t apply dependency logic
+        }
+
+        // Case 3: If user clicked Sum or Avg while Total is unchecked → check both
+        if (clickedName === "EnableSum" && clickedState && !totalBox.prop("checked")) {
+            totalBox.prop("checked", true);
+            sumBox.prop("checked", true);
+        }
+        if (clickedName === "EnableAvg" && clickedState && !totalBox.prop("checked")) {
+            totalBox.prop("checked", true);
+            avgBox.prop("checked", true);
+        }
+    }
+
+
+    // Attach listeners
+    $(document).on(
+        "change",
+        "input[name='Total'], input[name='EnableSum'], input[name='EnableAvg'], input[name='EnableCount'], input[name='EnableUnique']",
+        function (event) {
+            var rowIndex = $(this).attr("id").match(/\d+/)[0];
+            validateSelections(rowIndex, event);
+        }
+    );
+
+
+</script>

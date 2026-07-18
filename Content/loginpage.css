@@ -1,0 +1,101 @@
+﻿.divmargintop65bottom60 {
+        margin-top: 65px;
+        margin-bottom: 60px;
+    }
+    .validationsummary{
+        color:red;
+        font-size:15px;
+    }
+    .loginparaheading{
+        color:deepskyblue;font-weight:bold;font-size:2em;
+    }
+    .entercredheading{
+        color:deepskyblue;font-weight:bold;
+    }
+    .skybluebg{
+        background-color:deepskyblue !important;
+    }
+    .loginboxheader{
+        color:white;font-size:1.3em;
+    }
+    .custompencil{
+        height:60px;
+    }
+    .customfalock{
+        padding-left:1.8px;
+    }
+    .loginbtn{
+        height:2.3em;
+    }
+    /* The Modal (background) */
+        .modalBatch {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 10; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        /* Modal Content/Box */
+        @media only screen and (min-width: 600px) {
+            .modalBatch-content {
+                background-color: #ffffff;
+                margin: 3% auto; /* 15% from the top and centered */
+                padding: 10px;
+                border: 1px solid #888;
+                width: 35%; /* Could be more or less, depending on screen size */
+                height: 80%;
+                top: 5%;
+                overflow: auto;
+            }
+        }
+
+        @media only screen and (max-width: 600px) {
+            .modalBatch-content {
+                background-color: #ffffff;
+                margin: 3% auto; /* 15% from the top and centered */
+                padding: 25px;
+                border: 1px solid #888;
+                width: 95%; /* Could be more or less, depending on screen size */
+                height: 80%;
+                top: 20%;
+                overflow: auto;
+            }
+        }
+        @media (max-width: 600px) {
+            .transnamecontentt {
+               font-size:30px;
+               color:brown;
+            }
+        }
+
+        @media (min-width: 600px) {
+            .transnamecontent {
+                font-size:20px;
+                color:gray;
+            }
+        }
+        /* The Close Button */
+        .closefg {
+            color: #aaa;
+            float: right;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+            .closefg:hover,
+            .closefg:focus {
+                color: black;
+                text-decoration: none;
+                cursor: pointer;
+            }
+            .form-inner .field{
+  height: 40px;
+  width: 100%;
+  margin-top: 7px;
+}

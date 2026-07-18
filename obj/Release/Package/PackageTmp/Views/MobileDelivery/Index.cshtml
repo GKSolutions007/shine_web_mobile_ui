@@ -1,0 +1,717 @@
+@model ShineWebMobile.Models.SingleMasterModel
+@{
+    ViewBag.Title = ViewData["FormName"];
+    Layout = "~/Views/Shared/_LayoutBT5.cshtml";
+}
+
+<link href="~/Content/navbar.css" rel="stylesheet" />
+<link href="~/Content/buttonTop.css" rel="stylesheet" />
+<link href="~/Content/dataTables.dataTables.2.2.2.css" rel="stylesheet" />
+<link rel="stylesheet" href="~/Content/jquery-ui.css">
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery-3.7.1.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Scripts/dataTables.2.2.2.js"></script>
+<header>
+    <link rel="stylesheet" href="~/Content/index.css">
+</header>
+<style>
+
+    input[type=number]::placeholder {
+        text-align: left;
+    }
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+
+    .mobile-delivery-container {
+        padding: 5px;
+        animation: fadeIn 0.4s ease-in-out;
+    }
+
+    .modern-card {
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        margin-bottom: 1rem;
+        background: #fff;
+    }
+
+        .modern-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+    .card-header-custom {
+        background: linear-gradient(135deg, #0056b3, #004085);
+        color: white;
+        border-radius: 12px 12px 0 0 !important;
+        padding: 10px 15px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .card-header-orange {
+        background: linear-gradient(135deg, #fd7e14, #e8590c);
+    }
+
+    .card-header-brown {
+        background: linear-gradient(135deg, #795548, #5d4037);
+    }
+
+    .card-header-red {
+        background: linear-gradient(135deg, #dc3545, #bd2130);
+    }
+
+    .info-label {
+        font-size: 1rem;
+        color: #6c757d;
+        margin-bottom: 2px;
+        font-weight: 500;
+    }
+
+    .info-value {
+        font-size: 1.05rem;
+        color: #212529;
+        font-weight: 600;
+        word-break: break-word;
+    }
+
+    .deliverydeliveryaction-btn {
+        border-radius: 8px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        padding: 10px 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.2s;
+    }
+
+    .deliveryaction-btn:hover {
+        transform: scale(1.02);
+    }
+
+    .radio-group-custom {
+        background: white;
+        padding: 10px 15px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .custom-radio {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 16px;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    #tblProductInfo th {
+        background: #0dcaf0;
+        color: white;
+        text-align: center;
+    }
+
+    .theadstyle {
+        background: #0dcaf0;
+        color: white;
+        text-align: center;
+    }
+</style>
+
+<body>
+    <div class="mobile-delivery-container">
+        @Html.HiddenFor(model => model.FormName, new { @autocomplete = "off", @class = "form-control", @id = "txtFormName" })
+        @Html.HiddenFor(model => model.TransType, new { @autocomplete = "off", @class = "form-control", @id = "txtTransType" })
+        @Html.HiddenFor(model => model.TransID, new { @autocomplete = "off", @class = "form-control", @id = "txtTransID" })
+        @Html.HiddenFor(model => model.UserID, new { @autocomplete = "off", @class = "form-control", @id = "txtSwitchSMID" })
+        @Html.HiddenFor(model => model.Modify, new { @autocomplete = "off", @class = "form-control", @id = "txtModifyID" })
+        @Html.HiddenFor(model => model.Cancel, new { @autocomplete = "off", @class = "form-control", @id = "txtCancelID" })
+
+        <div class="d-flex align-items-center mb-3">
+            <h4 id="MainHeading" class="m-0 fw-bold text-primary"><i class="bi bi-truck me-2"></i>@ViewData["FormName"]</h4>
+        </div>
+
+        <div class="toastBox"></div>
+        <hr class="text-muted" />
+
+        <div class="radio-group-custom">
+            <label class="custom-radio" id="lblrdo1">
+                <input type="radio" id="rdoDelivery" checked name="Deliverytype" class="form-check-input mt-0" />
+                Delivery
+            </label>
+            <label class="custom-radio" id="lblrdo2">
+                <input type="radio" id="rdoCancelDelivery" name="Deliverytype" class="form-check-input mt-0" />
+                Cancel Delivery
+            </label>
+        </div>
+
+        <div class="row g-3">
+            <!-- Left Column: Inputs & Actions -->
+            <div class="col-12 col-lg-4">
+                <div class="modern-card card p-3">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold"><i class="bi bi-building me-2 text-primary"></i>Branch</label>
+                        <select id="cmbBranch" class="form-select shadow-sm border-1 bg-light"><option value="0">Select Branch</option></select>
+                        <div class="text-danger small mt-1 clrdivserror" id="divErrorOnBranch"></div>
+
+                    </div>
+
+                    <input type="text" id="txtLatitude" hidden />
+                    <input type="text" id="txtLongtitude" hidden />
+
+                    <div class="mb-3">
+                        <input hidden id="txtInvoiceID" />
+                        <label class="form-label fw-bold"><i class="bi bi-receipt me-2 text-primary"></i>Invoice No</label>
+                        <div class="d-flex gap-2">
+                            <input type="number" id="txtInvNo" placeholder="Enter Invoice No" class="form-control shadow-sm border-1 bg-light w-100" min="1" />
+                            <button id="btnLoadInvoice" type="button" class="btn btn-primary deliveryaction-btn flex-shrink-0">
+                                <i class="bi bi-cloud-download"></i> Load
+                            </button>
+                        </div>
+                        <div class="text-danger small mt-1 clrdivserror" id="divErrorOnInvNo"></div>
+                    </div>
+
+                    <div hidden class="d-grid gap-2 mt-4">
+                        <button hidden id="btnSimilarInvoices" type="button" class="btn btn-warning deliveryaction-btn text-white">
+                            <i class="bi bi-files"></i> Similar Invoices
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Middle/Right Column: Details Cards -->
+            <div class="col-12 col-lg-8">
+                <div class="row g-3">
+                    <!-- Invoice Details Card -->
+                    <div class="col-12 col-md-6">
+                        <div class="modern-card card h-100" id="dvInvoicesummary">
+                            <div class="card-header-custom card-header-orange">
+                                <i class="bi bi-receipt-cutoff"></i> Invoice Summary
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-label fw-bold text-primary">Invoice No</div>
+                                        <div class="info-value" id="lblInvNo">--</div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-label fw-bold text-primary">Value</div>
+                                        <div class="info-value text-success" id="lblValue">--</div>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-6">
+                                        <div class="form-label fw-bold text-primary">Customer</div>
+                                        <div class="info-value" id="lblCustName">--</div>
+
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-label fw-bold text-primary">Mob No</div>
+                                        <div class="info-value" id="lblMobNo">--</div>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <div class="info-label fw-bold text-primary">Address</div>
+                                    <div class="info-value" id="lblAddress">--</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Delivery Status Card -->
+                    <div class="col-12 col-md-6">
+                        <div class="modern-card card h-100" id="dvDelivery">
+                            <div class="card-header-custom card-header-brown">
+                                <i class="bi bi-box-seam"></i> Delivery Status
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="info-label text-primary">Delivered By</div>
+                                        <div class="info-value" id="lblDBy">--</div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="info-label text-primary">Delivered Date</div>
+                                        <div class="info-value" id="lblDDate">--</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+        <hr class="text-muted my-4" />
+
+        <!-- Product Details -->
+        <div class="modern-card card p-3" id="dvProductdetails">
+            <h5 class="fw-bold mb-3"><i class="bi bi-cart4 me-2 text-info"></i>Product Details</h5>
+            <div class="table-responsive">
+                <table id="tblProductInfo" class="table table-hover table-bordered align-middle w-100" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>InvID</th>
+                            <th>Docvalue</th>
+                            <th>Product Name</th>
+                            <th>UOM</th>
+                            <th>Qty</th>
+                            <th>MRP</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Receiver Info & Actions -->
+        <div class="col-12 col-md-12" id="dvReceiverInfo">
+            <div class="modern-card card h-100 p-3 d-flex flex-column justify-content-center">
+                <div class="mb-3">
+                    <label class="form-label fw-bold"><i class="bi bi-person-check me-2 text-success"></i>Receiver Name</label>
+                    <input type="text" id="txtReciever" placeholder="Enter Receiver Name" class="form-control shadow-sm border-1 bg-light" />
+                    <div class="text-danger small mt-1 clrdivserror" id="divErrorOnRecName"></div>
+                </div>
+                <div class="d-flex gap-2 mt-auto">
+                    <button id="btnSubmitDelivery" type="button" class="btn btn-success deliveryaction-btn flex-grow-1">
+                        <i class="bi bi-check-circle"></i> Delivery
+                    </button>
+                    <button id="btnCancelDelivery" type="button" class="btn btn-danger deliveryaction-btn flex-grow-1 text-white">
+                        <i class="bi bi-arrow-counterclockwise"></i> Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Similar Invoices Modal -->
+    <div class="modal fade" id="similarInvoicesModal" tabindex="-1" aria-labelledby="similarInvoicesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 12px;">
+                <div class="modal-header text-white" style="background: linear-gradient(135deg, #ffc107, #ff9800); border-radius: 12px 12px 0 0;">
+                    <h5 class="modal-title fw-bold" id="similarInvoicesModalLabel"><i class="bi bi-files me-2"></i>Similar Invoices</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <code style="font-size:12px">* Multiple invoices found for the provided Invoice Number. Please select the correct invoice.</code>
+                        <table id="tblSimilarInvoices" class="table table-hover table-bordered table-striped w-100 align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Doc ID</th>
+                                    <th>Date</th>
+                                    <th>Party</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Data will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary deliveryaction-btn" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="javascript:" id="return-to-top" class="btn btn-primary shadow-lg" style="position:fixed;bottom:20px;right:20px;border-radius:50%;width:45px;height:45px;display:none;align-items:center;justify-content:center;z-index:999;"><i class="bi bi-chevron-up"></i></a>
+</body>
+
+<script>
+        var UID = '@Session["LoginUserID"]';
+var Aurl = '@Session["APIurl"]';
+   var DecVal = '@Session["DecimalValues"]';
+    var strCompanyCode = '@Session["CompanyCode"]';
+
+        var Table = $('#tblProductInfo').DataTable({
+            "bFilter": false,
+            "bSearchable": false,
+            "bInfo": false,
+            "bPaginate": false,
+            "columnDefs": [
+                {
+                "targets": [0,1], // ID column
+                "visible": false,
+                "searchable": false
+            }
+            ]
+        });
+     //radio-group-custom
+    var permission = {
+        Complete: $("#txtModifyID").val() == "1",
+        Cancel: $("#txtCancelID").val() == "1",
+    }
+    validatepermission();
+    function validatepermission() {
+        console.log("permission", permission);
+        if (permission.Complete) {
+            $("#lblrdo1").show();
+        } else {
+            $("#lblrdo1").hide();
+        }
+        if (permission.Cancel) {
+            $("#lblrdo2").show();
+        } else {
+            $("#lblrdo2").hide();
+        }
+        var firstVisibleInputId = $(".radio-group-custom > label:visible")
+            .first()
+            .find("input[type='radio']")
+            .attr("id");        
+        $("#" + firstVisibleInputId).trigger('click');
+    }
+        // Initialize Similar Invoices DataTable
+        var similarInvoicesTable = $('#tblSimilarInvoices').DataTable({
+            "bFilter": true,
+            "bInfo": true,
+            "bPaginate": true,
+            "pageLength": 5,
+            "lengthMenu": [5, 10, 25, 50],
+            "columnDefs": [
+                {
+                    "targets": [0], // ID column
+                    "visible": false,
+                    "searchable": false
+                }
+            ]
+        });
+    var InvoicesModal = new bootstrap.Modal(document.getElementById('similarInvoicesModal'));
+    $('#similarInvoicesModal').on('shown.bs.modal', function () {
+        similarInvoicesTable.columns.adjust().draw();
+    });
+        // Show Similar Invoices Modal
+        $('#btnSimilarInvoices').on('click', function() {
+            //$('#similarInvoicesModal').modal('show');
+            InvoicesModal.show();
+            // Adjust columns if needed after modal shown
+
+        });
+
+        $(window).scroll(function () {
+            if ($(this).scrollTop() >= 200) {
+                $('#return-to-top').fadeIn(200);
+                $('#return-to-top').css("display", "flex");
+            } else {
+                $('#return-to-top').fadeOut(200);
+            }
+        });
+
+        $('#return-to-top').click(function () {
+            $('body,html').animate({
+                scrollTop: 0
+            }, 500);
+        });
+    function ClearForm() {
+        Table.clear().draw(); Table.clear().draw();
+        similarInvoicesTable.clear().draw();
+        $(".info-value").text("--");
+        $("#txtInvNo,#txtReciever").val("");
+        $("#txtReciever").prop("disabled", false);
+        $("#dvDelivery,#btnCancelDelivery").hide();
+        $("#btnSubmitDelivery").show();
+        $("#dvDelivery,#dvInvoicesummary,#dvProductdetails,#dvReceiverInfo").hide();
+    }
+    $("#dvDelivery,#btnCancelDelivery,#dvInvoicesummary,#dvProductdetails,#dvReceiverInfo").hide();
+    $('#rdoDelivery').click(function () {
+        Table.clear().draw(); Table.clear().draw();
+        similarInvoicesTable.clear().draw();
+        $(".info-value").text("--");
+        $("#txtInvNo,#txtReciever").val("");
+        $("#txtReciever").prop("disabled", false);
+        $("#dvDelivery,#btnCancelDelivery").hide();
+        $("#btnSubmitDelivery").show();
+        $("#dvDelivery,#dvInvoicesummary,#dvProductdetails,#dvReceiverInfo").hide();
+
+    });
+    $('#rdoCancelDelivery').click(function () {
+        Table.clear().draw(); Table.clear().draw();
+        similarInvoicesTable.clear().draw();
+        $(".info-value").text("--");
+        $("#txtInvNo,#txtReciever").val("");
+        $("#txtReciever").prop("disabled", true);
+        $("#dvDelivery,#btnCancelDelivery").show();
+        $("#btnSubmitDelivery").hide();
+        $("#dvDelivery,#dvInvoicesummary,#dvProductdetails,#dvReceiverInfo").hide();
+    });
+    GetData(1, UID);
+    function GetData(nMode, strID = null) {
+        $.ajax({
+            url: Aurl + "delivery/initialdata",
+            type: 'get',
+            contentType: 'json',
+            data: {
+                CompanyCode: strCompanyCode,ID: strID
+            },
+            success: function (data) {
+                if (nMode == 1) {
+                    $('#cmbBranch').find("option").remove();
+                    $('#cmbBranch').append($('<option/>', {
+                        value: 0,
+                        text: "-- Select --",
+                    }));
+                    var responsedata = JSON.parse(data);
+                    var allBranches = responsedata.Table;
+                    $.each(allBranches, function (i, items) {
+                        $('#cmbBranch').append($('<option/>', {
+                            value: items.ID,
+                            text: items.Name,
+                        }));
+                    });
+                    var Todayroute = responsedata.Table1;
+                    if (Todayroute) {
+                        $('#cmbBranch').val(Todayroute[0].BranchID)
+                    }
+                }
+            }, error: function (data) {
+                if (data.status == "401") {
+                    var msg = data.responseJSON.Message;
+                    ////showErrorSnackbar(msg + " Logout and Login again.");
+                }
+            }
+        });
+    }
+    var InvoiceItems = [],Invoices = [];
+    function LoadInvoiceData() {
+        var Branch = $('#cmbBranch').val();
+        var InvNo = $('#txtInvNo').val();
+        var nDeliveryType = $('#rdoDelivery').is(":checked") ? 1 : 0
+        $.ajax({
+            url: Aurl + "delivery/invoicedata",
+            type: 'get',
+            contentType: 'json',
+            data: {
+                CompanyCode: strCompanyCode, BranchID: Branch, Docvalue: InvNo, DeliveryType: nDeliveryType
+            },
+            success: function (data) {
+                InvoiceItems = [], Invoices = [];
+                var invoicedata = JSON.parse(data);
+                console.log(invoicedata)
+                Table.clear().draw(); Table.clear().draw();
+                similarInvoicesTable.clear().draw();
+                if (invoicedata.Table.length > 0) {
+                    InvoiceItems = invoicedata.Table1;
+                    Invoices = invoicedata.Table;
+                    if (invoicedata.Table.length == 1) {
+                        var Deliverydata = invoicedata.Table[0];
+
+                        //$("#txtInvoiceID").val(Deliverydata.ID);
+                        //$("#lblInvNo").text(Deliverydata.DocID + "<br/>" + Deliverydata.InvDate);
+                        //$("#lblValue").text(Deliverydata.NetAmt);
+                        //$("#lblCustName").text(Deliverydata.CustomerName);
+                        //$("#lblAddress").text(Deliverydata.DeliveryAddress);
+                        //$("#lblMobNo").text(Deliverydata.MobNo);
+
+                        //$("#lblDBy").text(Deliverydata.DeliveryBy);
+                        //$("#lblDDate").text(Deliverydata.DeliveryDate);
+                        //$("#txtReciever").text(Deliverydata.ReceiverName);
+                        FillInvoicedata(Deliverydata, InvoiceItems)
+                    }
+                    else {
+                        InvoicesModal.show();
+                        var Similardata = invoicedata.Table;
+                        $('#tblSimilarInvoices').DataTable({
+                            scrollY: "200px",
+                            scrollX: true,
+                            scrollCollapse: true,
+                            paging: true,
+                            destroy: true,
+                            data: Similardata,
+                            fixedColumns: false,
+                            ordering: false,
+                            searching: true,
+                            sorting: false,
+                            columns: [
+                                { "data": "ID", "autoWidth": true, "visible": false, className: "dt-body-left" },
+                                { "data": "DocID", "autoWidth": true, className: "dt-body-left" },
+                                { "data": "InvDate", "autoWidth": true, className: "dt-body-left" },
+                                { "data": "CustomerName", "autoWidth": true, className: "dt-body-left" }
+                            ],
+                            initComplete: function () {
+                                // ? Attach row click event AFTER table is loaded
+                                $('#tblSimilarInvoices tbody').on('click', 'tr', function () {
+                                    //showSuccessSnackbar("row click");
+                                    $(this).toggleClass('selected-row');
+
+                                });
+                            }
+                        });
+                        similarInvoicesTable = $('#tblSimilarInvoices').DataTable();
+                    }
+                }
+                else {
+                    showErrorSnackbar("No records found")
+                }
+
+            }, error: function (data) {
+                if (data.status == "401") {
+                    var msg = data.responseJSON.Message;
+                    ////showErrorSnackbar(msg + " Logout and Login again.");
+                }
+            }
+        });
+    }
+    $('#tblSimilarInvoices tbody').on('click', 'tr', function () {
+        rowdata = similarInvoicesTable.row($(this)).data();
+        console.log("similarInvoices ", rowdata);
+        var InvIDent = rowdata.ID;
+        var InvProds = InvoiceItems.filter(II => II.ID == InvIDent);
+        var Invs = Invoices.filter(II => II.ID == InvIDent)[0];
+        //InvoiceItems
+        FillInvoicedata(Invs, InvProds)
+
+    });
+    function FillInvoicedata(Deliverydata, ItemData) {
+        InvoicesModal.hide();
+        $("#txtInvoiceID").val(Deliverydata.ID);
+        $("#lblInvNo").html(Deliverydata.DocID + "<br/>" + Deliverydata.InvDate);
+        $("#lblValue").text(Deliverydata.NetAmt);
+        $("#lblCustName").text(Deliverydata.CustomerName);
+        $("#lblAddress").text(Deliverydata.DeliveryAddress);
+        $("#lblMobNo").text(Deliverydata.MobNo);
+
+        $("#lblDBy").text(Deliverydata.DeliveryBy);
+        $("#lblDDate").text(Deliverydata.DeliveryDate);
+        $("#txtReciever").val(Deliverydata.ReceiverName);
+        // Items
+        $('#tblProductInfo').DataTable({
+            scrollY: "200px",
+            scrollX: true,
+            scrollCollapse: true,
+            paging: false,
+            destroy: true,
+            data: ItemData,
+            fixedColumns: false,
+            ordering: true,
+            searching: true,
+            sorting: false,
+            columns: [
+                { "data": "ID", "autoWidth": true, "visible": false, className: "dt-body-left" },
+                { "data": "DocValue", "autoWidth": true, "visible": false, className: "dt-body-left" },
+                { "data": "ProductName", "autoWidth": true, className: "dt-body-left" },
+                { "data": "UOMName", "autoWidth": true, className: "dt-body-left" },
+                { "data": "Qty", "autoWidth": true, className: "dt-body-right" },
+                { "data": "MRP", "autoWidth": true, className: "dt-body-right" }
+            ],
+        });
+        Table = $('#tblProductInfo').DataTable();
+        var nDeliveryType = $('#rdoDelivery').is(":checked");
+        $("#dvInvoicesummary,#dvProductdetails,#dvReceiverInfo").show();
+        if (nDeliveryType)
+            $("#dvDelivery").hide();
+        else
+            $("#dvDelivery").show();
+    }
+    $('#btnLoadInvoice').click(function () {
+        var IsValid = true;
+        $(".clrdivserror").html("");
+        if ($('#txtInvNo').val() == '') {
+            IsValid = false;
+            $('#divErrorOnInvNo').html('* Invoice No should not be empty');
+            $('#txtInvNo').focus();
+        }
+        if ($('#cmbBranch').val() == '' || $('#cmbBranch').val() == 0) {
+            IsValid = false;
+            $('#divErrorOnBranch').html('* Select Branch');
+            $('#cmbBranch').focus();
+        }
+        if (IsValid) {
+            LoadInvoiceData();
+        }
+    });
+    $('#btnSubmitDelivery,#btnCancelDelivery').click(function () {
+        var IsValid = true;
+        $(".clrdivserror").html("");
+        if ($('#txtReciever').val() == '') {
+            IsValid = false;
+            $('#divErrorOnRecName').html('* Reciever Name should not be empty');
+            $('#txtReciever').focus();
+        }
+        if ($('#txtInvoiceID').val() == '') {
+            IsValid = false;
+            $('#divErrorOnInvNo').html('* Select valid Invoice');
+            $('#txtInvNo').focus();
+        }
+        if ($('#cmbBranch').val() == '' || $('#cmbBranch').val() == 0) {
+            IsValid = false;
+            $('#divErrorOnBranch').html('* Select Branch');
+            $('#cmbBranch').focus();
+        }
+        if (IsValid) {
+            var Branch = $('#cmbBranch').val();
+            var InvNo = $('#txtInvNo').val();
+            var nDeliveryType = $('#rdoDelivery').is(":checked") ? 1 : 0
+
+            var deliverydata = {
+                "CompanyCode": strCompanyCode,
+                "DeliveryType": nDeliveryType,
+                "ID": $("#txtInvoiceID").val(),
+                "BranchID": Branch,
+                "RecieverName": $("#txtReciever").val(),
+                "UserID": UID,
+                "Latitude": $("#txtLatitude").val(),
+                "Longtitude": $("#txtLongtitude").val(),
+            };
+
+            $.ajax({
+                url: Aurl + "delivery/save",
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify(deliverydata),
+                cache: false,
+                processData: false,
+                success: function (data) {
+                    $.each(data, function (i, items) {
+                        if (items.MsgID == 0) {
+                            //alert(items.Message);
+                            showSuccessSnackbar(items.Message);
+                            ClearForm();
+
+                        }
+                        else {
+                            showErrorSnackbar(items.Message);
+                        }
+                    });
+                }
+            });
+
+        }
+    });
+</script>

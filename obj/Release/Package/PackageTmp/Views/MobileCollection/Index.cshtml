@@ -1,0 +1,2585 @@
+﻿@model ShineWebMobile.Models.SingleMasterModel
+@{
+    ViewBag.Title = ViewData["FormName"];
+    Layout = "~/Views/Shared/_LayoutBT5.cshtml";
+}
+
+<link href="~/Content/navbar.css" rel="stylesheet" />
+<link href="~/Content/buttonTop.css" rel="stylesheet" />
+<link href="~/Content/dataTables.dataTables.2.2.2.css" rel="stylesheet" />
+<link rel="stylesheet" href="~/Content/jquery-ui.css">
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery-3.7.1.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Scripts/dataTables.2.2.2.js"></script>
+<header>
+    <link rel="stylesheet" href="~/Content/index.css">
+</header>
+
+<style>
+    th, td {
+        white-space: nowrap;
+    }
+
+    .toolbar, .dt-search {
+        float: right;
+    }
+
+    .gdInput {
+        width: 100%;
+        height: 25px;
+        border-width: 0 0 0.1px 0;
+        border-color: #e0d6d6;
+    }
+
+    .trtext-line {
+        border: none;
+        border-bottom: 1px #000000;
+    }
+
+    div.dataTables_wrapper {
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    td {
+        font-size: 11px;
+    }
+
+    input[type=number] {
+        text-align: right;
+    }
+
+        input[type=number]::placeholder {
+            text-align: left;
+        }
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+  
+
+    /* Style the tab */
+    .tab {
+        overflow: hidden;
+        border: 1px solid #ccc;
+        background-color: #f1f1f1;
+    }
+
+        /* Style the buttons inside the tab */
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.5s;
+            font-size: 17px;
+        }
+
+            /* Change background color of buttons on hover */
+            .tab button:hover {
+                background-color: #ddd;
+            }
+
+            /* Create an active/current tablink class */
+            .tab button.active {
+                background-color: #ccc;
+            }
+
+    /* Style the tab content */
+    .tabcontent {
+        display: none;
+        /*padding: 6px 12px;*/
+        border: none;
+        border-top: none;
+    }
+
+    .form-label {
+        position: relative;
+        display: block;
+        clear: both;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .labelup {
+        -webkit-transform: translateY(50%);
+        -moz-transform: translateY(-50%);
+        -ms-transform: translateY(-50%);
+        -o-transform: translateY(-50%);
+        transform: translateY(50%);
+        -webkit-transition: all 0.2s ease-in-out;
+        -moz-transition: all 0.2s ease-in-out;
+        transition: all 0.2s ease-in-out;
+        position: absolute;
+        top: -40%;
+        left: 1em;
+        background: #fffefe;
+        color: #2b2828;
+        font-size: 1em;
+        cursor: text;
+        pointer-events: none;
+        font-family: sans-serif;
+    }
+
+    .labelupfortextarea {
+        -webkit-transform: translateY(50%);
+        -moz-transform: translateY(-50%);
+        -ms-transform: translateY(-50%);
+        -o-transform: translateY(-50%);
+        transform: translateY(50%);
+        -webkit-transition: all 0.2s ease-in-out;
+        -moz-transition: all 0.2s ease-in-out;
+        transition: all 0.2s ease-in-out;
+        position: absolute;
+        top: -18%;
+        left: 1em;
+        background: #fffefe;
+        color: #2b2828;
+        font-size: 1em;
+        cursor: text;
+        pointer-events: none;
+        font-family: sans-serif;
+    }
+
+    .footerAction {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        width: 85%;
+        color: white;
+        background-color: azure;
+    }
+    /*input:focus + .labelup,
+    input:not(:placeholder-shown) + .labelup, textarea:focus + .labelup, textarea:not(:placeholder-shown) + .labelup {
+        top: -35%;
+        font-size: .9em;
+        padding: 0 .3em;
+        background: #F9F9F9;
+        color: #000000;
+    }*/
+    .clsProd {
+        position: fixed;
+        right: 1%;
+        bottom: 8%;
+        width: 30%;
+        height: 45%;
+        color: black;
+        background-color: #c2f6b5;
+        z-index: 1000;
+    }
+
+    .each {
+        border-bottom: 1px solid #555;
+        padding: 3px 0;
+    }
+
+    .acItem .name {
+        font-size: 14px;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .acItem .desc {
+        font-size: 10px;
+        font-family: Arial, Helvetica, sans-serif;
+        color: #555;
+    }
+
+    .ui-autocomplete {
+        max-height: 245px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+    /* Card View Styles */
+    .card-view-item {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1px;
+        padding: 5px;
+        transition: transform 0.2s, box-shadow 0.2s;
+        border-left: 5px solid deepskyblue;
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+        .card-view-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+    .card-header-view {
+        font-size: 12px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 5px;
+    }
+
+        .card-header-view i {
+            margin-right: 8px;
+            color: deepskyblue;
+        }
+
+    .card-body-view {
+        font-size: 11px;
+        color: #555;
+        line-height: 2;
+    }
+
+    .card-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 4px;
+    }
+
+    .card-label {
+        font-weight: 600;
+        color: #777;
+    }
+
+    .card-value {
+        text-align: right;
+        font-weight: 500;
+    }
+
+    .card-footer-view {
+        border-top: 1px solid #eee;
+        text-align: right;
+    }
+
+        .card-footer-view .btn {
+            margin-left: 5px;
+            font-size: 11px;
+            padding: 5px 10px;
+        }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes pulse-blue {
+        0% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(51, 122, 183, 0.7);
+        }
+
+        70% {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 10px rgba(51, 122, 183, 0);
+        }
+
+        100% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(51, 122, 183, 0);
+        }
+    }
+
+    .btn-animated {
+        /* animation: pulse-blue 2s infinite; */
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+
+        .btn-animated:hover {
+            animation: none;
+            transform: scale(1.1);
+        }
+    /* =============================================
+       MODERNIZED dvMain STYLES
+    ============================================= */
+    /* Form Section Cards */
+    .form-section-card {
+        background: #ffffff;
+        border-radius: 14px;
+        box-shadow: 0 2px 12px rgba(0,120,200,0.08);
+        border: 1px solid #e8f0fe;
+        margin-bottom: 14px;
+        padding: 14px 16px 10px 16px;
+        animation: slideInCard 0.35s cubic-bezier(.4,0,.2,1) both;
+        transition: box-shadow 0.2s;
+        position: relative;
+    }
+    .form-section-card:hover {
+        box-shadow: 0 6px 24px rgba(0,120,200,0.13);
+    }
+    .form-section-title {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        color: #1a73e8;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        border-bottom: 1.5px solid #e8f0fe;
+        padding-bottom: 6px;
+    }
+    .form-section-title i {
+        font-size: 14px;
+        color: #1a73e8;
+    }
+    /* Floating label inputs */
+    .field-wrap {
+        position: relative;
+        margin-bottom: 6px;
+    }
+    .field-wrap .field-icon {
+        position: absolute;
+        left: 10px;
+        top: 40%;
+        transform: translateY(-50%);
+        color: #1a73e8;
+        font-size: 14px;
+        z-index: 5;
+        pointer-events: none;
+    }
+    .field-wrap .mod-input,
+    .field-wrap .mod-select,
+    .field-wrap .mod-textarea {
+        width: 100%;
+        padding: 10px 10px 7px 34px;
+        font-size: 13px;
+        border: 1.5px solid #d0dff7;
+        border-radius: 8px;
+        background: #f8fbff;
+        color: #222;
+        transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+        outline: none;
+        appearance: none;
+        -webkit-appearance: none;
+    }
+    .field-wrap .mod-input:focus,
+    .field-wrap .mod-select:focus,
+    .field-wrap .mod-textarea:focus {
+        border-color: #1a73e8;
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(26,115,232,0.12);
+    }
+    .field-wrap .mod-label {
+        position: absolute;
+        top: 0px;
+        left: 34px;
+        font-size: 10px;
+        font-weight: 700;
+        color: #1a73e8;
+        letter-spacing: 0.05em;
+        pointer-events: none;
+        transition: all 0.2s;
+    }
+    .field-wrap .field-error {
+        font-size: 10.5px;
+        color: #d32f2f;
+        margin-top: 2px;
+        min-height: 0px;
+        padding-left: 4px;
+    }
+    /* Radio button pill groups */
+    .radio-pill-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        justify-content: center;
+        margin-bottom: 15px;
+    }
+    .radio-pill-group input[type=radio] {
+        display: none;
+    }
+    .radio-pill-group label {
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        border: 1.5px solid #c5d9f5;
+        background: #f0f6ff;
+        color: #1a73e8;
+        cursor: pointer;
+        transition: all 0.18s;
+        user-select: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .radio-pill-group input[type=radio]:checked + label {
+        background: linear-gradient(135deg, #1a73e8, #0d52b8);
+        color: #fff;
+        border-color: #1a73e8;
+        box-shadow: 0 2px 8px rgba(26,115,232,0.28);
+    }
+    .radio-pill-group label:hover {
+        border-color: #1a73e8;
+        background: #e3eeff;
+    }
+
+    /* Action bar */
+    .dvMain-action-bar {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 0;
+        border-top: 1.5px solid #e8f0fe;
+        margin-top: 10px;
+    }
+    .dvMain-action-bar .btn {
+        border-radius: 22px;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 8px 20px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.18s;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+    .dvMain-action-bar .btn:hover {
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    /* Collapsible Card Body */
+    .card-collapsible-body {
+        max-height: 1000px;
+        opacity: 1;
+        overflow: hidden;
+        transition: max-height 0.5s ease-in-out, opacity 0.3s ease;
+    }
+    .card-collapsible-body.collapsed {
+        max-height: 0;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    /* Circular Toggle Button */
+    .card-collapse-btn {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f0f6ff;
+        border: 1.5px solid #c5d9f5;
+        color: #1a73e8;
+        padding: 0;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        flex-shrink: 0;
+    }
+    .card-collapse-btn:hover {
+        background: #1a73e8;
+        color: #fff;
+        border-color: #1a73e8;
+    }
+    .card-collapse-btn i {
+        font-size: 12px;
+        margin-right: 0 !important;
+    }
+
+    /* Animations */
+    @@keyframes slideInCard {
+        from { opacity:0; transform: translateY(16px); }
+        to   { opacity:1; transform: translateY(0); }
+    }
+
+    /* Stacking contexts for cards (to help dropdowns float correctly) */
+    .form-stack-3 { z-index: 3; }
+    .form-stack-2 { z-index: 2; }
+    .form-stack-1 { z-index: 1; }
+
+    /* Table header modernize */
+    #tblAdjDocInfo thead th {
+        background: linear-gradient(135deg, #1a73e8, #0d52b8) !important;
+        color: #fff !important;
+        font-size: 11px !important;
+        text-align: center;
+        border: none;
+        padding: 10px 5px;
+    }
+    /* Load Selected Data button */
+    .customdabuttons {
+        border-radius: 22px;
+        font-weight: 700;
+        font-size: 12.5px;
+        background: linear-gradient(135deg, #00bcd4, #0097a7);
+        border: none;
+        color: #fff;
+        padding: 8px 16px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        transition: all 0.18s;
+        box-shadow: 0 2px 8px rgba(0,150,200,0.2);
+    }
+
+    #customdabuttons:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 14px rgba(0,150,200,0.35);
+    }
+</style>
+<style>
+
+    /* ===== Surrounding Customer Modal — Modern UI ===== */
+    @@keyframes scModal {
+        from {
+            opacity: 0;
+            transform: translateY(-28px) scale(0.97);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    #myModalfg .modal-dialog {
+        max-width: 460px;
+    }
+
+    #myModalfg .modal-content {
+        border: none;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(30, 90, 180, 0.22);
+        animation: scModal 0.35s cubic-bezier(.22,.68,0,1.2) both;
+    }
+
+    /* Gradient header */
+    #myModalfg .sc-modal-header {
+        background: linear-gradient(135deg, #1565c0 0%, #1e88e5 60%, #42a5f5 100%);
+        padding: 8px 10px 3px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        position: relative;
+    }
+
+    #myModalfg .sc-header-icon-wrap {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.18);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+
+        #myModalfg .sc-header-icon-wrap i {
+            font-size: 1.35rem;
+            color: #fff;
+        }
+
+    #myModalfg .sc-modal-title {
+        color: #fff;
+        font-size: 1rem;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        margin: 0;
+        flex: 1;
+        line-height: 1.2;
+    }
+
+    #myModalfg .sc-modal-subtitle {
+        font-size: 0.7rem;
+        color: rgba(255,255,255,0.78);
+        font-weight: 400;
+        display: block;
+    }
+
+    #myModalfg .sc-close-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.18);
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.2s;
+        flex-shrink: 0;
+    }
+
+        #myModalfg .sc-close-btn:hover {
+            background: rgba(255,255,255,0.32);
+            transform: rotate(90deg);
+        }
+
+    /* Pulse badge */
+    #myModalfg .sc-live-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: rgba(255,255,255,0.15);
+        color: #fff;
+        font-size: 0.65rem;
+        font-weight: 600;
+        border-radius: 20px;
+        padding: 2px 8px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
+
+    @@keyframes scPulse {
+        0%, 100% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0.3;
+        }
+    }
+
+    #myModalfg .sc-live-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #69f0ae;
+        display: inline-block;
+        animation: scPulse 1.4s ease-in-out infinite;
+    }
+
+    /* Modal body */
+    #myModalfg .modal-body {
+        padding: 1px;
+        background: #f4f7fb;
+    }
+
+    /* Error message */
+    #myModalfg .sc-error-box {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: #fff3f3;
+        border-left: 3px solid #e53935;
+        border-radius: 6px;
+        color: #c62828;
+        font-size: 0.78rem;
+        padding: 0;
+        margin-bottom: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease, padding 0.3s ease, margin-bottom 0.3s ease;
+    }
+
+        #myModalfg .sc-error-box:not(:empty) {
+            padding: 7px 10px;
+            margin-bottom: 10px;
+            max-height: 80px;
+        }
+
+            #myModalfg .sc-error-box:not(:empty)::before {
+                font-family: "bootstrap-icons";
+                content: "\F33A"; /* bi-exclamation-triangle-fill */
+                font-size: 0.9rem;
+                flex-shrink: 0;
+            }
+
+    /* Table */
+    #myModalfg #tblSurroundCustomers_wrapper .dt-search {
+        width: 100%;
+        margin-bottom: 8px;
+    }
+
+        #myModalfg #tblSurroundCustomers_wrapper .dt-search input {
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid #c8d8f0;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            background: #fff;
+        }
+
+    #myModalfg #tblSurroundCustomers thead th {
+        background: linear-gradient(135deg, #1565c0, #1e88e5);
+        color: #fff;
+        font-size: 11px;
+        font-weight: 700;
+        text-align: center;
+        border: none;
+        padding: 9px 10px;
+        letter-spacing: 0.04em;
+    }
+
+    #myModalfg #tblSurroundCustomers tbody tr {
+        transition: background 0.18s;
+    }
+
+        #myModalfg #tblSurroundCustomers tbody tr:hover {
+            background: #e3efff !important;
+            cursor: pointer;
+        }
+
+    #myModalfg #tblSurroundCustomers tbody td {
+        font-size: 12px;
+        padding: 8px 10px;
+        border-bottom: 1px solid #e8eef8;
+        vertical-align: middle;
+    }
+
+    /* Distance chip */
+    #myModalfg .sc-dist-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: #e3efff;
+        color: #1565c0;
+        border-radius: 12px;
+        padding: 2px 9px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    /* Footer */
+    #myModalfg .sc-modal-footer {
+        background: #eef3fb;
+        border-top: 1px solid #dce8f5;
+        padding: 12px 16px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+    }
+
+    #myModalfg .sc-btn-close {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: linear-gradient(135deg,#e53935,#ef5350);
+        color: #fff;
+        border: none;
+        border-radius: 20px;
+        padding: 7px 20px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.18s, box-shadow 0.18s;
+        box-shadow: 0 3px 10px rgba(229,57,53,0.28);
+    }
+
+        #myModalfg .sc-btn-close:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(229,57,53,0.38);
+        }
+    /* ===== End Surrounding Customer Modal ===== */
+</style>
+<body>
+    <div style="margin-bottom:50px;">
+        @Html.HiddenFor(model => model.FormName, new { @autocomplete = "off", @class = "form-control", @id = "txtFormName" })
+        @Html.HiddenFor(model => model.TransType, new { @autocomplete = "off", @class = "form-control", @id = "txtTransType" })
+        @Html.HiddenFor(model => model.TransID, new { @autocomplete = "off", @class = "form-control", @id = "txtTransID" })
+        @Html.HiddenFor(model => model.UserID, new { @autocomplete = "off", @class = "form-control", @id = "txtSwitchSMID" })
+        @Html.HiddenFor(model => model.Add, new { @autocomplete = "off", @class = "form-control", @id = "txtAddID" })
+        @Html.HiddenFor(model => model.Modify, new { @autocomplete = "off", @class = "form-control", @id = "txtModifyID" })
+        @Html.HiddenFor(model => model.View, new { @autocomplete = "off", @class = "form-control", @id = "txtViewID" })
+        @Html.HiddenFor(model => model.ShowAllUserData, new { @autocomplete = "off", @class = "form-control", @id = "txtShowAllUserData" })
+        <h4 id="MainHeading">@ViewData["FormName"]</h4>
+        <div class="toastBox"></div>
+        <hr class="style14" />
+        <div id="dvDocuments">
+            <div class="col-12">
+
+                <!-- Add New Button -->
+                <div class="row text-center mb-2 w-100">
+                    <div class="col-12">
+                        <button id="btnAddNew" type="button"
+                                class="btn btn-primary btn-lg btn-animated w-100"
+                                style="border-radius:25px;">
+                            <i class="bi bi-plus"></i> New Collection
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Search Box -->
+                <div class="row mb-2">
+                    <div class="col-12 p-0">
+
+                        <label class="mb-2">
+                            <input type="checkbox" id="chkShowAll"> <label style="font-size:14px" for="chkShowAll"> Show All</label>
+                        </label>
+
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-search"></i>
+                            </span>
+
+                            <input type="text"
+                                   id="txtSearchCards"
+                                   class="form-control"
+                                   placeholder="Search..."
+                                   onkeyup="filterCards()">
+                        </div>
+
+                    </div>
+                </div>
+                <!-- Card View Container -->
+                <div id="divMobCollDocsList"
+                     class="row"
+                     style="overflow-x:auto;height:500px;">
+                </div>
+            </div>
+        </div>
+        <div id="dvMain">
+            <input id="txtID" hidden />
+            <input id="txtStatusID" hidden />
+            <input id="txtCustomerID" hidden />
+            <label hidden id="lblCustAdvAmt">0</label>
+            @Html.HiddenFor(model => model.TransType, new { @autocomplete = "off", @class = "form-control", @id = "txtTransType" })
+            @Html.HiddenFor(model => model.TransID, new { @autocomplete = "off", @class = "form-control", @id = "txtTransID" })
+            <input hidden type="number" class="FormclrField" id="txtLatitude" />
+            <input hidden type="number" class="FormclrField" id="txtLongtitude" />
+
+            <!-- Filter Selection -->
+            <div class="radio-pill-group">
+                <input type="radio" name="rdoFilter" id="rdoAssignedInvoice" checked />
+                <label for="rdoAssignedInvoice"><i class="bi bi-file-earmark-check"></i> Assigned Invoices</label>
+
+                <input type="radio" name="rdoFilter" id="rdoCustomer" />
+                <label for="rdoCustomer"><i class="bi bi-person"></i> Customer</label>
+            </div>
+
+            <!-- SECTION 1: Location & Customer -->
+            <div class="form-section-card form-stack-3" style="animation-delay:0.05s">
+                <div class="form-section-title" style="cursor:pointer; user-select:none" onclick="toggleCustomerCard()">
+                    <i class="bi bi-geo-alt"></i> Customer Information
+                    <button type="button" id="btnToggleCustomer" class="card-collapse-btn ms-auto" title="Expand / Collapse" onclick="toggleCustomerCard(); event.stopPropagation();">
+                        <i class="bi bi-plus-lg" id="icoToggleCustomer"></i>
+                    </button>
+                </div>
+
+                <div id="customerInfoBody" class="card-collapsible-body collapsed">
+                    <div class="row g-2 mb-2">
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <div class="field-wrap">
+                                <i class="bi bi-house field-icon"></i>
+                                <label class="mod-label">Branch <span style="color:#d32f2f">*</span></label>
+                                <select class="mod-select FormclrcmbField" id="cmbBranchName">
+                                    <option value="0">Select</option>
+                                </select>
+                                <div class="field-error clrdivs" id="divErrorOnBranchName"></div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <div class="field-wrap">
+                                <i class="bi bi-map field-icon"></i>
+                                <label class="mod-label">Beat Name</label>
+                                <select class="mod-select FormclrcmbField" id="cmbBeatName">
+                                    <option value="0">Select</option>
+                                </select>
+                                <div class="field-error clrdivs" id="divErrorOnBeatName"></div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <div class="field-wrap">
+                                <i class="bi bi-person-badge field-icon"></i>
+                                <label class="mod-label">Salesman</label>
+                                <select class="mod-select FormclrcmbField" id="cmbSalesManName">
+                                    <option value="0">Select</option>
+                                </select>
+                                <div class="field-error clrdivs" id="divErrorOnSalesManName"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-2">
+                    <div class="col-12 col-md-4">
+                        <div class="field-wrap">
+                            <i class="bi bi-person field-icon" id="Custinfo" style="cursor:pointer"></i>
+                            <label class="mod-label">Customer <span style="color:#d32f2f">*</span></label>
+                            <input type="text" class="mod-input FormclrField" id="txtCustomerName" autocomplete="off" />
+                            <div class="field-error clrdivs" id="divErrorOnCustName"></div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="field-wrap">
+                            <button class="customdabuttons" id="btnGetSurrCustomers" style="align-content:center"><span class="glyphicon glyphicon-map-marker"></span>&nbsp;Surrounding Customers</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 2: Collection Details -->
+            <div class="form-section-card form-stack-2" style="animation-delay:0.12s">
+                <div class="form-section-title">
+                    <i class="bi bi-cash-stack"></i> Collection Details
+                </div>
+                <div class="row g-2">
+                    <div class="col-6 col-sm-6 col-md-2">
+                        <div class="field-wrap">
+                            <i class="bi bi-credit-card field-icon"></i>
+                            <label class="mod-label">Pay Mode <span style="color:#d32f2f">*</span></label>
+                            <select class="mod-select FormclrcmbField" id="cmbPaymentMode"></select>
+                            <div class="field-error clrdivs" id="divErrorOnPaymentMode"></div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-sm-6 col-md-2">
+                        <div class="field-wrap">
+                            <i class="bi bi-currency-rupee field-icon"></i>
+                            <label class="mod-label">Collected Amount <span style="color:#d32f2f">*</span></label>
+                            <input type="number" class="mod-input FormclrField" id="txtCollAmt" placeholder="0.00" />
+                            <div class="field-error clrdivs" id="divErrorOnCollAmt"></div>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-sm-6 col-md-2">
+                        <div class="field-wrap">
+                            <i class="bi bi-hash field-icon"></i>
+                            <label class="mod-label">PM No <span style="color:#d32f2f">*</span></label>
+                            <input type="number" class="mod-input FormclrField" id="txtChequeNo" placeholder="Cheque/NEFT No" maxlength="6" oninput="javascript: if (this.value.length > this.maxLength) { this.value = this.value.slice(0, this.maxLength); }" />
+                            <div class="field-error clrdivs" id="divErrorOnChequeNo"></div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-sm-6 col-md-2">
+                        <div class="field-wrap">
+                            <i class="bi bi-calendar-event field-icon"></i>
+                            <label class="mod-label">PM Date <span style="color:#d32f2f">*</span></label>
+                            <input type="date" class="mod-input FormclrField" id="dtpChequeDate" />
+                            <div class="field-error clrdivs" id="divErrorOnChequeDate"></div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <div class="field-wrap">
+                            <i class="bi bi-credit-card-2-front field-icon"></i>
+                            <label class="mod-label">Bank A/c No <span style="color:#d32f2f">*</span></label>
+                            <select class="mod-select FormclrcmbField" id="cmbBankACNo"></select>
+                            <div class="field-error clrdivs" id="divErrorOnBankACNo"></div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-sm-6 col-md-3">
+                        <div class="field-wrap">
+                            <i class="bi bi-bank field-icon"></i>
+                            <label class="mod-label">Bank Name <span style="color:#d32f2f">*</span></label>
+                            <select class="mod-select FormclrcmbField" id="cmbBankName"></select>
+                            <div class="field-error clrdivs" id="divErrorOnBankName"></div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <div class="field-wrap">
+                            <i class="bi bi-upc-scan field-icon"></i>
+                            <label class="mod-label">IFSC Code</label>
+                            <input type="text" class="mod-input FormclrField" id="txtifsc" placeholder="Enter IFSC Code" style="text-transform: uppercase;" maxlength="11" />
+                            <div class="field-error clrdivs" id="divErrorOnIfsc"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 3: Notes & Metadata -->
+            <div class="form-section-card form-stack-1" style="animation-delay:0.19s">
+                <div class="form-section-title" style="cursor:pointer; user-select:none" onclick="toggleNotesCard()">
+                    <i class="bi bi-pencil-square"></i> Notes
+                    <button type="button" id="btnToggleNotes" class="card-collapse-btn ms-auto" title="Expand / Collapse" onclick="toggleNotesCard(); event.stopPropagation();">
+                        <i class="bi bi-plus-lg" id="icoToggleNotes"></i>
+                    </button>
+                </div>
+                <div id="notesBody" class="card-collapsible-body collapsed">
+                    <div class="row g-2">
+                        <div class="col-12 col-md-6">
+                            <div class="field-wrap">
+                                <i class="bi bi-chat-left-text field-icon"></i>
+                                <label class="mod-label">Remarks</label>
+                                <input type="text" class="mod-input FormclrField" id="txtRemarks" placeholder="Enter remarks" />
+                                <div class="field-error clrdivs" id="divErrorOnRemarks"></div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="field-wrap">
+                                <i class="bi bi-journal-text field-icon" style="top:18px;transform:none;"></i>
+                                <label class="mod-label">Narration</label>
+                                <textarea class="mod-textarea FormclrField" id="txtNarration" rows="2" style="padding-top:24px;" placeholder="Narration"></textarea>
+                                <div class="field-error clrdivs" id="divErrorOnNarration"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ACTION BAR -->
+            <div class="dvMain-action-bar">
+                <button id="btnClose" type="button" class="btn btn-warning">
+                    <i class="bi bi-x-circle"></i> Close
+                </button>
+                <button id="btnClear" type="button" class="btn btn-danger">
+                    <i class="bi bi-arrow-counterclockwise"></i> Clear
+                </button>
+                <button id="btnSave" type="button" class="btn btn-success">
+                    <i class="bi bi-save2"></i> Save
+                </button>
+            </div>
+
+            <hr class="style14" />
+            <div class="text-center">
+                <span style="font-weight:bold;color:#1a73e8" id="divBalanceTop"></span>
+                <label hidden id="lblRemBalance"></label>
+            </div>
+
+            <div class="table-responsive mt-2">
+                <table id="tblAdjDocInfo" class="table table-hover table-bordered" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th style="width:0%;">ID</th>
+                            <th style="width:0%;">Docprefix</th>
+                            <th style="width:0%;">AssignID</th>
+                            <th style="width:0%;">InvoiceAmt</th>
+                            <th style="width:2%;">#</th>
+                            <th style="width:78%;">Info</th>
+                            <th style="width:5%;">Bal</th>
+                            <th style="width:5%;">Amt Adj</th>
+                            <th style="width:5%;">Otr Chgr</th>
+                            <th style="width:5%;">Disc %/₹</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="text-center mt-2">
+                <span style="font-weight:bold;color:#1a73e8" id="divBalanceBottom"></span>
+            </div>
+        </div>
+        <!-- Surrounding Customer Modal — Modernized UI -->
+        <div class="modal fade" id="myModalfg" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="toastBox"></div>
+
+                    <!-- Modern Gradient Header -->
+                    <div class="sc-modal-header">
+                        <div class="sc-header-icon-wrap">
+                            <i class="bi bi-geo-alt-fill"></i>
+                        </div>
+                        <div class="flex-fill">
+                            <div class="sc-modal-title" id="lblPopupheading">
+                                Surrounding Customers
+                                <span class="sc-live-badge ms-2">
+                                    <span class="sc-live-dot"></span> Live
+                                </span>
+                            </div>
+                            <span class="sc-modal-subtitle">Customers near your current location</span>
+                        </div>
+                        <button type="button" class="sc-close-btn" id="modelcloseX" title="Close">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+
+                    <!-- Modal Body -->
+                    <div class="modal-body">
+                        <div id="dvCustLoc">
+                            <!-- Error box with icon -->
+                            <div class="sc-error-box" id="divErrorOnPopupSurrCust"></div>
+
+                            <div class="table-responsive">
+                                <table id="tblSurroundCustomers" class="table table-hover table-bordered w-100">
+                                    <thead>
+                                        <tr>
+                                            <th>CustomerID</th>
+                                            <th style="width:80%">
+                                                <i class="bi bi-person-fill me-1"></i>Customer Name
+                                            </th>
+                                            <th style="width:20%">
+                                                <i class="bi bi-signpost-split me-1"></i>Distance
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modern Footer -->
+                    <div class="sc-modal-footer">
+                        <button type="button" class="sc-btn-close" id="btnSCClose">
+                            <i class="bi bi-x-circle"></i> Close
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <a href="javascript:" id="return-to-top"><i class="icon-chevron-up"></i></a>
+    </div>
+</body>
+<script type="text/javascript">
+        var UID = '@Session["LoginUserID"]';
+var Aurl = '@Session["APIurl"]';
+    var DecVal = '@Session["DecimalValues"]';
+    var strCompanyCode = '@Session["CompanyCode"]';
+    var rdoCheckedID = 1; 
+   var nTransMode = 1;
+    var Table = $('#tblAdjDocInfo').DataTable({
+        "bFilter": false,
+        "bLengthChange": false,
+        "bInfo": false,
+        "bPaginate": false,
+        "ordering": false,
+        scrollY: "500px",
+        scrollX: true,
+        scrollCollapse: true,
+        "columnDefs": [{ "targets": [0, 1,2,3], "visible": false, searchable: false, ordering: false }]
+    });
+    var TableSurroundCustomers = $('#tblSurroundCustomers').DataTable({
+        "bFilter": true,
+        "bSearchable": true,
+        "bInfo": false,
+        "bPaginate": false,
+        "ordering": false,
+        "columnDefs": [{ "targets": [0], "visible": false, searchable: false, ordering: false }]
+        //"selected":true,
+    });
+    var modal = new bootstrap.Modal(document.getElementById('myModalfg'));// document.getElementById("myModalfg");
+
+    $('#btnSCClose,#modelcloseX').click(function (e) {
+        modal.hide();
+    });   
+    $("#dvMain").hide();
+    if ($("#txtAddID").val() == 0) {        
+        $("#btnAddNew").hide();
+    }
+    $(window).scroll(function () {
+        if ($(this).scrollTop() >= 200) {        // If page is scrolled more than 50px
+            $('#return-to-top').fadeIn(200);    // Fade in the arrow
+        } else {
+            $('#return-to-top').fadeOut(200);   // Else fade out the arrow
+        }
+    });
+    $('#return-to-top').click(function () {      // When arrow is clicked
+        $('body,html').animate({
+            scrollTop: 0                       // Scroll to top of body
+        }, 500);
+    });
+    $("#txtChequeNo,#cmbBankACNo,#cmbBankName,#txtifsc,#dtpChequeDate").prop("disabled", true);
+    $('#divBalanceTop').html('Col Amt : 0  ;  Bal : 0');
+    $('#divBalanceBottom').html('Col Amt : 0  ;  Bal : 0');
+    GetData(1, UID);
+    var arrParty = [], arrBankAccountData = [];
+    GetSetFilterData(7, 0, 0);
+    function GetSetFilterData(nMode, strID,strAllsts = "0") {
+        $.ajax({
+            url: Aurl + "mobilecollection/getdata",
+            type: 'get',
+            contentType: 'json',
+            data: {
+                CompanyCode: strCompanyCode, Mode: nMode, ID: strID, SalesmanID: UID, FilterType: strAllsts,BranchID: 0
+            },            
+            success: function (data) {
+                if (nMode == 7) {
+                    var Docjsdata = JSON.parse(data);// JSON.parse(data);
+                    var cardHtml = "";
+                    if (Docjsdata.length === 0) {
+                        cardHtml = '<div class="col-md-12 text-center" style="margin-top:20px;"><h5>No records found</h5></div>';
+                    } else {
+                        //$.each(Docjsdata, function (index, value) {
+                        //    var rowIndex = index;// Using index as logic for button IDs, similar to original code
+
+                        //    cardHtml += '<div class="col-xs-12 col-sm-12 col-md-4 card-item">';
+                        //    cardHtml += '  <div class="card-view-item">';
+
+                        //    // Header
+                        //    cardHtml += '    <div class="card-header-view">';
+                        //    cardHtml += '      <i class="glyphicon glyphicon-user"></i> <span>' + (value.CustomerName || "Unknown Customer") + '</span>';
+                        //    cardHtml += '    </div>';
+
+                        //    // Body
+                        //    cardHtml += '    <div class="card-body-view">';
+
+                        //    // Row 1: Date & Mode
+                        //    cardHtml += '      <div class="row" style="margin-bottom: 5px;">';
+                        //    cardHtml += '        <div class="col-xs-6" style="padding-right: 5px;">';
+                        //    cardHtml += '          <span class="card-label" style="display:block; font-size:11px;"><i class="glyphicon glyphicon-calendar"></i> ' + (value.DocDate || "-") + '</span>';
+                        //    cardHtml += '        </div>';
+                        //    cardHtml += '        <div class="col-xs-6" style="padding-left: 5px;">';
+                        //    cardHtml += '          <span class="card-label" style="display:block; font-size:11px;"><i class="glyphicon glyphicon-credit-card"></i> ' + (value.PaymentMode || "-") + '</span>';
+                        //    cardHtml += '        </div>';
+                        //    cardHtml += '      </div>';
+
+                        //    // Row 2: Amount & Beat
+                        //    cardHtml += '      <div class="row" style="margin-bottom: 5px;">';
+                        //    cardHtml += '        <div class="col-xs-6" style="padding-right: 5px;">';
+                        //    cardHtml += '          <span class="card-label" style="display:block; color:green; font-weight:bold; font-size:12px;"><i class="fa fa-inr"></i> ' + (value.CollectionValue || "0.0") + '</span>';
+                        //    cardHtml += '        </div>';
+                        //    cardHtml += '        <div class="col-xs-6" style="padding-left: 5px;">';
+                        //    cardHtml += '          <span class="card-label" style="display:block; font-size:11px;"><i class="fas fa-map-marker-alt"></i> ' + (value.BeatName || "-") + '</span>';
+                        //    cardHtml += '        </div>';
+                        //    cardHtml += '      </div>';
+
+                        //    // Row 3: Salesman & Status
+                        //    cardHtml += '      <div class="row">';
+                        //    cardHtml += '        <div class="col-xs-6" style="padding-right: 5px;">';
+                        //    cardHtml += '          <span class="card-label" style="display:block; font-size:11px;"><i class="fas fa-user-tie"></i> ' + (value.SalesmanName || "-") + '</span>';
+                        //    cardHtml += '        </div>';
+
+                        //    // Status Logic
+                        //    var status = value.Status || "-";
+                        //    var statusIcon = "fa fa-info-circle";
+                        //    var statusStyle = "font-size:11px; padding: 4px 8px; border-radius: 12px; color: white; font-weight: bold; display: inline-block;";
+
+                        //    if (status === "Open" || status === "Amendment") {
+                        //        statusIcon = "fa fa-envelope-open";
+                        //        statusStyle += "background-color: #337ab7;"; // Primary Blue
+                        //    } else if (status === "Amended" ) {
+                        //        statusIcon = "fa fa-pencil-square-o";
+                        //        statusStyle += "background-color: #f0ad4e;"; // Warning Orange
+                        //    } else if (status === "Cancelled") {
+                        //        statusIcon = "fa fa-ban";
+                        //        statusStyle += "background-color: #d9534f;"; // Danger Red
+                        //    } else if (status === "Processed") {
+                        //        statusIcon = "fa fa-check-circle";
+                        //        statusStyle += "background-color: #5cb85c;"; // Success Green
+                        //    } else {
+                        //        statusStyle += "background-color: #777;"; // Default Grey
+                        //    }
+
+                        //    cardHtml += '        <div class="col-xs-6" style="padding-left: 5px;">';
+                        //    cardHtml += '          <span class="card-value" style="' + statusStyle + '"><i class="' + statusIcon + '"></i> ' + status + '</span>';
+                        //    cardHtml += '        </div>';
+                        //    cardHtml += '      </div>';
+
+                        //    cardHtml += '    </div>'; // End Body
+
+                        //    // Footer with Actions
+                        //    cardHtml += '    <div class="card-footer-view">';
+                        //    cardHtml += $("#txtViewID").val() == 0 ? '' : '<button id="btnView' + rowIndex + '" type="button" class="btn btn-info clsview" data-id="' + value.ID + '" data-customername="' + value.CustomerName + '"><i class="glyphicon glyphicon-eye-open"></i> View</button>';
+                        //    cardHtml += (value.StatusID == 1 || value.StatusID == 3) && $("#txtModifyID").val() == 1 ? '<button id="btnEdit' + rowIndex + '" type="button" class="btn btn-warning clsedit" data-id="' + value.ID + '" data-customername="' + value.CustomerName + '"><i class="glyphicon glyphicon-pencil"></i> Edit</button>' : '';
+                        //    cardHtml += '    </div>';
+
+                        //    cardHtml += '  </div>'; // End Card Item
+                        //    cardHtml += '</div>'; // End Col
+                        //});
+                        $.each(Docjsdata, function (index, value) {
+
+                            var rowIndex = index;
+
+                            cardHtml += '<div class="col-12 col-md-4 card-item">';
+                            cardHtml += '  <div class="card h-100 card-view-item">';
+
+                            // Header
+                            cardHtml += '    <div class="card-header card-header-view">';
+                            cardHtml += '      <i class="fa fa-user me-1"></i> <span>' + (value.CustomerName || "Unknown Customer") + '</span>';
+                            cardHtml += '    </div>';
+
+                            // Body
+                            cardHtml += '    <div class="card-body card-body-view">';
+
+                            // Row 1: Date & Mode
+                            cardHtml += '      <div class="row mb-1">';
+                            cardHtml += '        <div class="col-6 pe-1">';
+                            cardHtml += '          <span class="card-label d-block small"><i class="fa fa-calendar me-1"></i>' + (value.DocDate || "-") + '</span>';
+                            cardHtml += '        </div>';
+                            cardHtml += '        <div class="col-6 ps-1">';
+                            cardHtml += '          <span class="card-label d-block small"><i class="fa fa-credit-card me-1"></i>' + (value.PaymentMode || "-") + '</span>';
+                            cardHtml += '        </div>';
+                            cardHtml += '      </div>';
+
+                            // Row 2: Amount & Beat
+                            cardHtml += '      <div class="row mb-1">';
+                            cardHtml += '        <div class="col-6 pe-1">';
+                            cardHtml += '          <span class="card-label d-block fw-bold text-success small"><i class="fa fa-inr me-1"></i>' + (value.CollectionValue || "0.0") + '</span>';
+                            cardHtml += '        </div>';
+                            cardHtml += '        <div class="col-6 ps-1">';
+                            cardHtml += '          <span class="card-label d-block small"><i class="fa fa-map-marker-alt me-1"></i>' + (value.BeatName || "-") + '</span>';
+                            cardHtml += '        </div>';
+                            cardHtml += '      </div>';
+
+                            // Row 3: Salesman & Status
+                            cardHtml += '      <div class="row">';
+                            cardHtml += '        <div class="col-6 pe-1">';
+                            cardHtml += '          <span class="card-label d-block small"><i class="fa fa-user-tie me-1"></i>' + (value.SalesmanName || "-") + '</span>';
+                            cardHtml += '        </div>';
+
+                            // Status Logic
+                            var status = value.Status || "-";
+                            var statusIcon = "fa fa-info-circle";
+                            var statusClass = "badge text-white";
+
+                            if (status === "Open" || status === "Amendment") {
+                                statusIcon = "fa fa-envelope-open";
+                                statusClass += " bg-primary";
+                            }
+                            else if (status === "Amended") {
+                                statusIcon = "fa fa-pencil-square";
+                                statusClass += " bg-warning";
+                            }
+                            else if (status === "Cancelled") {
+                                statusIcon = "fa fa-ban";
+                                statusClass += " bg-danger";
+                            }
+                            else if (status === "Processed") {
+                                statusIcon = "fa fa-check-circle";
+                                statusClass += " bg-success";
+                            }
+                            else {
+                                statusClass += " bg-secondary";
+                            }
+
+                            cardHtml += '        <div class="col-6 ps-1">';
+                            cardHtml += '          <span class="' + statusClass + '"><i class="' + statusIcon + ' me-1"></i>' + status + '</span>';
+                            cardHtml += '        </div>';
+                            cardHtml += '      </div>';
+
+                            cardHtml += '    </div>'; // Body End
+
+                            // Footer
+                            cardHtml += '    <div class="card-footer card-footer-view text-end">';
+
+                            cardHtml += $("#txtViewID").val() == 0 ? '' :
+                                '<button id="btnView' + rowIndex + '" type="button" class="btn btn-sm btn-info clsview me-1" data-id="' + value.ID + '" data-customername="' + value.CustomerName + '">' +
+                                '<i class="fa fa-eye me-1"></i>View</button>';
+
+                            cardHtml += (value.StatusID == 1 || value.StatusID == 3) && $("#txtModifyID").val() == 1 ?
+                                '<button id="btnEdit' + rowIndex + '" type="button" class="btn btn-sm btn-warning clsedit" data-id="' + value.ID + '" data-customername="' + value.CustomerName + '">' +
+                                '<i class="fa fa-pen me-1"></i>Edit</button>' : '';
+
+                            cardHtml += '    </div>';
+
+                            cardHtml += '  </div>';
+                            cardHtml += '</div>';
+
+                        });
+                    }
+
+                    $('#divMobCollDocsList').html(cardHtml);
+                }
+                else if (nMode == 8 || nMode == 9) {
+                    var Colljsdata = JSON.parse(data);
+                    console.log("Colljsdata", Colljsdata);
+
+                    var HeaderData = Colljsdata.Table[0];
+                    var DocData = Colljsdata.Table1;
+                    $('#txtID').val(HeaderData.ID),
+                        $('#txtStatusID').val(HeaderData.StatusID),
+
+                        $('#cmbBeatName').val(HeaderData.BeatID),
+                        $('#cmbSalesManName').val(HeaderData.SalesManID),
+                        $('#txtCustomerID').val(HeaderData.CustomerID),
+                        $('#txtCustomerName').val(HeaderData.CustomerName),
+                        $('#cmbBranchName').val(HeaderData.BranchID),
+                        $('#txtCollAmt').val(HeaderData.CollectionValue),
+                        $('#cmbPaymentMode').val(HeaderData.PaymentID);
+                    if (HeaderData.ChequeDate != "") {
+                        var dt = new Date(HeaderData.ChequeDate);
+                        var chqdt =
+                            dt.getFullYear() + "-" +
+                            String(dt.getMonth() + 1).padStart(2, "0") + "-" +
+                            String(dt.getDate()).padStart(2, "0");                        
+                        $('#dtpChequeDate').val(chqdt);
+                    }
+                        $('#txtChequeNo').val(HeaderData.ChequeNo),
+                        $('#cmbBankName').val(HeaderData.BankID),
+                        $('#txtifsc').val(HeaderData.IFSCcode),
+                        $('#cmbBankACNo').val(HeaderData.BankAccountID),
+                        $('#txtRemarks').val(HeaderData.Remarks),
+                        $('#txtNarration').val(HeaderData.Narration);
+                    var isView = nTransMode == 5 ? "disabled" : "";
+                    $('#tblAdjDocInfo').DataTable({
+                        scrollY: "500px",
+                        scrollX: true,
+                        scrollCollapse: true,
+                        paging: false,
+                        destroy: true,
+                        data: DocData,
+                        fixedColumns: false,
+                        ordering: false,
+                        searching: true,
+                        sorting: false,
+                        columns: [
+                            { "data": "ID", "autoWidth": true, "visible": false, className: "dt-body-left" },
+                            { "data": "Docprefix", "autoWidth": true, "visible": false, className: "dt-body-left" },
+                            { "data": "AssignInvoiceID", "autoWidth": true, "visible": false, className: "dt-body-left" },
+                            { "data": "NetAmt", "autoWidth": true, "visible": false, className: "dt-body-left" },
+                            {
+                                className: "dt-body-center", "visible": false, width: "2%",
+                                "mRender": function (data, type, value, meta) {
+                                    var rowIndex = (meta.row + 1);
+                                    var _action = rowIndex;
+                                    return _action;
+                                },
+                            },
+                            {
+                                className: "dt-body-left", width: "70%",
+                                "mRender": function (data, type, value, meta) {
+                                    var _action = 'Doc ID : <b >' + value.Docid + '</b><br/>Doc Date : ' + value.Docdate + '<br/>Ref No : ' + value.Refno + '<br/>Net Amount : ' + parseFloat(value.NetAmt).toFixed(DecVal);
+                                    var lblData = '<label>' + _action + '</label>';
+                                    return _action;
+                                },
+                            },
+                            {
+                                className: "dt-body-right", width: "7%",
+                                "mRender": function (data, type, value, meta) {
+                                    var rowIndex = meta.row;
+                                    var fids = 'dgvInvBalance_' + rowIndex;
+                                    var lblData = '<label name="Balance" lbltag="' + value.Balance + '" id="' + fids + '" title="' + value.Balance + '">' + parseFloat(value.Balance).toFixed(DecVal) + '</label>';
+                                    return lblData;
+                                },
+                            },
+                            {
+                                className: "dt-body-right", width: "7%",
+                                "mRender": function (data, type, value, meta) {
+                                    var rowIndex = meta.row;
+                                    var fids = 'dgvInvAdjAmt_' + rowIndex;
+                                    var _action = '<input ' + isView + ' type="number" class="dgvAdjAmount" name="AdjAmount" id="' + fids + '" txttag="' + value.AdjAmt + '" title="' + value.AdjAmt + '" value="' + parseFloat(value.AdjAmt).toFixed(DecVal) + '" style="text-align:right;width:55px;"maxlength = "16"/>';
+                                    return _action;
+                                },
+                            },
+                            {
+                                className: "dt-body-right", width: "7%",
+                                "mRender": function (data, type, value, meta) {
+                                    var rowIndex = meta.row;
+                                    var fids = 'dgvInvOtherCharge_' + rowIndex;
+                                    var _action = '<input ' + isView + ' type="number" class="dgvOtherCharge" name="OtherCharge" id="' + fids + '" txttag="' + value.WriteOff + '" title="' + value.WriteOff + '" value="' + parseFloat(value.WriteOff).toFixed(DecVal) + '" style="text-align:right;width:55px;"maxlength = "16"/>';
+                                    return _action;
+                                },
+                            },
+                            {
+                                className: "dt-body-right", width: "7%",
+                                "mRender": function (data, type, value, meta) {
+                                    var rowIndex = meta.row;
+                                    var fids = 'dgvDiscPern_' + rowIndex;
+                                    var fidsAmt = 'dgvDiscAmt_' + rowIndex;
+                                    var _action = '<input ' + isView + ' type="number" class="dgvDiscPern" name="DiscountPern" id="' + fids + '" txttag="' + value.DiscPern + '" title="' + value.DiscPern + '" value="' + parseFloat(value.DiscPern).toFixed(DecVal) + '" style="text-align:right;width:55px;"maxlength = "16"/>' +
+                                        '<br/><input ' + isView + ' type="number" class="dgvDiscAmt" name="DiscountAmt" id="' + fidsAmt + '" txttag="' + value.DiscAmt + '" title="' + value.DiscAmt + '" value="' + parseFloat(value.DiscAmt).toFixed(DecVal) + '" style="text-align:right;width:55px;"maxlength = "16"/>';
+                                    return _action;
+                                },
+                            },
+                        ],
+                    });
+                    Table = $('#tblAdjDocInfo').DataTable();
+                    if (Table.rows().count() == 0) {
+                        showErrorSnackbar("No records found")
+                    }
+                    setTimeout(() => {
+                        CalculateBalanceAmt();
+                    }, 500);
+                    setTimeout(() => {
+                        GetData(2, $('#cmbBeatName').val(), $('#cmbSalesManName').val());
+                    }, 500);
+                }
+            },
+            error: function (data) {
+                if (data.status == "401") {
+                    var msg = data.responseJSON.Message;
+                    ////showErrorSnackbar(msg + " Logout and Login again.");
+                }
+            }
+        });
+    }
+
+    // Function to filter cards based on search input
+    function filterCards() {
+        var input, filter, cards, cardContainer, h5, i, txtValue;
+        input = document.getElementById("txtSearchCards");
+        filter = input.value.toUpperCase();
+        cardContainer = document.getElementById("divMobCollDocsList");
+        cards = cardContainer.getElementsByClassName("card-item");
+        
+        for (i = 0; i < cards.length; i++) {
+            // Search in the whole text content of the card
+            txtValue = cards[i].innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                cards[i].style.display = "";
+            } else {
+                cards[i].style.display = "none";
+            }
+        }
+    }
+    $("#chkShowAll").click(function () {
+        var chkid = $("#chkShowAll").is(":checked") ? 1 : 0
+        GetSetFilterData(7, 0, chkid);        
+    });
+    
+    $(document).on('click', '.clsedit', function () {
+        console.log("Row Data : ", this);
+        $('input,select,textarea').prop("disabled", false);
+        nTransMode = 2;
+        var id = $(this).data('id');        
+        GetSetFilterData(9, id);
+        $("#dvMain,#btnClose,#btnClear,#btnSave").show();
+        $("#dvDocuments").hide();
+        $('input,select,textarea').prop("disabled", false);
+        $('#txtSearchCards,#chkShowAll').prop("disabled", false);
+        setTimeout(() => {
+            PaymodeChangewisefieldenabdisab();
+        }, 1000)
+    });
+    $(document).on('click', '.clsview', function () {
+        console.log("Row Data : ", this);
+        nTransMode = 5;
+        var id = $(this).data('id');
+        GetSetFilterData(8, id);
+        // btnClose,#btnClear,#btnSave
+        $("#dvMain,#btnClose").show();
+        $("#dvDocuments,#btnClear,#btnSave").hide();
+        $('input,select,textarea').prop("disabled", true);
+        $('#txtSearchCards,#chkShowAll').prop("disabled", false);
+    });
+    $("#btnClose").click(function () {
+        //dvDocuments,
+        if (ClosecfFocus != 3) { CloseConfirmDialogMsg("Do you want to close?"); } else { CloseForm(); }
+    });
+    function CloseForm() {
+        $("#dvMain").hide();
+        $("#dvDocuments").show();
+        $("#MainHeading").text($("#txtFormName").val());         
+        $('#txtSearchCards,#chkShowAll').prop("disabled", false);
+    }
+    function GetData(nMode, strID = null, strSalesmanID = null) {
+        $.ajax({
+            url: Aurl + "mobilecollection/getdata",
+            type: 'get',
+            contentType: 'json',
+            data: {
+                CompanyCode: strCompanyCode, Mode: nMode, ID: strID, SalesmanID: strSalesmanID, FilterType: rdoCheckedID,
+                BranchID: $('#cmbBranchName').val()
+            },
+            //xhrFields: {
+            //    withCredentials: true
+            //},
+            success: function (data) {
+                if (nMode == 1) {
+                    arrBankAccountData = [];
+                    //cmbPaymentMode,cmbBankACNo,cmbBankName
+                    $('#cmbBeatName,#cmbSalesManName,#cmbPaymentMode,#cmbBankACNo,#cmbBankName,#cmbBranchName').find("option").remove();
+                    $('#cmbBeatName,#cmbSalesManName,#cmbPaymentMode,#cmbBankACNo,#cmbBankName,#cmbBranchName').append($('<option/>', {
+                        value: 0,
+                        text: "-- Select --",
+                    }));
+                    $.each(data, function (i, items) {
+                        if (items.FType == 1) {
+                            $('#cmbSalesManName').append($('<option/>', {
+                                value: items.ID,
+                                text: items.Name,
+                            }));
+                        }
+                        if (items.FType == 2) {
+                            $('#cmbBeatName').append($('<option/>', {
+                                value: items.ID,
+                                text: items.Name,
+                            }));
+                        }
+                        if (items.FType == 3) {
+                            $('#cmbPaymentMode').append($('<option/>', {
+                                value: items.ID,
+                                text: items.Name,
+                            }));
+                        }
+                        if (items.FType == 4) {
+                            var BADetails = (items.Code).split('|');
+                            var BAInfo = {
+                                "ID": items.ID,
+                                "AccNo": items.Name,
+                                "BankID": BADetails[1],
+                                "IFSC": BADetails[2],
+                                "DefYN": BADetails[0],
+                            }
+                            if (BADetails[0] == "1") {
+                                DefBankAcc = items.ID;
+                            }
+                            arrBankAccountData.push(BAInfo);
+                            $('#cmbBankACNo').append($('<option/>', {
+                                value: items.ID,
+                                text: items.Name,
+                            }));
+                        }
+                        if (items.FType == 5) {
+                            $('#cmbBankName').append($('<option/>', {
+                                value: items.ID,
+                                text: items.Name,
+                            }));
+                        }
+                        if (items.FType == 6) {
+                            $('#cmbBranchName').append($('<option/>', {
+                                value: items.ID,
+                                text: items.Name,
+                            }));
+                        }
+                        if (items.FType == 7) {
+                            //console.log("Beat : " + items.Code + " ,Salesman : " + items.Name);
+                            $('#cmbSalesManName').val(items.Name);
+                            $('#cmbBeatName').val(items.Code);
+                            $('#cmbBranchName').val(items.ID);
+
+                        }
+                    });
+                    setTimeout(() => {
+                        GetData(2, $('#cmbBeatName').val(), $('#cmbSalesManName').val());
+                    }, 500);
+                }
+                else if (nMode == 2) {
+                    arrParty = [];
+                    $.each(data, function (i, items) {
+                        if (items.FType == 7) {
+                            var Prod = {
+                                "label": items.Code + " | " + items.Name,
+                                "name": items.Name,
+                                "code": items.Code,
+                                "id": items.ID,
+                            }
+                            arrParty.push(Prod);
+                        }
+                    });
+                    SetAutlistforFields("txtCustomerName", arrParty);
+                }
+                else if (nMode == 4) {
+                    var custjsdata = data;// JSON.parse(data);
+                    $('#tblAdjDocInfo').DataTable({
+                        scrollY: "500px",
+                        scrollX: true,
+                        scrollCollapse: true,
+                        paging: false,
+                        destroy: true,
+                        data: custjsdata,
+                        fixedColumns: false,
+                        ordering: false,
+                        searching: true,
+                        sorting: false,
+                        columns: [
+                            { "data": "ID", "autoWidth": true, "visible": false, className: "dt-body-left" },
+                            { "data": "Docprefix", "autoWidth": true, "visible": false, className: "dt-body-left" },
+                            { "data": "AssignInvoiceID", "autoWidth": true, "visible": false, className: "dt-body-left" },
+                            { "data": "NetAmt", "autoWidth": true, "visible": false, className: "dt-body-left" },
+                            {
+                                className: "dt-body-center", "visible": false, width: "2%",
+                                "mRender": function (data, type, value, meta) {
+                                    var rowIndex = (meta.row + 1);
+                                    var _action = rowIndex;
+                                    return _action;
+                                },
+                            },
+                            {
+                                className: "dt-body-left",width:"70%",
+                                "mRender": function (data, type, value, meta) {
+                                    var _action = 'Doc ID : <b >' + value.Docid + '</b><br/>Doc Date : ' + value.Docdate + '<br/>Ref No : ' + value.Refno + '<br/>Net Amount : ' + value.NetAmt;
+                                    var lblData = '<label>' + _action +'</label>';
+                                    return _action;
+                                },
+                            },
+                            {
+                                className: "dt-body-right", width: "7%",
+                                "mRender": function (data, type, value, meta) {
+                                    var rowIndex = meta.row;
+                                    var fids = 'dgvInvBalance_' + rowIndex; 
+                                    var lblData = '<label name="Balance" lbltag="' + value.Balance + '" id="' + fids + '" title="' + value.Balance + '">' + value.Balance + '</label>';
+                                    return lblData;
+                                },
+                            },
+                            {
+                                className: "dt-body-right", width: "7%",
+                                "mRender": function (data, type, value, meta) {
+                                    var rowIndex = meta.row;
+                                    var fids = 'dgvInvAdjAmt_' + rowIndex;
+                                    var _action = '<input type="number" class="dgvAdjAmount" name="AdjAmount" id="' + fids + '" txttag="0" title="0" value="0" style="text-align:right;width:55px;"maxlength = "16"/>';
+                                    return _action;
+                                },
+                            },
+                            {
+                                className: "dt-body-right", width: "7%",
+                                "mRender": function (data, type, value, meta) {
+                                    var rowIndex = meta.row;
+                                    var fids = 'dgvInvOtherCharge_' + rowIndex;
+                                    var _action = '<input type="number" class="dgvOtherCharge" name="OtherCharge" id="' + fids + '" txttag="0" title="0" value="0" style="text-align:right;width:55px;"maxlength = "16"/>';
+                                    return _action;
+                                },
+                            },
+                            {
+                                className: "dt-body-right", width: "7%",
+                                "mRender": function (data, type, value, meta) {
+                                    var rowIndex = meta.row;
+                                    var fids = 'dgvDiscPern_' + rowIndex;
+                                    var fidsAmt = 'dgvDiscAmt_' + rowIndex;
+                                    var _action = '<input type="number" class="dgvDiscPern" name="DiscountPern" id="' + fids + '" txttag="0" title="0" value="0" style="text-align:right;width:55px;"maxlength = "16"/>' +
+                                        '<br/><input type="number" class="dgvDiscAmt" name="DiscountAmt" id="' + fidsAmt + '" txttag="0" title="0" value="0" style="text-align:right;width:55px;"maxlength = "16"/>';
+                                    return _action;
+                                },
+                            },
+                        ],
+                    });
+                    Table = $('#tblAdjDocInfo').DataTable();
+                    if (Table.rows().count() == 0) {
+                        showErrorSnackbar("No records found")
+                    }
+                }
+                else if (nMode == 5) {
+                    $.each(data, function (i, items) {
+                        if ($("#txtTransType").val() == "2" && $("#txtTransID").val() != "") {
+                            
+                            if ($('#cmbSalesManName').val() == 0) {
+                                $('#cmbSalesManName').val(items.Name)
+                            }
+                            $('#cmbBeatName').val(items.Code);
+                            if ($('#txtCustomerName').val() == '') {
+                                $('#txtCustomerName').val(items.Billadd2);
+                            }
+
+                            setTimeout(() => {
+                                GetData(2, $('#cmbBeatName').val(), $('#cmbSalesManName').val());
+                            }, 500);
+                        }
+                        else {
+                            if ($('#cmbBeatName').val() == 0 && $('#cmbSalesManName').val() == 0) {
+                                $('#cmbBeatName').val(items.Code)
+                                $('#cmbSalesManName').val(items.Name)
+                            }
+                            else if ($('#cmbSalesManName').val() == 0) {
+                                $('#cmbSalesManName').val(items.Name)
+                            }
+                            else if ($('#cmbBeatName').val() == 0) {
+                                $('#cmbBeatName').val(items.Code)
+                            }
+                            if ($('#txtCustomerName').val() == '') {
+                                $('#txtCustomerName').val(items.Billadd2);
+                            }
+                        }
+                    });
+                }
+            }, error: function (data) {
+                if (data.status == "401") {
+                    var msg = data.responseJSON.Message;
+                    ////showErrorSnackbar(msg + " Logout and Login again.");
+                }
+            }
+        });
+    }
+    $("#btnAddNew").click(function () {
+        //dvDocuments,
+        nTransMode = 1;
+        $("#dvMain").show();
+        $("#dvDocuments").hide();
+        ClearForm();
+        $('input,select,textarea').prop("disabled", false);
+        $("#dvMain,#btnClose,#btnClear,#btnSave").show();
+        $("#dvDocuments").hide();
+        $('input,select,textarea').prop("disabled", false);
+        $('#txtSearchCards,#chkShowAll').prop("disabled", false);
+        setTimeout(() => {
+            PaymodeChangewisefieldenabdisab();
+        }, 1000);
+    });
+    $('#cmbBankACNo').on('change', function (e) {
+        if ($('#cmbBankACNo').val() > 0) {
+            var md = arrBankAccountData.filter(t => t.ID == $('#cmbBankACNo').val());
+            $("#txtifsc").val(md[0].IFSC);
+            $("#cmbBankName").val(md[0].BankID);
+        } else {
+            $("#txtifsc").val('');
+            $("#cmbBankName").val(0);
+        }
+    });
+    $('#cmbBeatName,#cmbSalesManName').change(function () {
+        $(".clrdivs").html("");        
+        GetData(2, $('#cmbBeatName').val(), $('#cmbSalesManName').val());
+    });
+    function SetAutlistforFields(FieldID, arryvalue) {
+        if (arryvalue.length == 0) {
+            //showErrorSnackbar("No customer found");
+        }
+        $("#" + FieldID).autocomplete({
+            minLength: 0,
+            source: arryvalue,
+            select: function (event, ui) {
+                $("#" + FieldID).val(ui.item.name);
+                if (FieldID == "txtCustomerName") {
+                    //customer info function
+                    $("#txtCustomerID").val(ui.item.id);
+                    GetData(4, ui.item.id, $('#cmbSalesManName').val())
+                    GetData(5, ui.item.id);
+                }
+                return false;
+            },
+        }).autocomplete("instance")._renderItem = function (ul, item) {
+            return $("<li class='each'>")
+                .append("<div class='acItem'><span class='name'>" +
+                    item.label + "</span></div>")
+                .appendTo(ul);
+        };
+    }
+
+    $('#cmbPaymentMode').change(function () {
+        PaymodeChangewisefieldoperation();
+    });
+    function PaymodeChangewisefieldoperation() {
+        $("#txtChequeNo,#cmbBankName,#txtifsc,#cmbBankACNo,#dtpChequeDate").prop("disabled", true);
+        $("#txtChequeNo,#txtifsc,#dtpChequeDate").val('');
+        $("#cmbBankName,#cmbBankACNo").val(0);
+        var paymode = $('#cmbPaymentMode').val();
+        if (paymode == 1) {
+            $("#txtChequeNo,#cmbBankName,#txtifsc,#cmbBankACNo,#dtpChequeDate").prop("disabled", true);
+            $("#txtChequeNo,#txtifsc,#dtpChequeDate").val('');
+            $("#cmbBankName,#cmbBankACNo").val(0);
+        }
+        else if (paymode == 2) {//CHEQUE
+            //GetAutolistBankNames("CHEQUE_BOOK_BNK");
+            $("#txtChequeNo,#dtpChequeDate,#cmbBankName,#txtifsc,#cmbBankACNo").prop("disabled", false);
+            $('#cmbBankACNo').prop("disabled", true);
+            //$('#cmbBankName').prop("disabled", true);
+            $("#txtChequeNo,#txtifsc,#dtpChequeDate").val('');
+            $("#cmbBankName,#cmbBankACNo").val(0);
+        }
+        else if (paymode == 4) {
+            //GetAutolistBankNames("CHEQUE_BOOK_BNK");
+            $('#cmbBankACNo,#txtChequeNo,#dtpChequeDate').prop("disabled", false);
+            $("#txtChequeNo,#txtifsc,#dtpChequeDate").val('');
+            $("#cmbBankName,#cmbBankACNo").val(0);
+        }
+    }
+    function PaymodeChangewisefieldenabdisab() {
+        $("#txtChequeNo,#cmbBankName,#txtifsc,#cmbBankACNo,#dtpChequeDate").prop("disabled", true);        
+        var paymode = $('#cmbPaymentMode').val();
+        if (paymode == 1) {
+            $("#txtChequeNo,#cmbBankName,#txtifsc,#cmbBankACNo,#dtpChequeDate").prop("disabled", true);            
+        }
+        else if (paymode == 2) {//CHEQUE           
+            $("#txtChequeNo,#dtpChequeDate,#cmbBankName,#txtifsc,#cmbBankACNo").prop("disabled", false);
+            $('#cmbBankACNo').prop("disabled", true);
+        }
+        else if (paymode == 4) {            
+            $('#cmbBankACNo,#txtChequeNo,#dtpChequeDate').prop("disabled", false);            
+        }
+    }
+    //rdoAssignedInvoice,rdoCustomer
+    $('#rdoCustomer').click(function () {
+        $('#txtCustomerName,#txtCustomerID').val("");
+        rdoCheckedID = 2;
+        Table.clear().draw(); Table.clear().draw();
+        arrAmtAdjDocs = [];
+        $('#divBalanceTop').html('Col Amt : 0  ;  Bal : 0');
+        $('#divBalanceBottom').html('Col Amt : 0  ;  Bal : 0');
+        Table.search('').columns().search('').draw();
+        GetData(2, $('#cmbBeatName').val(), $('#cmbSalesManName').val());
+        //clearCollection(true);
+    });
+    $('#rdoAssignedInvoice').click(function () {
+        $('#txtCustomerName,#txtCustomerID').val("");
+        rdoCheckedID = 1;
+        Table.clear().draw(); Table.clear().draw();
+        arrAmtAdjDocs = [];
+        $('#divBalanceTop').html('Col Amt : 0  ;  Bal : 0');
+        $('#divBalanceBottom').html('Col Amt : 0  ;  Bal : 0');
+        Table.search('').columns().search('').draw();
+        //clearCollection(true);
+        GetData(2, 0, $('#cmbSalesManName').val());
+    });
+    var ProdGridChange = false;
+    function updateLabelColumn(labelID, netValue) {
+        //const label = document.getElementById(`dgvProdGross${rowId}`);
+        const label = document.getElementById(labelID);
+        label.setAttribute('lbltag', netValue.toFixed(4));
+        label.innerText = netValue.toFixed(DecVal);
+        label.title = netValue.toFixed(4);
+    }
+    function updateInputColumn(inputID, netValue) {
+        //const label = document.getElementById(`dgvProdGross${rowId}`);
+        const input = document.getElementById(inputID);
+        var value = netValue != "" ? netValue : 0;
+        input.setAttribute('txttag', parseFloat(value).toFixed(4));
+        input.value = parseFloat(value).toFixed(DecVal);
+        input.title = netValue;
+    }
+    $(document).on("focusin", ".dgvAdjAmount,.dgvOtherCharge,.dgvDiscPern,.dgvDiscAmt", function (e) {
+        var id = e.target.id;
+        var name = e.target.name;
+        var value = e.target.value;
+        //getTagValue(id, name);
+        const val = document.getElementById(id).getAttribute("txttag");
+        $("#" + id).val(val);
+        $("#" + id).select();
+        ProdGridChange = false;
+    });
+    $(document).on("blur", ".dgvAdjAmount,.dgvOtherCharge,.dgvDiscPern,.dgvDiscAmt", function (e) {
+        var id = e.target.id;
+        var name = e.target.name;
+        var value = e.target.value;
+        //setTagValue(id, name, value);
+        if (!ProdGridChange)
+        {
+            updateInputColumn(id, e.target.value);
+        }
+    });
+    $(document).on("click", ".dgvAdjAmount,.dgvOtherCharge,.dgvDiscPern,.dgvDiscAmt", function (e) {
+        $(this).select();
+    });
+    $('#txtCollAmt').change(function (e) {
+        CalculateBalanceAmt();
+    });
+    $(document).on("change", ".dgvAdjAmount", function (e) {
+        ProdGridChange = true;
+        var id = e.target.id;
+        var name = e.target.name;
+        var value = parseFloat(e.target.value);
+        updateInputColumn(id, e.target.value);
+        var CollAmt = $('#txtCollAmt').val();
+        let eachAdjAmt = 0,otherChrg = 0,discAmt = 0;
+
+        $('#tblAdjDocInfo tbody tr input').each(function () {
+            const name = this.name;
+            const value = parseFloat(this.getAttribute('txttag')) || 0;
+
+            if (name === 'AdjAmount') eachAdjAmt += value;
+            else if (name === 'OtherCharge') otherChrg += value;
+            else if (name === 'DiscountAmt') discAmt += value;
+        });
+
+        var $row = $(e.target).closest("tr");
+        var rowData = Table.row($row).data();
+        var InvoiceAmt = rowData.NetAmt;
+        //DiscountPern,DiscountAmt
+        
+        var DiscPern = parseFloat($row.find("input[name='DiscountPern']").attr("txttag")) || 0;
+        var DiscAmt = parseFloat($row.find("input[name='DiscountAmt']").attr("txttag")) || 0;
+        var Balance = parseFloat($row.find("label[name='Balance']").attr("lbltag")) || 0;
+        var OtherChargeAmt = parseFloat($row.find("input[name='OtherCharge']").attr("txttag")) || 0;
+        //parseFloat(CollAmt) +
+        var TotAdjAmt =  parseFloat(value) + DiscAmt + (OtherChargeAmt <= 0 ? Math.abs(OtherChargeAmt) : 0);
+        if (eachAdjAmt > CollAmt) {
+            updateInputColumn(id, 0);
+            showErrorSnackbar("Adjust Amount should be lessthan Collection Amount.");
+        }
+        else if (TotAdjAmt > Balance) {
+            updateInputColumn(id, 0);
+            showErrorSnackbar("Amount mismatched");
+        }
+
+        
+        CalculateBalanceAmt();
+    });
+    $(document).on("change", ".dgvOtherCharge", function (e) {
+        ProdGridChange = true;
+        var id = e.target.id;
+        var name = e.target.name;
+        var value = parseFloat(e.target.value);              
+        var $row = $(e.target).closest("tr");
+        var PreviousOtherChargeAmt = parseFloat($row.find("input[name='OtherCharge']").attr("txttag")) || 0;
+        updateInputColumn(id, e.target.value);
+        var rowData = Table.row($row).data();
+        var InvoiceAmt = rowData.NetAmt;
+        //DiscountPern,DiscountAmt
+        var dCollAmt = $('#txtCollAmt').val()
+        let eachAdjAmt = 0, otherChrgPOS = 0, otherChrgNEG = 0, discAmt = 0;
+        $('#tblAdjDocInfo tbody tr input').each(function () {
+            const name = this.name;
+            const value = parseFloat(this.getAttribute('txttag')) || 0;
+
+            if (name === 'AdjAmount') {
+                eachAdjAmt += value;
+            }
+            else if (name === 'OtherCharge') {
+                if (value > 0) {
+                    otherChrgPOS += value;
+                } else {
+                    otherChrgNEG += Math.abs(value);
+                }                
+            }
+            else if (name === 'DiscountAmt') {
+                discAmt += value
+            }
+        });
+        if ((eachAdjAmt + otherChrgPOS) > parseFloat(dCollAmt)) {
+            updateInputColumn(id, 0);
+        } else {
+            var DiscPern = parseFloat($row.find("input[name='DiscountPern']").attr("txttag")) || 0;
+            var DiscAmt = parseFloat($row.find("input[name='DiscountAmt']").attr("txttag")) || 0;
+            var Balance = parseFloat($row.find("label[name='Balance']").attr("lbltag")) || 0;
+            var AdjAmtPM = parseFloat($row.find("input[name='AdjAmount']").attr("txttag")) || 0;
+            var TotAdjAmt = parseFloat(AdjAmtPM) + DiscAmt + (value <= 0 ? Math.abs(value) : 0);
+            if (TotAdjAmt > Balance) {
+                updateInputColumn(id, 0);
+                showErrorSnackbar("Amount mismatched");
+            }
+        }
+        CalculateBalanceAmt();
+    });
+    $(document).on("change", ".dgvDiscPern,.dgvDiscAmt", function (e) {
+        try {
+            ProdGridChange = true;
+            var id = e.target.id;
+            var CurrentFName = e.target.name;
+            var fieldval = e.target.value;
+            updateInputColumn(id, e.target.value);
+            var $row = $(e.target).closest("tr");
+            var rowData = Table.row($row).data();
+            var InvoiceAmt = rowData.NetAmt;
+            //DiscountPern,DiscountAmt
+            var DiscPern = parseFloat($row.find("input[name='DiscountPern']").attr("txttag")) || 0;
+            var DiscAmt = parseFloat($row.find("input[name='DiscountAmt']").attr("txttag")) || 0;
+            var Balance = parseFloat($row.find("label[name='Balance']").attr("lbltag")) || 0;
+            var AdjAmtPM = parseFloat($row.find("input[name='AdjAmount']").attr("txttag")) || 0;
+            var OtherChargeAmt = parseFloat($row.find("input[name='OtherCharge']").attr("txttag")) || 0;
+            var OCAmt = OtherChargeAmt < 0 ? Math.abs(OtherChargeAmt) : 0;
+            if (CurrentFName === "DiscountAmt") {
+                var calpern = (fieldval / InvoiceAmt) * 100;
+                updateInputColumn($row.find("input[name='DiscountPern']").attr("id"), calpern);
+                DiscPern = calpern;
+                DiscAmt = fieldval;
+                if ((AdjAmtPM + parseFloat(DiscAmt) + OCAmt) > Balance) {
+                    DiscPern = 0;
+                    DiscAmt = 0;
+                    updateInputColumn($row.find("input[name='DiscountPern']").attr("id"), 0);
+                    updateInputColumn($row.find("input[name='DiscountAmt']").attr("id"), 0);
+                    showErrorSnackbar("Amount mismatched")
+                }
+            }
+
+            if (CurrentFName === "DiscountPern") {
+                var calamt = (fieldval * InvoiceAmt) / 100;
+                updateInputColumn($row.find("input[name='DiscountAmt']").attr("id"), calamt);
+                DiscAmt = calamt;
+                DiscPern = fieldval;
+                if ((AdjAmtPM + parseFloat(DiscAmt) + OCAmt) > Balance) {
+                    DiscPern = 0;
+                    DiscAmt = 0;
+                    updateInputColumn($row.find("input[name='DiscountPern']").attr("id"), 0);
+                    updateInputColumn($row.find("input[name='DiscountAmt']").attr("id"), 0);
+                    showErrorSnackbar("Amount mismatched")
+                }
+            }
+            CalculateBalanceAmt();
+        } catch (error) {
+            console.error('Export error:', error);
+            alert('Export failed: ' + error.message);
+        }
+    });
+    function CalculateBalanceAmt_old() {
+        var isGO = false;
+        var totcollAmt = parseFloat($('#txtCollAmt').val());
+        var eachAdjAmt = 0, balanceAmt = 0, otherChrg = 0;
+        $('#tblAdjDocInfo tr td input').each(function (i, items) {
+            if (i % 2 == 0) {
+                if (items.value > 0) {
+                    isGO = true;
+                    eachAdjAmt = parseFloat(eachAdjAmt) + parseFloat(items.value);
+                }
+            }
+            else {
+                if (isGO) {
+                    otherChrg = parseFloat(otherChrg) + (parseFloat(items.value) > 0 ? parseFloat(items.value) : 0);
+                }
+            }
+        });
+        balanceAmt = parseFloat(totcollAmt) - (parseFloat(eachAdjAmt) + parseFloat(otherChrg));
+        $('#divBalanceTop').html('Coll Amt : ' + totcollAmt.toString() + '  ;  Bal : ' + balanceAmt.toString());
+        $('#divBalanceBottom').html('Coll Amt : ' + totcollAmt.toString() + '  ;  Bal : ' + balanceAmt.toString());
+    }
+    function CalculateBalanceAmt() {
+        var isGO = false;
+        var totcollAmt = $('#txtCollAmt').val() != "" ? parseFloat($('#txtCollAmt').val()) : 0;
+        var eachAdjAmt = 0, balanceAmt = 0, otherChrg = 0, discAmt = 0, TotAdj = 0,OCPos = 0,OCNeg = 0;
+
+        $('#tblAdjDocInfo tbody tr').each(function (i, items) {
+            $(this).find("input").each(function (index) {
+                const fieldName = $(this).attr("name");
+                const fieldID = $(this).attr("id");
+                //,
+                if (fieldName == "AdjAmount") {
+                    eachAdjAmt += parseFloat(document.getElementById(fieldID).getAttribute('txttag'));
+                }
+                else if (fieldName == "OtherCharge") {
+                    var ocamt = parseFloat(document.getElementById(fieldID).getAttribute('txttag'))
+                    if (ocamt > 0) OCPos += ocamt;
+                    else OCNeg += Math.abs(ocamt);
+
+                    otherChrg += parseFloat(document.getElementById(fieldID).getAttribute('txttag'));
+                }
+                else if (fieldName == "DiscountAmt") {
+                    discAmt += parseFloat(document.getElementById(fieldID).getAttribute('txttag'));
+                }
+            });
+        });        
+        balanceAmt = parseFloat(totcollAmt) - (parseFloat(eachAdjAmt) );
+        $('#divBalanceTop,#divBalanceBottom').html('Coll ₹ : ' + parseFloat(totcollAmt).toFixed(2) + ' ; Disc ₹ : ' + parseFloat(discAmt + OCNeg).toFixed(2) + ' ;  Bal : ' + parseFloat(balanceAmt - OCPos).toFixed(2));        
+        $("#lblRemBalance").text(parseFloat(balanceAmt - OCPos).toFixed(2));
+    }
+    function adjamtValidation() {
+        var isValid = false;
+        var isNoRowAffected = false;
+        $('#divErrorMessage').html('');
+        var rowIndex = 1;
+        var adjamt = 0, balance = 0;
+        $('#tblAdjDocInfo tr td input').each(function (i, items) {
+            if (i % 2 == 0) {
+                if (items.value > 0) {
+                    isValid = true;
+                    isNoRowAffected = true;
+                    adjamt = parseFloat(items.value);
+                    balance = parseFloat(items.name);
+                }
+            }
+            else {
+                var OtherCharg = parseFloat(items.value);
+                adjamt = adjamt + (OtherCharg < 0 ? (OtherCharg * -1) : 0)
+                if (adjamt > balance) {
+                    showErrorSnackbar('Error in Row ' + rowIndex.toString() + ' - Adj amt should be (<=) bal amt');
+                    isValid = false;
+                    return isValid;
+                }
+                rowIndex++;
+            }
+        });
+        if (!isNoRowAffected) showErrorSnackbar('Atleast one row need to adj');
+        return isValid;
+    }
+    function isNullOrEmpty(val) {
+        return val === null || val === undefined || val === "" || val == 0;
+    }
+
+    function SaveValidation() {
+        var IsValid = true;
+        $(".clrdivs").html("");
+        if ($('#txtCustomerName').val() == '') {
+            IsValid = false;
+            $('#divErrorOnCustName').html('* Customer Name should not be empty');
+            $('#txtCustomerName').focus();
+            showErrorSnackbar("Customer Name should not be empty");
+        }
+        else {
+            const exists = arrParty.filter(c => c.name == $("#txtCustomerName").val().trim());
+            if (exists.length == 0) {
+                IsValid = false;
+                $("#divErrorOnCustName").html("Select Party Name from list");
+                showErrorSnackbar("Select Party Name from list");
+            }
+        }
+        if ($('#txtCollAmt').val() == "" || $('#txtCollAmt').val() <= 0) {
+            IsValid = false;
+            $("#divErrorOnCollAmt").html("Enter valid Collected value");
+            showErrorSnackbar("Enter valid Collected value");
+        }
+        var branchid = $('#cmbBranchName').val();
+        if (isNullOrEmpty(branchid)) {
+            IsValid = false;
+            $('#divErrorOnBranchName').html('* Select Valid Branch');
+            $('#cmbBranchName').focus();
+            toggleCustomerCard();
+        }
+        if ($('#cmbPaymentMode').val() == 0) {
+            IsValid = false;
+            $('#divErrorOnPaymentMode').html('* Select Payment Mode');
+            $('#cmbPaymentMode').focus();
+        }
+        else {
+            var PMID = $('#cmbPaymentMode').val();
+            // $("#txtChequeNo,#cmbBankName,#txtifsc,#cmbBankACNo,#dtpChequeDate").prop("disabled", true);
+            if (PMID == 2) {
+                if ($('#txtChequeNo').val() == '') {
+                    IsValid = false;
+                    $('#divErrorOnChequeNo').html('* Cheque No Should not be empty');
+                    showErrorSnackbar("Cheque No Should not be empty");
+                    $('#txtChequeNo').focus();
+                }
+                else {
+                    if ($('#txtChequeNo').val().length != 6) {
+                        IsValid = false;
+                        $('#divErrorOnChequeNo').html('* Cheque No Should not be 6 digits');
+                        showErrorSnackbar("Cheque No Should not be 6 digits");
+                        $('#txtChequeNo').focus();
+                    }
+                }
+                if ($('#dtpChequeDate').val() == '') {
+                    IsValid = false;
+                    $('#divErrorOnChequeDate').html('* Cheque Date Should not be empty');
+                    showErrorSnackbar("Cheque Date Should not be empty");
+                    $('#dtpChequeDate').focus();
+                }
+                if ($('#txtifsc').val() != '') {
+                    divErrorOnIfsc
+                    var val = IFSCValidation($('#txtifsc'), $('#divErrorOnIfsc'));
+                    if (!val)
+                        IsValid = false;
+                }
+            }
+            else if (PMID == 4) {
+                if ($('#cmbBankACNo').val() == 0) {
+                    IsValid = false;
+                    $('#divErrorOnBankACNo').html('* Select Bank A/c No');
+                    showErrorSnackbar("Select Bank A/c No");
+                    $('#cmbBankACNo').focus();
+                }
+                if ($('#dtpChequeDate').val() == '') {
+                    IsValid = false;
+                    $('#divErrorOnChequeDate').html('* Date Should not be empty');
+                    showErrorSnackbar("Date Should not be empty");
+                    $('#dtpChequeDate').focus();
+                }
+            }
+        }
+        return IsValid;
+    }
+    function SaveData() {
+        var arrAmtAdjDocs = [];
+        var totamt = 0;
+        var collAmt = parseFloat($('#txtCollAmt').val());
+
+        var totcollAmt = $('#txtCollAmt').val() != "" ? parseFloat($('#txtCollAmt').val()) : 0;
+        var eachAdjAmt = 0, balanceAmt = 0, otherChrg = 0, discAmt = 0, TotAdj = 0, OCPos = 0, OCNeg = 0;
+        var rembal = parseFloat( $("#lblRemBalance").text());
+        if (rembal >= 0) {
+            $('#tblAdjDocInfo tbody tr').each(function (i, items) {
+                var rowdata = Table.row($(this)).data();
+                var RowIndex = Table.row($(this)).index();
+                var GridID = rowdata.ID;//[0];
+                var GridDocprefix = rowdata.Docprefix;//[1];
+                var GridDocID = rowdata.Docid;//[1];
+                var GridDocDate = rowdata.Docdate;//[2];
+                var GridRefNo = rowdata.Refno;
+                var GridNetAmt = rowdata.NetAmt;
+                var AssignID = rowdata.AssignInvoiceID
+                var Adjamt = 0, Otherchrg = 0, Balance = 0, DiscAmt = 0, DiscPern = 0;
+                $(this).find("input").each(function (index) {
+                    const fieldName = $(this).attr("name");
+                    const fieldID = $(this).attr("id");
+                    if (fieldName == "AdjAmount") {
+                        Adjamt = parseFloat(document.getElementById(fieldID).getAttribute('txttag'));
+                    }
+                    if (fieldName == "OtherCharge") {
+                        Otherchrg = parseFloat(document.getElementById(fieldID).getAttribute('txttag'));
+                    }
+                    if (fieldName === "DiscountAmt") {
+                        DiscAmt = parseFloat(document.getElementById(fieldID).getAttribute('txttag'));
+                    }
+
+                    if (fieldName === "DiscountPern") {
+                        DiscPern = parseFloat(document.getElementById(fieldID).getAttribute('txttag'));
+                    }
+                });
+                $(this).find("label").each(function (index) {
+                    const fieldName = $(this).attr("name");
+                    const fieldID = $(this).attr("id");
+                    if (fieldName == "Balance") {
+                        Balance = $(this).text();
+                    }
+                });
+                if (Adjamt > 0) {
+                    totamt = parseFloat(totamt) + parseFloat(Adjamt) -
+                        ((parseFloat(Otherchrg) < 0 ? 0 : parseFloat(Math.abs(Otherchrg))));// + parseFloat(DiscAmt)
+                    var docs = {
+                        "ID": GridID,
+                        "Docprefix": GridDocprefix,
+                        "Docid": GridDocID,
+                        "Docdate": GridDocDate,
+                        "Refno": GridRefNo,
+                        "NetAmt": GridNetAmt,
+                        "Balance": Balance,
+                        "Amtadj": Adjamt,
+                        "Ohtercharges": Otherchrg,
+                        "DiscPern": DiscPern,
+                        "DiscAmt": DiscAmt,
+                        "AssignInvoiceID": AssignID,
+                    }
+                    arrAmtAdjDocs.push(docs)
+                }
+            });
+            if (collAmt >= totamt) {
+                var advamt = parseFloat(collAmt) - parseFloat(totamt);
+                lstTrans = {
+                    CompanyCode: strCompanyCode,
+                    ID: $('#txtID').val(),
+                    TransMode: nTransMode,
+                    "CurrentStatus": $('#txtStatusID').val(),      
+                    BeatID: $('#cmbBeatName').val(),
+                    SalesManID: $('#cmbSalesManName').val(),
+                    CustomerID: $('#txtCustomerID').val(),
+                    BranchID: $('#cmbBranchName').val(),
+                    lstadjdocs: arrAmtAdjDocs,
+                    "Flags": 1,
+                    "UserID": UID,
+                    "collectedamt": $('#txtCollAmt').val(),
+                    "PaymentmodeID": $('#cmbPaymentMode').val(),
+                    "Chequedate": $('#dtpChequeDate').val(),
+                    "Chequeno": $('#txtChequeNo').val(),
+                    "BankID": $('#cmbBankName').val(),
+                    "Bankname": $('#cmbBankName option:selected').text(),
+                    "ifsc": $('#txtifsc').val(),
+                    "AdvAmt": advamt,
+                    "BankACno": $('#cmbBankACNo').val(),
+                    "BankACID": $('#cmbBankACNo option:selected').text(),
+                    "Remarks": $('#txtRemarks').val(),
+                    "Narration": $('#txtNarration').val(),
+                    "CusLatitude": $('#txtLatitude').val(),
+                    "CusLongtitude": $('#txtLongtitude').val(),
+                                  
+                    "TransType": 1,// $('#txtTransType').val(),
+                    "TransID": 0,//$('#txtTransID').val()
+                };
+                var SwapCustID = $('#txtCustomerID').val();
+                $.ajax({
+                    url: Aurl + "mobilecollection/save",
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify(lstTrans),
+                    cache: false,
+                    processData: false,
+                    //xhrFields: {
+                    //    withCredentials: true
+                    //},
+                    success: function (data) {
+                        $.each(data, function (i, items) {
+                            if (items.MsgID == 0) {
+                                //alert(items.Message);
+                                showSuccessSnackbar(items.Message);
+                                ClearForm();
+                                NavigatetoNext("Switch to", SwapCustID);
+                            }
+                            else {
+                                //$("#dvErrorName").html(items.Message);
+                                //alert(items.Message);
+                                showErrorSnackbar(items.Message);
+                            }
+                        });
+                    }
+                });
+            }
+            else {
+                arrAmtAdjDocs = [];
+                showErrorSnackbar('Adj amt should be less than or equal to coll amt');
+            }
+        }
+        else {
+            arrAmtAdjDocs = [];
+            showErrorSnackbar('Balance should not be negative');
+        }
+    }
+    $("#btnClear").click(function () {
+        //ClearForm();
+        if (cfFocus != 3) { ClearConfirmDialogMsg("Do you want to clear?"); } else { ClearForm(); }
+    });
+    $("#btnSave").click(function () {
+        if (cfFocus != 3) {
+            if (SaveValidation() && adjamtValidation()) {
+                ConfirmDialogMsg("Do you want to save data?");
+            }
+        } else {
+            if (SaveValidation() && adjamtValidation()) {
+                SaveData();
+            }
+        }
+    });
+    function ClearForm() {
+        $(".FormclrField").val("");
+        $(".FormclrcmbField").val(0);
+        $(".clrdivs").html("");
+        $('#txtID,#txtStatusID').val("");        
+        GetData(1, UID);
+        Table.clear().draw();
+        arrAmtAdjDocs = [];
+        $('#divBalanceTop').html('Col Amt : 0  ;  Bal : 0');
+        $('#divBalanceBottom').html('Col Amt : 0  ;  Bal : 0');
+        Table.search('').columns().search('').draw();
+        $('.chosen-Manuf').val('').trigger('chosen:updated');
+        $('.chosen-Category').val('').trigger('chosen:updated');
+
+        
+
+    }
+    function NavigatetoNext(Msg, CustName) {
+        $('<div></div>').appendTo('body')
+            .html('<div><h6>' + Msg + '</h6></div>')
+            .dialog({
+                modal: true,
+                title: 'Switch Confirm Popup',
+                zIndex: 10000,
+                autoOpen: true,
+                width: '60%',
+                resizable: false,
+                buttons: {
+                    "Daily Activity": function () {
+                        $(this).dialog("close");
+                        window.location.href = "DailyActivity?name=Daily%20Activity&strFormID=0&TypeID=2&TranID=" + CustName;
+                    },
+                    //Return: function () {
+                    //    $(this).dialog("close");
+                    //    window.location.href = "SalesReturn?Name=Sales%20%Return&TypeID=5&TranID=" + CustName;
+                    //},
+                    Close: function () {
+                        $(this).dialog("close");
+                        //return false;
+                    },
+
+                },
+                close: function (event, ui) {
+                    $(this).remove();
+                }
+            });
+    }
+    function checkAssignInvforSwitchSM(nMode, nCustomerID = 0, nSalesmanID = 0) {
+        $.ajax({
+            url: Aurl + "mobilecollection/validateswitchsm",
+            type: 'get',
+            contentType: 'json',
+            data: {
+                CompanyCode: strCompanyCode, Mode: nMode, CustomerID: nCustomerID, SalesmanID: nSalesmanID
+            },            
+            success: function (data) {
+                if (data > 0) {// have assign invoice
+                    $('#rdoAssignedInvoice').prop("checked", true);
+                    rdoCheckedID = 1;
+                } else {// no assign invoice
+                    $('#rdoCustomer').prop("checked", true);
+                    rdoCheckedID = 2;
+                }
+                GetData(4, nCustomerID, $('#cmbSalesManName').val())
+                GetData(5, nCustomerID);
+            }
+
+        });
+    }
+    if ($("#txtTransType").val() == "2" && $("#txtTransID").val() != "") {
+        //ShowMsgPopup("Customer Name : " + $("#txtTransID").val());
+        //GetTodayRoute(4, $("#txtTransID").val(), "");
+        var SwCust = $("#txtTransID").val();
+        var SwSMID = $("#txtSwitchSMID").val();
+        $("#txtCustomerID").val(SwCust);
+       
+        setTimeout(() => {            
+            $("#cmbSalesManName").val(SwSMID);
+            checkAssignInvforSwitchSM(6, SwCust, SwSMID);                        
+        }, 700);
+
+
+        setTimeout(() => {
+            GetData(2, $('#cmbBeatName').val(), $('#cmbSalesManName').val());
+        }, 500);
+    }
+    function toggleCustomerCard() {
+    const body = document.getElementById('customerInfoBody');
+    const icon = document.getElementById('icoToggleCustomer');
+
+    if (body.classList.contains('collapsed')) {
+        body.classList.remove('collapsed');
+        icon.classList.remove('bi-plus-lg');
+        icon.classList.add('bi-dash-lg');
+    } else {
+        body.classList.add('collapsed');
+        icon.classList.remove('bi-dash-lg');
+        icon.classList.add('bi-plus-lg');
+    }
+}
+
+function toggleNotesCard() {
+    const body = document.getElementById('notesBody');
+    const icon = document.getElementById('icoToggleNotes');
+
+    if (body.classList.contains('collapsed')) {
+        body.classList.remove('collapsed');
+        icon.classList.remove('bi-plus-lg');
+        icon.classList.add('bi-dash-lg');
+    } else {
+        body.classList.add('collapsed');
+        icon.classList.remove('bi-dash-lg');
+        icon.classList.add('bi-plus-lg');
+    }
+}
+    $('#txtAllowTrackLocation').val(1);
+
+    $('#btnGetSurrCustomers').click(function () {
+        $('#divErrorOnCustName').html('');
+        var IsAllow = $('#txtAllowTrackLocation').val() == "0" ? false : true;
+        if (IsAllow) {
+            $('#dvCustLoc').show();
+            geolocate(2);
+        }
+        else {
+            $('#divErrorOnCustName').html('You dont have Location tracking Permission. Cannot load data');
+        }
+    });
+    function geolocate(nMode) {
+        var IsAllow = $('#txtAllowTrackLocation').val() == "0" ? false : true;
+        if (IsAllow) {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    //var geolocation = new google.maps.LatLng(
+                    //position.coords.latitude, position.coords.longitude);
+                    var PinLat = position.coords.latitude;
+                    var PinLong = position.coords.longitude;
+
+                    $('#txtLatitude').val(PinLat);
+                    $('#txtLongtitude').val(PinLong);
+                    if (nMode == 2) {
+                        GetCustomerbyLocation();
+                    }
+                }, function (error) {
+                    showErrorSnackbar(error.message);
+                });
+            } else {
+                showErrorSnackbar("Geolocation is not supported by this browser.")
+            }
+        }
+    }
+    function GetCustomerbyLocation() {
+
+        //alert("Time :" + curtime);
+        $('#divErrorOnCustName').html('');
+        $('#divErrorOnPopupSurrCust').html('');
+        $('#lblCurrLocation').text("");
+        var lats = $('#txtLatitude').val();
+        var longs = $('#txtLongtitude').val();
+        if (lats != "" && longs != "") {
+            TableSurroundCustomers.clear().draw();
+            $.ajax({
+                url: Aurl + "surroundingcustomers",
+                type: "GET",
+                datatype: "JSON",
+                data: {
+                    CompanyCode: strCompanyCode, UserID: UID, Latitude: lats, Longitude: longs
+                },
+                success: function (data) {
+                    $('#lblCurrLocation').text(lats + "," + longs);
+                    if (data.length > 0) {
+                        if (data[0].Mode == 0) {
+                            modal.show();
+                            var customerdata = JSON.parse(data[0].Customerdata);
+                            $.each(customerdata, function (i, items) {
+                                TableSurroundCustomers.row.add([
+                                    items.ID,
+                                    items["Customer Name"],
+                                    items.Radius
+                                ]).draw(false);
+                            });
+                        } else {
+                            modal.hide();
+                            showErrorSnackbar(data[0].Message);
+                        }
+                    } else {
+                        $('#divErrorOnCustName').html('No Customers surrounding you.');
+                        $('#divErrorOnPopupSurrCust').html('No Customers surrounding you.');
+                    }
+                }
+            });
+        } else {
+            modal.hide();
+            $('#divErrorOnCustName').html('Location Not Identified. Try again');
+        }
+    }
+    $('#tblSurroundCustomers tbody').on('click', 'tr', function () {
+        $('#txtBeatName').val('');
+        $('#txtSalesManName').val('');
+        var CustID = TableSurroundCustomers.row(this).data()[0];
+        var Cust = TableSurroundCustomers.row(this).data()[1];
+        $('#txtCustomerName').val(Cust);
+        GetData(5, CustID);
+        GetData(4, CustID, $('#cmbSalesManName').val())
+        $("#txtCustomerID").val(CustID);
+        modal.hide();
+    });
+</script>

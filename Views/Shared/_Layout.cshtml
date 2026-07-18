@@ -1,0 +1,1134 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <title>@ViewBag.Title</title>
+    <link rel="SHORTCUT ICON" href="~/Images/Logo/G_100x80.png" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,100,300,500" rel="stylesheet">
+
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/Site.css" rel="stylesheet" />
+    <link href="~/Content/navbar.css" rel="stylesheet" />
+    <link href="~/Content/Snackbar.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/Content/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="~/Scripts/Validation.js"></script>
+    <style>
+        @@keyframes blink {
+            0% {
+                color: blue;
+            }
+
+            25% {
+                color: brown;
+            }
+
+            75% {
+                color: chocolate;
+            }
+
+            100% {
+                color: white;
+            }
+        }
+
+        @@-webkit-keyframes blink {
+            0% {
+                color: blue;
+            }
+
+            25% {
+                color: brown;
+            }
+
+            75% {
+                color: chocolate;
+            }
+
+            100% {
+                color: white;
+            }
+        }
+
+        .blink {
+            -webkit-animation: blink 1s linear infinite;
+            -moz-animation: blink 1s linear infinite;
+            animation: blink 1s linear infinite;
+        }
+
+        .dropdown-menu li {
+            position: relative;
+        }
+
+        .dropdown-menu .dropdown-submenu {
+            display: none;
+            position: absolute;
+            left: 100%;
+            top: -17px;
+            width: 200px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            color: darkblue;
+        }
+
+        .dropdown-menu .dropdown-submenu-left {
+            right: 100%;
+            left: auto;
+        }
+
+        .dropdown-menu > li:hover > .dropdown-submenu {
+            display: block;
+            background-color: skyblue;
+            border-radius: 5px;
+        }
+    </style>
+    <style>
+        /* Floating popup */
+        .action-popup {
+            position: absolute;
+            display: none;
+            background: white;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+            z-index: 99999;
+            min-width: 120px;
+            border-radius: 8px;
+            padding: 0;
+            opacity: 0;
+            transform: scale(0.85);
+            transition: 0.15s ease-out;
+        }
+
+            /* Slide + Zoom animation class */
+            .action-popup.show {
+                opacity: 1;
+                transform: scale(1) translateY(0px);
+            }
+
+        /* Header (draggable area) */
+        .popup-header {
+            background: #007bff;
+            padding: 8px 12px;
+            color: white;
+            border-radius: 8px 8px 0 0;
+            font-weight: bold;
+            cursor: move;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            display: none;
+        }
+
+        .close-popup {
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        /* Menu items */
+        .action-popup ul {
+            list-style: none;
+            margin: 0;
+            padding: 5px 0;
+        }
+
+        .action-popup li a {
+            display: block;
+            padding: 5px 12px;
+            cursor: pointer;
+            text-decoration: none;
+            color: black;
+            transition: background 0.2s;
+        }
+
+            .action-popup li a:hover {
+                background: #f2f2f2;
+            }
+
+        .action-btn {
+            border: 5px !important;
+        }
+    </style>
+</head>
+<body>
+    @{
+        string UserName = Convert.ToString(Session["UserName"]);
+        string LayoutName = Convert.ToString(Session["NavBarVisible"]);
+        string CompanyCode = Convert.ToString(Session["CompanyCode"]);
+        string CompanyName = Convert.ToString(Session["CompanyName"]);
+        string DBName = Convert.ToString(Session["DBName"]);
+        int RoleID = Convert.ToInt32(Session["LoginRoleID"]);
+        System.Data.DataTable dtParent = (System.Data.DataTable)Session["dtParent"];
+        System.Data.DataTable dtPermission = (System.Data.DataTable)Session["dtPermission"];
+        if (LayoutName == "LogOn")
+        {
+            <header id="LoginPage" class="navbar navbar-bright navbar-fixed-top" role="banner">
+                <div class="container">
+                    <div class="navbar-header">
+                        <a href="~/LogOn/Index" class="navbar-brand">Login Page</a>
+                    </div>
+                </div>
+            </header>
+        }
+        else if (LayoutName == "UserPermission")
+        {
+            <div class="navbar-wrapper">
+                <div class="container-fluid">
+                    <nav class="navbar navbar-bright navbar-fixed-top">
+                        <div class="container">
+                            <div class="navbar-header">
+                                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                                    <span class="sr-only">Toggle navigation</span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+
+                                </button>
+
+                                <a class="navbar-brand" href="~/Home" style="color:seashell">@CompanyCode</a>
+
+                                <img src="~/Images/search-icon.png" width="25" data-toggle="modal" data-target="#myModal" style="padding-top:10px" />
+
+                            </div>
+
+                            <div id="navbar" class="navbar-collapse collapse navbar-right">
+
+                                <ul class="nav navbar-nav">
+
+                                    @for (int iRow = 0; iRow < dtParent.Rows.Count; iRow++)
+                                    {
+                                        int nIsWeb = Convert.ToInt32(dtParent.Rows[iRow]["IsMobileApp"]);
+                                        int nParentID = Convert.ToInt32(dtParent.Rows[iRow]["MenuId"]);
+
+                                        string strManuName = Convert.ToString(dtParent.Rows[iRow]["MenuName"]);
+                                        System.Data.DataRow[] dr = dtPermission.Select("MenuParentId=" + nParentID.ToString());
+                                        if (dr.Count() > 0 && nIsWeb == 1)
+                                        {
+                                            <li class="dropdown">
+                                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@strManuName <span class="caret"></span></a>
+                                                <ul class="dropdown-menu">
+                                                    @foreach (System.Data.DataRow dr_Row in dr)
+                                                    {
+                                                        nIsWeb = Convert.ToInt32(dtParent.Rows[iRow]["IsMobileApp"]);
+                                                        string displayName = dr_Row["MenuName"].ToString();
+                                                        string controllerName = dr_Row["LocationName"].ToString();
+                                                        string IsMenus = dr_Row["IsMenu"].ToString();
+                                                        //if (controllerName != "PriceChangeinOT" && controllerName != "AllowTrackLocation"&& controllerName != "Allowpricetypechange" && controllerName != "AllowCreditlimitchange"
+                                                        //                                && controllerName != "AllowProdDiscchangeinDA" && controllerName != "AllowTradeDiscchangeinDA" && controllerName != "AllowAddnlDiscchangeinDA")
+                                                        //{
+                                                        if (IsMenus == "1" && nIsWeb == 1)
+                                                        {
+                                                            //Allowpricetypechange,AllowCreditlimitchange
+                                                            <li>@Html.ActionLink(displayName, "Index", controllerName, new { name = displayName, TypeID = 1, TranID = 0 }, new { @class = "dropdown", @style = "font-weight:bold;" })</li>
+                                                        }
+                                                    }
+                                                    @if (strManuName.ToUpper() == "TOOLS" && (UserName.ToUpper() == "SA"))
+                                                    {
+                                                        <li>@Html.ActionLink("System Approval", "Index", "SystemApproval", null, new { @class = "dropdown", @style = "font-weight:bold;" })</li>
+                                                        @*<li>@Html.ActionLink("Track Location", "Index", "TrackLocation", null, new { @class = "dropdown", @style = "font-weight:bold;" })</li>*@
+                                                    }
+
+                                                </ul>
+                                            </li>
+                                        }
+                                    }
+                                    @*<li> @Html.ActionLink("🔁 Switch", "SwitchCompany", "LogOn", null, new { @class = "blink", @style = "font-weight:bold;", @id = "lnkSwitch" })</li>*@
+                                    <li>@Html.ActionLink("LogOut - " + @UserName, "LogOff", "LogOn", null, new { })</li>
+                                </ul>
+
+                            </div>
+
+                        </div>
+                    </nav>
+                </div>
+            </div>
+            @*<marquee behavior="scroll" direction="left" onmouseover="this.stop();" onmouseout="this.start();">  <p class="text-center">Last Seen : Login Time - @Logintime , Logout Time - @LogoutTime,Duration - @Duration ,User Name - @UserName</p> </marquee>*@
+
+        }
+    }
+
+    <link href="~/Content/SlidePopup.css" rel="stylesheet" />
+    <div class="container">
+
+        <!-- The Modal -->
+        <div class="modal" id="myModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header" style="background-color:lightgoldenrodyellow">
+                        <h3 class="modal-title">Quick Search</h3>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        @*<div class="dropdown" >*@
+                        @*<button onclick="myFunction()" class="dropbtn">Dropdown</button>*@
+                        <div id="myDropdown" class="dropdown-content">
+                            <input type="text" placeholder="Search.." id="myInput" onkeyup="filterFunction()">
+
+                            @{
+                                if (Session["dtPermission"] != null)
+                                {
+                                    System.Data.DataRow[] drrr = dtPermission.Select("MenuChildLevel = 2", "MenuName");
+                                    if (drrr.Count() > 0)
+                                    {
+
+                                        foreach (System.Data.DataRow dr_Row in drrr)
+                                        {
+                                            //if (dr_Row["LocationName"].ToString() != "PriceChangeinOT" && dr_Row["LocationName"].ToString() != "AllowTrackLocation" && dr_Row["LocationName"].ToString() != "Allowpricetypechange" && dr_Row["LocationName"].ToString() != "AllowCreditlimitchange"
+                                            //    && dr_Row["LocationName"].ToString() != "AllowProdDiscchangeinDA" && dr_Row["LocationName"].ToString() != "AllowTradeDiscchangeinDA" && dr_Row["LocationName"].ToString() != "AllowAddnlDiscchangeinDA")
+                                            //{
+                                            if (dr_Row["IsMenu"].ToString() == "1" && dr_Row["IsMobileApp"].ToString() == "1")
+                                            {
+                                                string reflink = dr_Row["LocationName"].ToString() + "?name=" + dr_Row["MenuName"].ToString() + "&TypeID=1&TranID=0";
+                                                <div>    <a href="@reflink"> @dr_Row["MenuName"].ToString() </a>          </div>
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        </div>
+                        @*</div>*@
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer" style="background-color:skyblue">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <img class="icon-barnew" src="~/Images/rightarrow.png" style="width:30px;height:30px;padding-top:3px;padding-left:3px;" onclick="openNav()" id="SlideArrow" hidden="hidden" />
+
+    @*<span style="font-size:30px;cursor:pointer" onclick="openNav()">&#10154; </span>*@
+
+    <div id="myNav" class="overlay" style="background-color:black;opacity:0.7">
+        @*<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>*@
+        <div class="overlay-content">
+            <div id="hrefSwap">
+                <a href="~/LogOn/SwitchCompany">
+                    <img alt="Avatar" class="facebook" src="~/Images/ShortCutTrans/Swap-Vector-PNG-Pic.png" style="width:40px;height:40px;background-color:white;" />
+                </a>
+                <p class="SlideTextColor blink">🔁 Switch</p>
+
+            </div>
+            <div id="hrefTR">
+                <a href="~/Todayroute">
+                    <img alt="Avatar" class="facebook" src="~/Images/ShortCutTrans/route-icon.jpg" style="width:40px;height:40px;" />
+                </a>
+                <p class="SlideTextColor">Today Route</p>
+            </div>
+            <div id="hrefCLSUP">
+                <a href="~/ClosingStockUpdate?name=Closing Stock Update&TypeID=1&TranID=0">
+                    <img alt="Avatar" class="facebook" src="~/Images/ShortCutTrans/1496232934.jpg" style="width:40px;height:40px;" />
+                </a>
+                <p class="SlideTextColor">CLS Update</p>
+            </div>
+            <div id="hrefOT">
+                <a href="~/OrderTaken?name=Daily Activities&TypeID=1&TranID=0">
+                    <img alt="Avatar" class="facebook" src="~/Images/ShortCutTrans/ordertakenImg.jpg" style="width:40px;height:40px;" />
+                </a>
+                <p class="SlideTextColor">Daily Activity</p>
+            </div>
+            <div id="hrefSR">
+                <a href="~/SalesReturn">
+                    <img alt="Avatar" class="google" src="~/Images/ShortCutTrans/SalesReturn.png" style="width:40px;height:40px" />
+                </a>
+                <p class="SlideTextColor">Sales Return</p>
+            </div>
+            <div id="hrefCollection">
+                <a href="~/Collection">
+                    <img alt="Avatar" class="google" src="~/Images/ShortCutTrans/CollectionImg.jpg" style="width:40px;height:40px" />
+                </a>
+                <p class="SlideTextColor">Collection</p>
+            </div>
+            <div id="hrefTranSales">
+                <a href="~/TranSales?name=Invoice&TypeID=1&TranID=0">
+                    <img alt="Avatar" class="google" src="~/Images/ShortCutTrans/invoice.png" style="width:40px;height:40px" />
+                </a>
+                <p class="SlideTextColor">Invoice</p>
+            </div>
+            <div id="hrefTransPrint">
+                <a href="~/TransPrint">
+                    <img alt="Avatar" class="google" src="~/Images/ShortCutTrans/sendtoprinter80.png" style="width:40px;height:40px" />
+                </a>
+                <p class="SlideTextColor">Transaction Print</p>
+            </div>
+            <div id="hrefCustomerLocation">
+                <a href="~/CustomerLocation">
+                    <img alt="Avatar" class="google" src="~/Images/ShortCutTrans/LocationImg.jpg" style="width:40px;height:40px" />
+                </a>
+                <p class="SlideTextColor">Customer Location</p>
+            </div>
+            <div id="hrefOrderLocation">
+                <a href="~/GetLocation">
+                    <img alt="Avatar" class="google" src="~/Images/ShortCutTrans/ProdLocation.png" style="width:40px;height:40px" />
+                </a>
+                <p class="SlideTextColor">Order Location</p>
+            </div>
+
+            <div id="hrefPayment">
+                <a href="~/Payment">
+                    <img alt="Avatar" class="youtube" src="~/Images/ShortCutTrans/PaymentImgMain.jpg" style="width:40px;height:40px" />
+                </a>
+                <p class="SlideTextColor">Payment</p>
+            </div>
+
+            <div id="hrefPO">
+                <a href="~/PurchaseOrder">
+                    <img alt="Avatar" class="facebook" src="~/Images/ShortCutTrans/PO.png" style="width:40px;height:40px;" />
+                </a>
+                <p class="SlideTextColor">Purchase Order</p>
+            </div>
+            <div id="hrefCustomer">
+                <a href="~/Customer">
+                    <img alt="Avatar" class="facebook" src="~/Images/ShortCutTrans/CustomerImage.jpg" style="width:40px;height:40px;" />
+                </a>
+                <p class="SlideTextColor">Customer</p>
+            </div>
+            <div id="hrefVendor">
+                <a href="~/Vendor">
+                    <img alt="Avatar" class="google" src="~/Images/ShortCutTrans/Vendor-Icon.jpg" style="width:40px;height:40px" />
+                </a>
+                <p class="SlideTextColor">Vendor</p>
+            </div>
+            <div id="hrefProduct">
+                <a href="~/Product">
+                    <img alt="Avatar" class="google" src="~/Images/ShortCutTrans/ProductIconImg.jpg" style="width:40px;height:40px" />
+                </a>
+                <p class="SlideTextColor">Product</p>
+            </div>
+            <div id="hrefDashBoardDetails">
+                <a href="~/DashBoardDetails">
+                    <img alt="Avatar" class="facebook" src="~/Images/ShortCutTrans/DashBoardImg.jpg" style="width:40px;height:40px;" />
+                </a>
+                <p class="SlideTextColor">Dash Board</p>
+            </div>
+            <div id="hrefPriceList">
+                <a href="~/PriceList">
+                    <img alt="Avatar" class="google" src="~/Images/ShortCutTrans/PriceList.jpg" style="width:40px;height:40px" />
+                </a>
+                <p class="SlideTextColor">Price List</p>
+            </div>
+            <div id="hrefLogOut">
+                <a href="~/LogOn/LogOff">
+                    <img alt="Avatar" class="google" src="~/Images/ShortCutTrans/logoutImg.jpg" style="width:40px;height:40px" />
+
+                </a>
+                <p class="SlideTextColor">Log Out</p>
+            </div>
+
+            @*<a href="~/Controllers/LogOnController.cs">~/Controllers/LogOnController.cs</a>*@
+            @*<div id="hrefLocation">
+                    <a href="~/GetLocation/">
+                        <img alt="Avatar" class="google" src="~/Images/ShortCutTrans/LocationImg.jpg" style="width:50px;height:50px" />
+                    </a>
+                    <p class="SlideTextColor">Find Location</p>
+                </div>*@
+            <br /><br /><br /><br />
+
+        </div>
+
+    </div>
+    @*ondblclick="openNav()"*@
+    <div class="top-content" onclick="closeNav()">
+
+        <div class="inner-bg">
+            <div class="container">
+                <div id="actionPopup" class="action-popup">
+                    <div class="popup-header">
+                        <span>Actions</span>
+                        <span class="close-popup">×</span>
+                    </div>
+                    <ul></ul>
+                </div>
+                @RenderBody()
+
+            </div>
+        </div>
+    </div>
+
+    <div class="navbar-fixed-bottom navbar-footer">
+        <div class="container">
+            @{
+                if (LayoutName == "UserPermission")
+                {
+                    <marquee>&diams;&nbsp; User : <label style="color:brown"> @UserName </label>&nbsp;&diams;&nbsp; Company Name : <label style="color:brown">@CompanyName</label>&nbsp; &diams;&nbsp; DB : <label style="color:brown">@DBName</label>&nbsp; &diams;&nbsp; GKBS &copy; 2015 - Copyrights Reserved</marquee>
+                }
+                else
+                {
+                    <p class="text-center">GKBS &copy; 2015 - Copyrights Reserved</p>
+                }
+            }
+
+            @*<p class="text-center">GKS &copy; @DateTime.Now.Year - Copyrights Reserved</p>*@
+            @*<p class="text-right">User - @UserName</p>*@
+        </div>
+    </div>
+
+    @*<div class="container">
+            <marquee>  <p class="text-center">Last Login : Login Time - @Logintime , Logout Time - @LogoutTime,Duration - @Duration ,User Name - @UserName</p></marquee>
+        </div>*@
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <button id="printBtn" hidden>Fetch & Print PDF</button>
+    @*@RenderSection("scripts", required: false)
+        @RenderSection("MyScripts", required: false)
+        @RenderSection("BillingScripts", required: false)*@
+</body>
+</html>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(document).click(function (event) {
+            //var clickover = $(event.target);
+            //var $navbar = $(".navbar-collapse");
+            //var _opened = $(".navbar-collapse").hasClass("navbar-right");
+            //if (_opened === true && !clickover.hasClass("navbar-toggle")) {
+            //    $navbar.collapse('hide');
+            //}
+            var clickover = $(event.target);
+            var $navbar = $(".navbar-collapse");
+            var _opened = $navbar.hasClass("in");
+            if (_opened === true && !clickover.hasClass("navbar-toggle")) {
+                $navbar.collapse('hide');
+            }
+        });
+    });
+    //setInterval(function () {
+    //    GetSessionState()
+    //}, 300000);
+
+
+    function GetSessionState() {
+        $.ajax({
+            url: '@Url.Action("checkSession", "Customer")',
+            type: 'GET',
+            datatype: 'json',
+            data: {},
+            success: function (data) {
+                if (data == "1") {
+                    alert("User is Logout in another tab. So logout in all tab for Security Purpose");
+                    location.href = '@Url.Action("Index", "LogOn")';
+                }
+            }
+        });
+    }
+    var element = document.getElementsByClassName('.overlay');
+    myFunction();
+    function myFunction() {
+        document.getElementById("myDropdown").classList.toggle("show");
+    }
+
+    function filterFunction() {
+        var input, filter, ul, li, a, i;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        div = document.getElementById("myDropdown");
+        a = div.getElementsByTagName("a");
+        for (i = 0; i < a.length; i++) {
+            txtValue = a[i].textContent || a[i].innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                a[i].style.display = "";
+            } else {
+                a[i].style.display = "none";
+            }
+        }
+
+    }
+
+    $('#lnkSwitch').hide();
+    $('#hrefSwap').hide();
+    $('#hrefOT').hide();
+    $('#hrefSR').hide();
+    $('#hrefCollection').hide();
+    $('#hrefPayment').hide();
+    $('#hrefPO').hide();
+    $('#hrefCustomer').hide();
+    $('#hrefVendor').hide();
+    $('#hrefProduct').hide();
+    $('#hrefPriceList').hide();
+    $('#hrefDashBoardDetails').hide();
+    $('#hrefCustomerLocation').hide();
+    $('#hrefOrderLocation').hide();
+    $('#TransPrint').hide();
+    $('#TransSales').hide();
+    $('#hrefCLSUP').hide();
+
+    //GetPermission();
+    function GetPermission() {
+        $.ajax({
+            url: '@Url.Action("ImageGetPermissions", "Customer")',
+            type: 'POST',
+            datatype: 'json',
+            data: {},
+            success: function (data) {
+                $.each(data, function (i, items) {
+                    if (items.ControllerName == "Customer")
+                    {
+                        $('#hrefCustomer').show();
+                    }
+                    else if (items.ControllerName == "Vendor")
+                    {
+                        $('#hrefVendor').show();
+                    }
+                    else if (items.ControllerName == "Product")
+                    {
+                        $('#hrefProduct').show();
+                    }
+                    else if (items.ControllerName == "OrderTaken")
+                    {
+                        $('#hrefOT').show();
+                    }
+                    else if (items.ControllerName == "SalesReturn")
+                    {
+                        $('#hrefSR').show();
+                    }
+                    else if (items.ControllerName == "Collection")
+                    {
+                        $('#hrefCollection').show();
+                    }
+                    else if (items.ControllerName == "CustomerLocation")
+                    {
+                        $('#hrefCustomerLocation').show();
+                    }
+                    else if (items.ControllerName == "GetLocation") {
+                        $('#hrefOrderLocation').show();
+                    }
+                    else if (items.ControllerName == "Payment")
+                    {
+                        $('#hrefPayment').show();
+                    }
+                    else if (items.ControllerName == "PurchaseOrder")
+                    {
+                        $('#hrefPO').show();
+                    }
+                    else if (items.ControllerName == "PriceList") {
+                        $('#hrefPriceList').show();
+                    }
+                    //else if (items.ControllerName == "GetLocation") {
+                    //    $('#hrefLocation').show();
+                    //}
+                    else if (items.ControllerName == "DashBoardDetails") {
+                        $('#hrefDashBoardDetails').show();
+                    }
+                    else if (items.ControllerName == "TransPrint") {
+                        $('#hrefTransPrint').show();
+                    }
+                    else if (items.ControllerName == "TranSales") {
+                        $('#hrefTranSales').show();
+                    }
+                    else if (items.ControllerName == "Swap") {
+                        $('#lnkSwitch').show();
+                        $('#hrefSwap').show();
+                    }
+                    else if (items.ControllerName == "ClosingStockUpdate") {
+                        $('#hrefCLSUP').show();
+                    }
+                });
+            }
+        });
+    }
+
+    function openNav() {
+        document.getElementById("myNav").style.width = "35%";
+    }
+
+function closeNav() {
+  document.getElementById("myNav").style.width = "0%";
+    }
+    function arrowKeyHandlersave(e) {
+        if (e.key === "ArrowRight") {
+            e.preventDefault();
+            document.querySelector(".clsNo")?.focus();
+        } else if (e.key === "ArrowLeft") {
+            e.preventDefault();
+            document.querySelector(".clsYes")?.focus();
+        }
+    }
+        var cfFocus = '@Session["ConfirmFocus"]';
+    function ConfirmDialogMsg(message) {
+        var IsAccepted = false;
+        $('<div></div>').appendTo('body')
+            .html('<div><h6>' + message + '</h6></div>')
+            .dialog({
+                modal: true,
+                closeOnEscape: true,
+                title: 'Confirm Popup',
+                zIndex: 100,
+                autoOpen: true,
+                width: '300px',
+                resizable: true,
+                close: false,
+                open: function () {
+                    document.addEventListener("keydown", arrowKeyHandlersave);
+                    $(this).closest(".ui-dialog")
+                        .find(".ui-dialog-titlebar-close")
+                        .removeClass("ui-dialog-titlebar-close")
+                        .html("x");
+                },
+                close: function () {
+                    // Remove event listener when dialog is closed
+                    document.removeEventListener("keydown", arrowKeyHandlersave);
+                    $(this).dialog("destroy").remove(); // Fully remove the dialog from DOM
+
+                },
+                buttons: [
+                    {
+                        text: "Yes",
+                        class: "btn btn-success clsYes",
+                        click: function () {
+                            $(this).dialog("close");
+                            SaveData();
+                        },
+                    },
+                    {
+                        text: "No",
+                        class: "btn btn-danger clsNo cfforeclr",
+                        click: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                ],
+            });
+        if (cfFocus == 1) {
+            $(".clsYes").focus();
+        }
+        else if (cfFocus == 2) {
+            $(".clsNo").focus();
+        }
+    };
+    var ClearcfFocus = '@Session["ClearConfirmFocus"]';
+    //$(".ui-dialog-titlebar-close").html('x');
+    function ClearConfirmDialogMsg(message) {
+        var IsAccepted = false;
+        $('<div></div>').appendTo('body')
+            .html('<div><h6>' + message + '</h6></div>')
+            .dialog({
+                modal: true,
+                closeOnEscape: true,
+                title: 'Confirm Popup',
+                zIndex: 100,
+                autoOpen: true,
+                width: '300px',
+                resizable: true,
+                close: false,
+                open: function () {
+                    document.addEventListener("keydown", arrowKeyHandlersave);
+                    $(this).closest(".ui-dialog")
+                        .find(".ui-dialog-titlebar-close")
+                        .removeClass("ui-dialog-titlebar-close")
+                        .html("x");
+                },
+                close: function () {
+                    // Remove event listener when dialog is closed
+                    document.removeEventListener("keydown", arrowKeyHandlersave);
+                    $(this).dialog("destroy").remove(); // Fully remove the dialog from DOM
+
+                },
+                buttons: [
+                    {
+                        text: "Yes",
+                        class: "btn btn-success clsYes",//clsclrYes
+                        click: function () {
+                            $(this).dialog("close");
+                            ClearForm();
+                        },
+                    },
+                    {
+                        text: "No",
+                        class: "btn btn-danger clsNo",//clsclrNo
+                        click: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                ],
+            });
+        if (ClearcfFocus == 1) {
+            $(".clsYes").focus();
+        }
+        else {
+            $(".clsNo").focus();
+        }
+    };
+    var ClosecfFocus = '@Session["CloseConfirmFocus"]';
+//$(".ui-dialog-titlebar-close").html('x');
+function CloseConfirmDialogMsg(message) {
+    var IsAccepted = false;
+    $('<div></div>').appendTo('body')
+        .html('<div><h6>' + message + '</h6></div>')
+        .dialog({
+            modal: true,
+            closeOnEscape: true,
+            title: 'Confirm Popup',
+            zIndex: 100,
+            autoOpen: true,
+            width: '300px',
+            resizable: true,
+            close: false,
+            open: function () {
+                document.addEventListener("keydown", arrowKeyHandlersave);
+                $(this).closest(".ui-dialog")
+                    .find(".ui-dialog-titlebar-close")
+                    .removeClass("ui-dialog-titlebar-close")
+                    .html("x");
+            },
+            close: function () {
+                // Remove event listener when dialog is closed
+                document.removeEventListener("keydown", arrowKeyHandlersave);
+                $(this).dialog("destroy").remove(); // Fully remove the dialog from DOM
+
+            },
+            buttons: [
+                {
+                    text: "Yes",
+                    class: "btn btn-success clsYes",//clsclsYes
+                    click: function () {
+                        $(this).dialog("close");
+                        CloseForm();
+                    },
+                },
+                {
+                    text: "No",
+                    class: "btn btn-danger clsNo",//clsclsNo
+                    click: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            ],
+        });
+    if (ClosecfFocus == 1) {
+        $(".clsYes").focus();
+    }
+    else {
+        $(".clsNo").focus();
+    }
+    };
+
+    var allowprint = '@Session["AllowPrint"]';
+    function PrintConfirmDialogMsg(ID, TypeID, nConfigID, message) {
+        var IsAccepted = false;
+        $(".ui-dialog-titlebar-close").hide();
+        $('<div></div>').appendTo('body')
+            .html('<div><h6>' + message + '</h6></div>')
+            .dialog({
+                modal: true,
+                closeOnEscape: true,
+                title: 'Confirm Print Popup',
+                zIndex: 100,
+                autoOpen: true,
+                width: '300px',
+                resizable: true,
+                close: false,
+                open: function () {
+                    document.addEventListener("keydown", arrowKeyHandlersave);
+                    $(this).closest(".ui-dialog")
+                        .find(".ui-dialog-titlebar-close")
+                        .removeClass("ui-dialog-titlebar-close")
+                        .html("x");
+                },
+                close: function () {
+                    // Remove event listener when dialog is closed
+                    document.removeEventListener("keydown", arrowKeyHandlersave);
+                    $(this).dialog("destroy").remove(); // Fully remove the dialog from DOM
+
+                },
+                buttons: [
+                    {
+                        text: "Yes",
+                        class: "btn btn-success clsYes",
+                        click: function () {
+                            $(this).dialog("close");
+                            PrintDocument(ID, TypeID, nConfigID);
+                        },
+                    },
+                    {
+                        text: "No",
+                        class: "btn btn-danger clsNo cfforeclr",
+                        click: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                ],
+            });
+        if (allowprint == 3) {
+            $(".clsYes").focus();
+        }
+        else if (allowprint == 4) {
+            $(".clsNo").focus();
+        }
+    };
+    setupArrowKeyNavigation();
+    // 👇 Function to apply keydown listener to all input elements in the table
+    function setupArrowKeyNavigation() {
+        if ($('#tblProductData').length) {
+            const allInputs = document.querySelectorAll('#tblProductData tbody input');
+            //allInputs.forEach((input, index) => {
+            //    input.onkeydown = function (e) {
+            //        const currentRow = input.closest('tr');
+            //        const inputIndex = Array.from(currentRow.querySelectorAll('input')).indexOf(input);
+            //        if (e.key === 'ArrowDown') {
+            //            const nextRow = currentRow.nextElementSibling;
+            //            if (nextRow) {
+            //                const nextInputs = nextRow.querySelectorAll('input');
+            //                if (nextInputs[inputIndex]) nextInputs[inputIndex].focus();
+            //                e.preventDefault();
+            //            }
+            //        }
+            //        if (e.key === 'ArrowUp') {
+            //            const prevRow = currentRow.previousElementSibling;
+            //            if (prevRow) {
+            //                const prevInputs = prevRow.querySelectorAll('input');
+            //                if (prevInputs[inputIndex]) prevInputs[inputIndex].focus();
+            //                e.preventDefault();
+            //            }
+            //        }
+            //        if (e.key === 'Enter') {
+            //            const allInputsList = Array.from(document.querySelectorAll('#tblProductData tbody input'));
+            //            const currentInputIndex = allInputsList.indexOf(input);
+            //            const nextInput = allInputsList[currentInputIndex + 1];
+
+            //            if (nextInput) {
+            //                nextInput.focus();
+            //            } else {
+            //                // Call your add row function here
+            //                Addprodgridline();
+            //                setTimeout(() => {
+            //                    const newInputs = document.querySelectorAll('#tblProductData tbody tr:last-child input');
+            //                    if (newInputs[0]) newInputs[0].focus();
+            //                }, 100);
+            //            }
+            //            e.preventDefault();
+            //        }
+
+            //    };
+            //});
+            allInputs.forEach((input, index) => {
+                input.onkeydown = function (e) {
+                    const currentRow = input.closest('tr');
+                    const inputsInRow = Array.from(currentRow.querySelectorAll('input'));
+                    const inputIndex = inputsInRow.indexOf(input);
+                    var hasclass = $(this).hasClass('ui-autocomplete-input');
+                    if (e.key === 'ArrowDown') {
+                        if (hasclass) {
+                            var vbl = $('.ui-menu-item').is(":visible");
+                            if (vbl) {
+                                //console.log("Autolist field Down");
+                            }
+                        }
+                        else {
+                            const nextRow = currentRow.nextElementSibling;
+                            if (nextRow) {
+                                const nextInputs = nextRow.querySelectorAll('input');
+                                if (nextInputs[inputIndex]) nextInputs[inputIndex].focus();
+                                e.preventDefault();
+                            }
+                        }
+                    }
+
+                    if (e.key === 'ArrowUp') {
+                        if (hasclass) {
+                            var vbl = $('.ui-menu-item').is(":visible");
+                            if (vbl) {
+                                //console.log("Autolist field Down");
+                            }
+                        }
+                        else {
+                            const prevRow = currentRow.previousElementSibling;
+                            if (prevRow) {
+                                const prevInputs = prevRow.querySelectorAll('input');
+                                if (prevInputs[inputIndex]) prevInputs[inputIndex].focus();
+                                e.preventDefault();
+                            }
+                        }
+                    }
+
+                    if (e.key === 'ArrowRight') {
+                        const nextInput = inputsInRow[inputIndex + 1];
+                        if (nextInput) {
+                            nextInput.focus();
+                            e.preventDefault();
+                        }
+                    }
+
+                    if (e.key === 'ArrowLeft') {
+                        const prevInput = inputsInRow[inputIndex - 1];
+                        if (prevInput) {
+                            prevInput.focus();
+                            e.preventDefault();
+                        }
+                    }
+
+                    if (e.key === 'Enter') {
+                        const allInputsList = Array.from(document.querySelectorAll('#tblProductData tbody input'));
+                        const currentInputIndex = allInputsList.indexOf(input);
+                        const nextInput = allInputsList[currentInputIndex + 1];
+
+                        if (nextInput) {
+                            var nm = nextInput.name;
+                            if (nm == "ProdDiscPern") {
+                                setTimeout(() => {
+                                    const newInputs = document.querySelectorAll('#tblProductData tbody tr:last-child input');
+                                    if (newInputs[0]) newInputs[0].focus();
+                                }, 100);
+                            } else {
+                                nextInput.focus();
+                            }
+                        } else {
+                            // Call your add row function here
+                            Addprodgridline();
+                            setTimeout(() => {
+                                const newInputs = document.querySelectorAll('#tblProductData tbody tr:last-child input');
+                                if (newInputs[0]) newInputs[0].focus();
+                            }, 100);
+                        }
+                        e.preventDefault();
+                    }
+                };
+            });
+
+        }
+    }
+    function InfoDialogMsg(message, Heading) {
+        var IsAccepted = false;
+        $(".ui-dialog-titlebar-close").hide();
+        $('<div></div>').appendTo('body')
+            .html('<div><h6>' + message + '</h6></div>')
+            .dialog({
+                modal: true,
+                closeOnEscape: true,
+                title: Heading,
+                zIndex: 100,
+                autoOpen: true,
+                width: '400px',
+                resizable: true,
+                close: false,
+                open: function () {
+                    $(this).closest(".ui-dialog")
+                        .find(".ui-dialog-titlebar-close")
+                        .removeClass("ui-dialog-titlebar-close")
+                        .html("x");
+                },
+                buttons: [
+                    {
+                        text: "Close",
+                        class: "btn btn-warning clsclrNo",
+                        click: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                ],
+            });
+        $(".clsclrNo").focus();
+    };
+    let userRole = {
+        canEdit: $("#txtModifyID").val() == 1,
+        canVariant: $("#txtVariantID").val() == 1,
+        canCancel: $("#txtCancelID").val() == 1,
+        canPrint: $("#txtViewID").val() == 1,
+        canPreview: $("#txtViewID").val() == 1,
+        canPDF: $("#txtViewID").val() == 1
+    };
+    $(document).on("click", ".action-btn", function (e) {
+        e.stopPropagation();
+
+        let table = $('#tblMasterData').DataTable();
+        let row = table.row($(this).closest('tr')).data();
+
+        // Build action list
+        let actions = getActionsByRole(userRole, row);
+        let menuHtml = actions.map(a => `<li><a class="${a.cls}">${a.label}</a></li>`).join("");
+
+        $("#actionPopup ul").html(menuHtml);
+
+        let popup = $("#actionPopup");
+        popup.removeClass("show");
+
+        let offset = $(this).offset();
+        let popupH = popup.outerHeight();
+        let popupW = popup.outerWidth();
+        let winH = $(window).height();
+        let scrollTop = $(window).scrollTop();
+
+        // Default DOWN position
+        let top = offset.top + 20;
+
+        // Flip UP if overflow
+        if (top + popupH > winH + scrollTop)
+            top = (offset.top - popupH - 15) + 20;
+
+        let left = ((offset.left - popupW) - 30) + 20;
+
+        // Apply position BEFORE animation
+        popup.css({ top: top, left: left }).show();
+
+        // Trigger animation
+        setTimeout(() => popup.addClass("show"), 10);
+    });
+    $(document).on("click", function () {
+        let popup = $("#actionPopup");
+        popup.removeClass("show");
+        setTimeout(() => popup.hide(), 150);
+    });
+    $(".close-popup").on("click", function () {
+        $("#actionPopup").removeClass("show");
+        setTimeout(() => $("#actionPopup").hide(), 150);
+    });
+    let popup = document.getElementById("actionPopup");
+    let header = popup.querySelector(".popup-header");
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    header.onmousedown = dragMouseDown;
+    function dragMouseDown(e) {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    }
+    function elementDrag(e) {
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+
+        popup.style.top = (popup.offsetTop - pos2) + "px";
+        popup.style.left = (popup.offsetLeft - pos1) + "px";
+    }
+    function closeDragElement() {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    }
+    $(document).on("click", ".action-btn", function (e) {
+        e.stopPropagation();
+
+        let table = $('#tblMasterData').DataTable();
+        let row = table.row($(this).closest('tr')).data();
+
+        // SAVE ROW DATA FOR LATER
+        window.__SelectedRowData = row;
+
+        // Build popup items…
+        let actions = getActionsByRole(userRole, row);
+        let menuHtml = actions.map(a => `<li><a class="${a.cls}">${a.label}</a></li>`).join("");
+
+        $("#actionPopup ul").html(menuHtml);
+
+        //showPopupAtButton(this); // (your existing position code)
+    });
+    function formatIndianCurrency(num) {
+        return '₹ ' + parseFloat(num).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+</script>

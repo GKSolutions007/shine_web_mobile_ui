@@ -1,0 +1,207 @@
+﻿:root {
+    --ink: #1a1d29;
+    --ink-soft: #5b6072;
+    --line: #e7e9f0;
+    --bg-card: #ffffff;
+    --accent: #4f5bd5;
+    --accent-soft: #eef0fd;
+    --radius: 12px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+
+.table-shell {
+    max-width: 900px;
+    margin: 0 auto;
+    background: var(--bg-card);
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(20,20,40,0.06), 0 8px 24px rgba(20,20,40,0.04);
+    padding: 20px;
+}
+
+h1 {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 4px 4px 18px;
+}
+
+table.dataTable {
+    width: 100% !important;
+    border-collapse: separate !important;
+    border-spacing: 0 10px !important;
+}
+
+    table.dataTable thead th {
+        border: none !important;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--ink-soft);
+        padding: 8px 12px !important;
+    }
+
+    table.dataTable tbody tr {
+        box-shadow: none !important;
+    }
+
+    table.dataTable tbody td {
+        border: none !important;
+        padding: 0 !important;
+        background: transparent !important;
+    }
+
+/* ---- Customer card ---- */
+.cust-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: cardIn 0.45s ease forwards;
+}
+
+    .cust-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(20,20,40,0.08);
+        border-color: #d8dcf5;
+    }
+
+@keyframes cardIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.cust-avatar {
+    flex-shrink: 0;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: var(--accent-soft);
+}
+
+.cust-avatar-fallback {
+    flex-shrink: 0;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--accent);
+    background: var(--accent-soft);
+}
+
+.cust-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.cust-name {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 0 0 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cust-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    font-size: 12.5px;
+    color: var(--ink-soft);
+}
+
+    .cust-meta span {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .cust-meta i {
+        color: var(--accent);
+        font-size: 13px;
+    }
+
+.cust-id {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    background: #f2f3f9;
+    padding: 3px 9px;
+    border-radius: 999px;
+    display: inline-block;
+}
+
+/* Row entrance staggering handled via inline animation-delay per row (see JS) */
+
+/* ---- Mobile ---- */
+@media (max-width: 640px) {
+    body {
+        padding: 12px;
+    }
+
+    .table-shell {
+        padding: 12px;
+        border-radius: 12px;
+    }
+
+    table.dataTable {
+        border-spacing: 0 8px !important;
+    }
+
+    .cust-card {
+        align-items: flex-start;
+        padding: 12px;
+        gap: 12px;
+    }
+
+    .cust-avatar, .cust-avatar-fallback {
+        width: 75px;
+        height: 75px;
+        font-size: 20px;
+    }
+
+    .cust-name {
+        font-size: 14px;
+        white-space: normal;
+    }
+
+    .cust-meta {
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    /* Hide the DataTables ID/name header columns on small screens,
+       everything relevant now lives inside the card */
+    table.dataTable thead {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cust-card {
+        animation: none;
+        opacity: 1;
+        transform: none;
+    }
+
+        .cust-card:hover {
+            transform: none;
+        }
+}

@@ -1,0 +1,383 @@
+﻿@{
+    ViewBag.Title = "Home";
+    Layout = "~/Views/Shared/_LayoutBT5.cshtml";
+}
+<link href="~/Content/navbar.css" rel="stylesheet" />
+<link href="~/Content/buttonTop.css" rel="stylesheet" />
+<link href="~/Content/jquery-ui.css" rel="stylesheet" />
+<link href="~/Content/dataTables.dataTables.2.2.2.css" rel="stylesheet" />
+@*<script src="~/Scripts/jquery-1.10.2.min.js"></script>*@
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+<script src="~/Scripts/dataTables.2.2.2.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+
+<style>
+    /* Modern Dashboard Styling */
+    body {
+        background-color: #f4f7f6;
+    }
+
+    .dashboard-header {
+        text-align: center;
+        margin-bottom: 10px;
+        animation: fadeInDown 0.8s ease-out;
+    }
+
+        .dashboard-header h3 {
+            color: #2c3e50;
+            font-weight: 700;
+            margin-top: 0px;
+        }
+
+    .welcome-text {
+        font-size: 16px;
+        color: #555;
+        font-weight: 500;
+    }
+
+    /* Card Containers */
+    .dashboard-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 10px;
+        margin-bottom: 3px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-left: 5px solid transparent;
+        position: relative;
+        overflow: hidden;
+        animation: fadeInUp 0.6s ease-out both;
+    }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+    /* Card Colors & Borders */
+    .card-blue {
+        border-left-color: #3498db;
+    }
+
+    .card-green {
+        border-left-color: #2ecc71;
+    }
+
+    .card-purple {
+        border-left-color: #9b59b6;
+    }
+
+    .card-orange {
+        border-left-color: #e67e22;
+    }
+
+    .card-red {
+        border-left-color: #e74c3c;
+    }
+
+    /* Icon styling */
+    .card-icon {
+        position: absolute;
+        right: 20px;
+        top: 20px;
+        font-size: 30px;
+        opacity: 0.20;
+        transition: all 0.3s ease;
+    }
+
+    .dashboard-card:hover .card-icon {
+        transform: scale(1.1) rotate(5deg);
+        opacity: 0.25;
+    }
+
+    .card-title {
+        color: #7f8c8d;
+        font-size: 14px;
+        font-weight: 600;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    .card-value {
+        font-size: 22px;
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 0;
+        display: block;
+    }
+
+    .time-info {
+        background: #fff;
+        padding: 15px;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        margin-top: 5px;
+        animation: fadeIn 1s ease-out;
+    }
+
+        .time-info label {
+            color: #e74c3c;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+
+    /* Animations */
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translate3d(0, 30px, 0);
+        }
+
+        to {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+        }
+    }
+
+    @@keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translate3d(0, -30px, 0);
+        }
+
+        to {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+        }
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    /* Stagger animations for cards */
+    .delay-1 {
+        animation-delay: 0.1s;
+    }
+
+    .delay-2 {
+        animation-delay: 0.2s;
+    }
+
+    .delay-3 {
+        animation-delay: 0.3s;
+    }
+
+    .delay-4 {
+        animation-delay: 0.4s;
+    }
+</style>
+
+<body>
+    <div class="container-fluid" style="padding-top: 0px;">
+
+        <!-- Header Section -->
+        <div class="dashboard-header">
+            <img src="~/Images/Logo/G_large_Transparent.png" style="height:80px;width:auto;" alt="Logo" />
+            <h3>@Session["CompanyName"]</h3>
+            <p class="welcome-text">
+                Welcome &ensp;<span style="color: #3498db;">@Session["UserName"]</span>
+            </p>
+        </div>
+
+        <!-- Messages Section (Hidden by default) -->
+        <div style="padding-bottom: 20px;" id="dvMsgHis" hidden>
+            <div class="panel panel-primary" style="background-color: transparent; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <div class="panel-heading" style="background-color: #0067c6; border: none;">
+                    <h3 class="panel-title"><i class="fa fa-envelope"></i> Messages</h3>
+                </div>
+                <div class="panel-body" style="padding: 0; background-color: white;">
+                    <table id="tblMessages" class="table table-hover table-striped" style="width:100%;margin-bottom:0;table-layout:fixed">
+                        <thead>
+                            <tr>
+                                <th style="background-color: #f8f9fa;color:#333;text-align:center;font-size: 12px;width:0%;">MID</th>
+                                <th style="background-color: #f8f9fa;color:#333;text-align:center;font-size: 12px;width:0%;">StatusID</th>
+                                <th style="background-color: #f8f9fa;color:#333;text-align:center;font-size: 12px;width:25%;">Sent By</th>
+                                <th style="background-color: #f8f9fa;color:#333;text-align:center;font-size: 12px;width:50%;">Message</th>
+                                <th style="background-color: #f8f9fa;color:#333;text-align:center;font-size: 12px;width:25%;">Sent Time</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="row">
+            <!-- Shop Visit -->
+            <div class="col-md-3 col-sm-6">
+                <div class="dashboard-card card-blue delay-1">
+                    <i class="fa fa-store card-icon" style="color: #3498db;"></i>
+                    <span class="card-title">Shop Visits</span>
+                    <label id="lblDA" class="card-value">0</label>
+                </div>
+            </div>
+
+            <!-- Order Value -->
+            <div class="col-md-3 col-sm-6">
+                <div class="dashboard-card card-green delay-2">
+                    <i class="fa fa-cart-arrow-down card-icon" style="color: #2ecc71;"></i>
+                    <span class="card-title">Order Value</span>
+                    <label id="lblOT" class="card-value">0</label>
+                </div>
+            </div>
+
+            <!-- Collection -->
+            <div class="col-md-3 col-sm-6">
+                <div class="dashboard-card card-purple delay-3">
+                    <i class="fa fa-wallet card-icon" style="color: #9b59b6;"></i>
+                    <span class="card-title">Collection</span>
+                    <label id="lblCol" class="card-value">0</label>
+                </div>
+            </div>
+
+            <!-- Cash Collection -->
+            <div class="col-md-3 col-sm-6">
+                <div class="dashboard-card card-orange delay-4">
+                    <i class="fa fa-money-bill-wave card-icon" style="color: #e67e22;"></i>
+                    <span class="card-title">Cash Collection</span>
+                    <label id="lblCashCol" class="card-value">0</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Time Info Footer -->
+        <div class="row" style="margin-top: 10px; margin-bottom: 30px;">
+            <div class="col-md-6 text-center">
+                <div class="time-info">
+                    <i class="fa fa-clock" style="color: #e74c3c;"></i> Start Time: <label id="lblST">Not Yet started</label>
+                </div>
+            </div>
+            <div class="col-md-6 text-center">
+                <div class="time-info">
+                    <i class="fa fa-history" style="color: #e74c3c;"></i> Last Action: <label id="lblET">Not Yet started</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Placeholders (Hidden) -->
+        <div class="row">
+            <div class="col-sm-6 form-box">
+                <div hidden id="chartContainer" style="height: 300px; width: 100%;padding-bottom:25px;"></div>
+            </div>
+            <div class="col-sm-6 form-box">
+                <div hidden id="chartContainer1" style="height: 300px; width: 100%;padding-bottom:25px;"></div>
+            </div>
+        </div>
+
+        <!-- Hidden Data Table -->
+        <div class="row">
+            <div class="col-md-12">
+                <table id="tblDataInfo" class="table table-hover table-bordered" cellspacing="0" hidden>
+                    <thead>
+                        <tr>
+                            <th style="background-color: deepskyblue;color:white;text-align:center;font-size: 12px;width:15%;">Branch</th>
+                            <th style="background-color: deepskyblue;color:white;text-align:center;font-size: 12px;width:25%;">Sales Amount</th>
+                            <th style="background-color: deepskyblue;color:white;text-align:center;font-size: 12px;width:20%;">OutStandings</th>
+                            <th style="background-color: deepskyblue;color:white;text-align:center;font-size: 12px;width:20%;">Volume</th>
+                            <th style="background-color: deepskyblue;color:white;text-align:center;font-size: 12px;width:20%;">Collected Amount</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th style="background-color: deepskyblue;color:white;text-align:center;font-size: 12px;width:15%;">Branch</th>
+                            <th style="background-color: deepskyblue;color:white;text-align:center;font-size: 12px;width:25%;">Sales Amount</th>
+                            <th style="background-color: deepskyblue;color:white;text-align:center;font-size: 12px;width:20%;">OutStandings</th>
+                            <th style="background-color: deepskyblue;color:white;text-align:center;font-size: 12px;width:20%;">Volume</th>
+                            <th style="background-color: deepskyblue;color:white;text-align:center;font-size: 12px;width:20%;">Collected Amount</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <div id="box"></div>
+    </div>
+
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+</body>
+<script type="text/javascript">
+    var Aurl = '@Session["APIurl"]';
+    var LoginUserID = '@Session["LoginUserID"]';
+    var strCompanyCode = '@Session["CompanyCode"]';
+    LoadDashBoarDetails();
+    function LoadDashBoarDetails() {
+        $.ajax({
+            url: Aurl + "homedashboard/getdata",
+            type: 'GET',
+            datatype: 'json',
+            data: { CompanyCode: strCompanyCode, Flag: 1, UID: LoginUserID},
+            success: function (data) {
+                $.each(data, function (i, items) {
+                    $('#lblDA').text(items.TotCount);
+                    $('#lblOT').text(items.OTCount);
+                    $('#lblCol').text(items.CollAmt);
+                    $('#lblCashCol').text(items.CashCollAmt);
+                    $('#lblST').text(items.StartTime);
+                    $('#lblET').text(items.EndTime);
+                });
+            }
+        });
+
+    }
+    var TableMessages = $('#tblMessages').DataTable({
+        "bFilter": true,
+        "bSearchable": true,
+        "bInfo": true,
+        "bPaginate": true,
+        "ordering": false,
+        fixedColumns: true,
+        scrollY: "150px",
+        scrollX: true,
+        scrollCollapse: true,
+        "columnDefs": [{ "targets": [0, 1], "visible": false }],
+
+    });
+    //PendingMessages(LoginUserID);
+    function PendingMessages(nUID) {
+        $.ajax({
+            url: '@Url.Action("LoadMessages", "Message")',
+            type: 'GET',
+            datatype: 'JSON',
+            data: { nMode: 3, UID: nUID, SendBy : "" },
+            success: function (data) {
+                TableMessages.draw().clear();
+                if (data.length > 0) {
+                    if (data != "2") {
+                        $.each(data, function (i, items) {
+                            TableMessages.row.add([
+                                items.CustId,
+                                items._PaytermID,
+                                items.CustomerName,
+                                items.Remarks,
+                                items.PrimeryMobNo
+                            ]).draw(false);
+                        });
+                        var nCount = TableMessages.rows().count();
+                        // $("#lblMsgTCount").text("(" + nCount + ")");
+                    }
+                    else {
+                        $("#dvMsgHis").hide();
+                    }
+                }
+                else {
+                    $("#dvMsgHis").hide();
+                }
+            }
+        });
+    }
+    $('#tblMessages tbody').on('dblclick', 'td', function () {
+        //if(rdoCheckedID == 2){
+            var rowdata = TableMessages.row($(this).parents('tr')).data();
+            var MID = rowdata[0];
+            ConfirmDialogMsg("Do you want to change status?", MID);
+    });
+</script>

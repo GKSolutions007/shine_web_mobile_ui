@@ -1,0 +1,769 @@
+﻿@model ShineWebMobile.Models.LogonModel
+
+@{
+    ViewBag.Title = "User Login";
+    Layout = "~/Views/Shared/_LayoutBT5.cshtml";
+}
+
+@*@Styles.Render("~/Content/css")*@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link href="~/Content/loginpage.css" rel="stylesheet" />
+<link href="~/Content/registrationdocs.css" rel="stylesheet" />
+<!-- <link href="~/Content/registration_form-elements.css" rel="stylesheet" /> -->
+<link href="~/Content/registration_style.css" rel="stylesheet" />
+<link href="~/Content/navbar.css" rel="stylesheet" />
+<link rel="stylesheet" href="~/Content/jquery-ui.css">
+
+<style>
+    :root {
+        --primary-gradient: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+        --info-gradient: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+        --success-gradient: linear-gradient(135deg, #15803d 0%, #22c55e 100%);
+        --danger-gradient: linear-gradient(135deg, #b91c1c 0%, #ef4444 100%);
+        --warning-gradient: linear-gradient(135deg, #b45309 0%, #f59e0b 100%);
+    }
+
+    body {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    #loadingDiv {
+        position: fixed;
+        inset: 0;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(5px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+    }
+
+    .loader {
+        width: 48px;
+        height: 48px;
+        border: 5px solid #1e40af;
+        border-bottom-color: transparent;
+        border-radius: 50%;
+        animation: rotation 1s linear infinite;
+    }
+
+    @@keyframes rotation {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Modern Card Styles */
+    .login-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: calc(70vh - 120px);
+        padding: 15px;
+    }
+
+    .login-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px;
+        overflow: hidden;
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    .login-header {
+        background: var(--primary-gradient);
+        padding: 5px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 12px;
+        position: relative;
+    }
+
+    .login-logo {
+        width: 40px;
+        height: 40px;
+        background: white;
+        padding: 6px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .login-title {
+        color: white;
+        font-size: 22px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .login-subtitle {
+        color: rgba(255,255,255,0.8);
+        font-size: 13px;
+        margin-top: 5px;
+    }
+
+    .login-body {
+        padding: 10px 30px;
+    }
+
+    /* Floating Labels for Login */
+    .field-wrap {
+        position: relative;
+        margin-bottom: 10px;
+    }
+
+    .mod-input, .mod-select {
+        width: 100%;
+        height: 54px;
+        padding: 7px 15px 3px 40px;
+        font-size: 15px;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 10px;
+        background: #f8fafc;
+        transition: all 0.2s ease;
+    }
+
+    .mod-input:focus, .mod-select:focus {
+        border-color: #3b82f6;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        outline: none;
+    }
+
+    .mod-label {
+        position: absolute;
+        top: 0px;
+        left: 40px;
+        font-size: 10px;
+        font-weight: 700;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        pointer-events: none;
+        transition: all 0.2s ease;
+    }
+
+    .field-icon {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #64748b;
+        transition: all 0.2s ease;
+        font-size: 14px;
+        z-index: 5;
+    }
+
+    .mod-input:focus + .field-icon, .mod-select:focus + .field-icon {
+        color: #3b82f6;
+        transform: translateY(-50%) scale(1.15);
+        text-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+    }
+
+    /* Action Buttons */
+    .btn-login {
+        background: var(--primary-gradient);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        width: 100%;
+        padding: 5px 14px;
+        font-weight: 700;
+        font-size: 16px;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        transition: all 0.2s;
+    }
+
+    .btn-login:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+        filter: brightness(1.1);
+    }
+
+    /* Login Type Toggle */
+    .login-type-toggle {
+        display: flex;
+        background: #f1f5f9;
+        padding: 4px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+    }
+
+    .login-type-btn {
+        flex: 1;
+        text-align: center;
+        padding: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #64748b;
+        cursor: pointer;
+        border-radius: 6px;
+        transition: all 0.2s;
+    }
+
+    .login-type-btn.active {
+        background: white;
+        color: #1e40af;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    @@keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .validationsummary {
+        color: #ef4444;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+</style>
+
+<script type="text/javascript">
+    window.history.forward();
+    function noBack() { window.history.forward(); }
+</script>
+
+<body onload="noBack();" onpageshow="if (event.persisted) noBack()">
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <img src="~/Images/Logo/g_large_transparent.png" class="login-logo" alt="Logo" />
+                <h1 class="login-title">Shine Web</h1>                
+            </div>
+
+            <div class="login-body">
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+                    
+                    <div class="validationsummary">@ViewData["AlertMessage"]</div>
+                    <label hidden id="lblErrorID">@ViewData["EID"]</label>
+                    <label hidden id="lblMobWin">@ViewData["MoborWindDevice"]</label>
+
+                    <!-- Company Selection -->
+                    <div class="field-wrap">
+                        <label class="mod-label" for="drpCompCode">Company Code *</label>
+                        @Html.DropDownListFor(model => model.CompanyCodeID, Model.CompanyCode, new { @Id = "drpCompCode", @class = "mod-select" })
+                        <i class="fas fa-building field-icon"></i>
+                        @Html.ValidationMessageFor(model => model.CompanyCodeID, "", new { @class = "text-danger small mt-1" })
+                    </div>
+
+                    <!-- Login Type Selector -->
+                    <div class="login-type-toggle" id="dvLType1" hidden>
+                        <div class="login-type-btn" id="btnTypePIN" onclick="setLoginType('PIN')">PIN LOGIN</div>
+                        <div class="login-type-btn active" id="btnTypeUNPWD" onclick="setLoginType('UNPWD')">PASSWORD LOGIN</div>
+                        
+                        @Html.RadioButtonFor(model => model.UsingUNPWD, false, new { @Id = "chkPIN", @class = "d-none" })
+                        @Html.RadioButtonFor(model => model.UsingUNPWD, true, new { @Id = "chkUNPWD", @class = "d-none", @checked = true })
+                    </div>
+
+                    <!-- Password Login Fields -->
+                    <div id="dvUNPWD">
+                        <div class="field-wrap">
+                            <label class="mod-label" for="txtUserName">Username</label>
+                            @Html.TextBoxFor(model => model.UserName, new { @class = "mod-input", @Id = "txtUserName", @placeholder = " ", @autocomplete = "off" })
+                            <i class="fas fa-user field-icon"></i>
+                            <div id="divMessageUserName" class="text-danger small mt-1"></div>
+                            @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger small mt-1" })
+                        </div>
+
+                        <div class="field-wrap">
+                            <label class="mod-label" for="txtPassword">Password</label>
+                            @Html.TextBoxFor(model => model.Password, new { @class = "mod-input", @Id = "txtPassword", @placeholder = " ", @autocomplete = "off", @type = "Password" })
+                            <i class="fas fa-lock field-icon"></i>
+                            <div id="divMessagePassword" class="text-danger small mt-1"></div>
+                            @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger small mt-1" })
+                        </div>
+
+                        @Html.CheckBoxFor(model => model.RememberMe, new { @class = "d-none" })
+                        <p id="ptext" class="text-danger small mb-3"><i class="fas fa-exclamation-triangle"></i> Caps lock is ON.</p>
+                    </div>
+
+                    <!-- PIN Login Fields -->
+                    <div id="dvPIN1" hidden>
+                        <div class="field-wrap">
+                            <label class="mod-label" for="txtPIN" style="left: 15px;">6-Digit PIN</label>
+                            @Html.PasswordFor(model => model.PIN, new { @class = "mod-input text-center", @Id = "txtPIN", @placeholder = " ", @autocomplete = "off", @maxlength = 6, @pattern = "[0-9]*", @inputmode = "numeric", @style = "letter-spacing: 1em; font-size: 18px; padding-left: 15px;" })
+                            <div id="divPIN" class="text-danger small mt-1"></div>
+                            @Html.ValidationMessageFor(model => model.PIN, "", new { @class = "text-danger small mt-1" })
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <button class="btn-login" id="btnclick" type="submit">
+                            <i class="fas fa-sign-in-alt me-2"></i> LOGIN
+                        </button>
+                    </div>
+
+                    <div id="divMessagePasswordSet" class="text-success small mt-3 text-center"></div>
+
+                    <div class="d-flex justify-content-end align-items-center mt-4 pt-3 border-top">
+                        <a hidden href="javascript:void(0)" id="lnkfp" class="text-primary small text-decoration-none fw-bold">Forgot Password?</a>
+                        <a href="tel:+918939923150" id="lnkhp" class="btn btn-sm btn-outline-primary border-0 fw-bold">
+                            <i class="fas fa-headset me-1"></i> Help Desk
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <!-- Modern Forgot Password Modal -->
+    <div class="modal fade" id="myModalfg" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
+                <div class="modal-header border-0 bg-warning text-white p-4">
+                    <h5 class="modal-title fw-bold">
+                        <i class="fas fa-key me-2"></i> Forgot Password?
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white closefg" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4 bg-light">
+                    <div class="text-center mb-4">
+                        <p class="text-secondary small mb-2 text-uppercase fw-bold">Recovery Email Address</p>
+                        <h6 id="lblresetemail" class="text-dark fw-bold"></h6>
+                    </div>
+
+                    <div class="field-wrap">
+                        <label class="mod-label" for="txtEmailID">E-mail ID</label>
+                        <input type="email" placeholder=" " class="mod-input" id="txtEmailID" />
+                        <div id="divMessageemail" class="text-danger small mt-1 clrdivs"></div>
+                    </div>
+
+                    <button class="btn btn-login btn-warning-gradient border-0 text-white mb-4" id="btnfgGetCode">
+                        <i class="fas fa-paper-plane me-2"></i> Get Verification Code
+                    </button>
+                    
+                    <div id="divMessagevercode" class="clrdivs text-center mb-3"></div>
+
+                    <div id="dvverotp" style="display:none;">
+                        <input type="number" id="txtVerifyOTP" hidden />
+                        <div class="row g-2">
+                            <div class="col-8">
+                                <div class="field-wrap mb-0">
+                                    <label class="mod-label" for="txtOTP">Enter OTP</label>
+                                    <input type="number" placeholder=" " class="mod-input" id="txtOTP" maxlength="6" />
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <button class="btn-login" id="btnfgVerifyOTP" style="height: 54px; background: var(--info-gradient);">Verify</button>
+                            </div>
+                        </div>
+                        <div id="divMessageverotp" class="text-danger small mt-1 clrdivs text-center"></div>
+                    </div>
+
+                    <div id="dvverpwd" style="display:none;" class="mt-4">
+                        <div class="field-wrap">
+                            <label class="mod-label" for="txtpwd">New Password</label>
+                            <input type="password" placeholder=" " class="mod-input" id="txtpwd" />
+                            <div id="divMessagepwd" class="text-danger small mt-1 clrdivs"></div>
+                        </div>
+                        <div class="field-wrap">
+                            <label class="mod-label" for="txtCnfpwd">Confirm Password</label>
+                            <input type="password" placeholder=" " class="mod-input" id="txtCnfpwd" />
+                            <div id="divMessagecnfpwd" class="text-danger small mt-1 clrdivs"></div>
+                        </div>
+                        <button type="button" class="btn-login btn-success-gradient border-0 mt-3" id="btnFGAccept">
+                            <i class="fas fa-save me-2"></i> RESET PASSWORD
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-3 bg-white justify-content-center">
+                    <button type="button" class="btn btn-link text-secondary text-decoration-none fw-bold" id="btnBatchClose" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i> CLOSE
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <style>
+        .resolution-overlay {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            font-family: "Segoe UI", Roboto, Arial, sans-serif;
+        }
+
+        .resolution-card {
+            background: #ffffff;
+            max-width: 420px;
+            width: 90%;
+            padding: 30px 28px;
+            border-radius: 14px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+            animation: fadeInScale 0.4s ease-in-out;
+        }
+
+        .resolution-icon {
+            font-size: 46px;
+            margin-bottom: 10px;
+        }
+
+        .resolution-card h2 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #222;
+            margin-bottom: 10px;
+        }
+
+        .resolution-card p {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 18px;
+        }
+
+        .resolution-footer {
+            font-size: 13px;
+            color: #888;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+
+        @@keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
+    <div id="Resolutionerror">
+        <h1>error</h1>
+        <div class="resolution-overlay">
+            <div class="resolution-card">
+                <div class="resolution-icon">⚠️</div>
+                <h2>Screen Resolution Not Supported</h2>
+                <p>
+                    Your current screen resolution is not supported for this page.<br>
+                    Please use valid resolution device or use a <b>Mobile/Tab</b> for the best experience.
+                </p>
+                <div class="resolution-footer">
+                    <span>Maximum recommended: 430 × 932</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+<script src="~/Scripts/jquery-1.12.4.js"></script>
+
+<script type="text/javascript">
+
+    function setLoginType(type) {
+        $('.login-type-btn').removeClass('active');
+        if (type === 'PIN') {
+            $('#btnTypePIN').addClass('active');
+            $('#chkPIN').prop('checked', true).click();
+            $('#dvPIN1').show();
+            $('#dvUNPWD').hide();
+        } else {
+            $('#btnTypeUNPWD').addClass('active');
+            $('#chkUNPWD').prop('checked', true).click();
+            $('#dvPIN1').hide();
+            $('#dvUNPWD').show();
+        }
+    }
+    var uuid = crypto.randomUUID()
+    //alert(uuid);
+    $(document).ready(function () {
+        var screenWidth = window.screen.width;
+        $("#Resolutionerror").hide();
+        //if (screenWidth <= 420) {
+        //    $("#Resolutionerror").hide();
+        //} else {
+        //    $(".divmargintop65bottom60").hide();       
+        //}
+            var modal = document.getElementById("myModalfg");
+            var span = document.getElementsByClassName("closefg")[0];
+            span.onclick = function () {
+                modal.style.display = "none";
+            }
+            if ($('#drpCompCode :selected').text() == "- Select Company Code -") {
+                $('#drpCompCode').focus();
+
+            }
+            else if ($('#txtUserName').val() == "") {
+                $('#txtUserName').focus();
+            }
+            else {
+                $('#txtPassword').focus();
+            }
+            function Loader(type) {
+                if (type == 1) {
+                    $('body').append('<div style="" id="loadingDiv"><div class="loader"></div><div class="LoaderMsg">Validate User... Please wait</div></div>');
+                } else {
+                    $("#loadingDiv").remove();
+                }
+        }
+        $('#btnclick').click(function () {
+            Loader(1);
+        });           
+            function ValidationforDevice() {
+                if ($("#lblMobWin").text() == "0") {
+                    $('#dvLType1').hide();
+                    $('#dvPIN1').hide();
+                    $('#dvUNPWD').show();
+                    $("#chkUNPWD").prop("checked", true);
+                    $("#chkPIN").prop("checked", false);
+                    $('.login-type-btn').removeClass('active');
+                    $('#btnTypeUNPWD').addClass('active');
+                }
+                else {
+                    $('#dvLType1').show();
+                    $('#dvPIN1').show();
+                    $('#dvUNPWD').hide();
+                    $("#chkUNPWD").prop("checked", false);
+                    $("#chkPIN").prop("checked", true);
+                    $('.login-type-btn').removeClass('active');
+                    $('#btnTypePIN').addClass('active');
+                }
+            }
+
+                $('#chkPIN').click(function () {
+                    $('#dvPIN1').show();
+                    $('#dvUNPWD').hide();
+                    $("#chkUNPWD").prop("checked", false);
+                    $("#chkPIN").prop("checked", true);
+                });
+                $('#chkUNPWD').click(function () {
+                    $('#dvPIN1').hide();
+                    $('#dvUNPWD').show();
+                    $("#chkUNPWD").prop("checked", true);
+                    $("#chkPIN").prop("checked", false);
+                });
+
+                $('#ptext').hide();
+                $('#txtPassword').focusout(function (key) {
+                    $('#ptext').hide();
+                });
+                $('#txtUserName').keypress(function (key) {
+                    $('#divMessageUserName').html('');
+
+                    return Keypress(key)
+                });
+                $('#btnBatchClose').click(function (e) {
+                    modal.style.display = "none";
+                });
+                $("#dvverotp").hide();
+                $("#dvverpwd").hide();
+                $('#lnkfp').click(function (e) {
+                    if ($('#txtUserName').val() == "") {
+                        $('#divMessageUserName').html('* User name should not empty');
+                    } else {
+                        modal.style.display = "block";
+                        $("#txtEmailID").prop("disabled", false);
+                        $('#btnfgGetCode').prop("disabled", false);
+                        $("#txtOTP").prop("disabled", false);
+                        $('#btnfgVerifyOTP').prop("disabled", false);
+                        $('#txtEmailID').val("");
+                        $('#txtOTP').val("");
+                        $('.clrdivs').html("");
+                        $("#dvverotp").hide();
+                        $("#dvverpwd").hide();
+                        $('#txtpwd').val("");
+                        $('#txtCnfpwd').val("");
+                        verifyfg(1, $('#drpCompCode').val(), $('#txtUserName').val(), "", "", "")
+                    }
+                });
+
+                function verifyfg(nFlag, DBs, Param1, Param2, Param3, Param4) {
+                    $.ajax({
+                        url: '@Url.Action("ManageForgotPassword", "LogOn")',
+                        type: 'GET',
+                        datatype: 'json',
+                        data: { Flag: nFlag, DB: DBs, Val1: Param1, Val2: Param2, Val3: Param3, Val4: Param4 },
+                        success: function (data) {
+                            if (nFlag == 1) {
+                                $("#lblresetemail").text("");
+                                $.each(data, function (i, items) {
+                                    if (items.ID == "2") {
+                                        //alert(items.Msg);
+                                        $("#lblresetemail").text(items.Val1);
+
+                                    } else if (items.ID == "3" || items.ID == "1") {
+                                        alert(items.Msg)
+                                        modal.style.display = "none";
+                                    }
+                                });
+                            }
+                            else if (nFlag == 2) {
+                                $.each(data, function (i, items) {
+                                    if (items.ID == "2") {
+                                        //alert(items.Msg);
+                                        $("#txtVerifyOTP").val(items.Val1);
+                                        $("#dvverotp").show();
+                                        //alert(items.Msg)
+                                        $('#txtOTP').focus();
+                                        $("#divMessagevercode").html(items.Msg);
+                                        document.getElementById("divMessagevercode").style.color = "green";
+                                        $("#txtEmailID").prop("disabled", true);
+                                        $('#btnfgGetCode').prop("disabled", true);
+                                    }
+                                    else if (items.ID == "3" || items.ID == "1") {
+                                        //alert(items.Msg)
+                                        $("#divMessagevercode").html(items.Msg);
+                                        document.getElementById("divMessagevercode").style.color = "red";
+                                        modal.style.display = "none";
+                                    }
+                                });
+                            }
+                            else if (nFlag == 3) {
+                                $.each(data, function (i, items) {
+                                    if (items.ID == "1") {
+                                        $("#divMessagePasswordSet").html(items.Msg)
+                                        modal.style.display = "none";
+                                    } else {
+                                        $("#divMessagecnfpwd").html(items.Msg)
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+
+                $("#btnfgGetCode").click(function () {
+                    $('#divMessageemail').html('');
+                    var IsValid = true;
+                    if ($('#txtEmailID').val() == "") {
+                        IsValid = false;
+                        $('#txtEmailID').focus();
+                        $('#divMessageemail').html('* E-Mail ID should not empty');
+                    }
+                    else {
+                        var pattern = /^\w+[a-zA-Z_.]+?\.[a-zA-Z]{2,3}$/;
+                        if (pattern.test($('#txtEmailID').val())) {
+                            IsValid = false;
+                            $('#txtEmailID').focus();
+                            $('#divMessageemail').html('* Invalid E-Mail format');
+                        }
+                    }
+                    if (IsValid) {
+                        verifyfg(2, $('#drpCompCode').val(), $('#txtUserName').val(), $('#txtEmailID').val(), "", "")
+                    }
+                });
+                $('#btnfgVerifyOTP').click(function (e) {
+                    $('#divMessageverotp').html('');
+                    if ($('#txtOTP').val() == "") {
+                        $('#divMessageverotp').html('* Enter Valid OTP...');
+                        $('#txtOTP').focus();
+                        $("#dvverpwd").hide();
+                    } else {
+                        if ($('#txtOTP').val() == $("#txtVerifyOTP").val()) {
+                            $("#dvverpwd").show();
+                            $('#txtpwd').focus();
+                            $("#txtOTP").prop("disabled", true);
+                            $('#btnfgVerifyOTP').prop("disabled", true);
+                        }
+                        else {
+                            $('#txtOTP').focus();
+                            $("#dvverpwd").hide();
+                            $('#divMessageverotp').html('* OTP Incorrect...');
+                        }
+                    }
+                });
+                $('#btnFGAccept').click(function (e) {
+                    var IsValid = true;
+                    $('#divMessagepwd').html('');
+                    $('#divMessagecnfpwd').html('');
+                    if ($('#txtpwd').val() == "") {
+                        $('#divMessagepwd').html('* Password should not empty...');
+                        $('#txtpwd').focus();
+                        IsValid = false;
+                    }
+                    else if ($('#txtCnfpwd').val() == "") {
+                        $('#divMessagecnfpwd').html('* Confirm Password should not empty...');
+                        $('#txtCnfpwd').focus();
+                        IsValid = false;
+                    }
+                    else if ($('#txtpwd').val() != $('#txtCnfpwd').val()) {
+                        $('#divMessagecnfpwd').html('* Password & Confirm Password is mismatching...');
+                        $('#txtCnfpwd').focus();
+                        IsValid = false;
+                    }
+                    if (IsValid) {
+                        verifyfg(3, $('#drpCompCode').val(), $('#txtUserName').val(), $('#txtEmailID').val(), $('#txtpwd').val(), "")
+                    }
+                });
+                function Keypress(key) {
+                    if ((key.charCode < 48 || key.charCode > 57) /* Numeric */
+                        && (key.charCode < 65 || key.charCode > 90) /* Upper Alpha */
+                        && (key.charCode < 97 || key.charCode > 122) /* Lower Alpha */
+                        && (key.charCode != 126) /* ~ */ && (key.charCode != 64)  /* @@ */
+                        && (key.charCode != 37)  /* % */ && (key.charCode != 38)  /* & */
+                        && (key.charCode != 42)  /* * */ && (key.charCode != 40)  /* ( */
+                        && (key.charCode != 41)  /* ) */ && (key.charCode != 45)  /* - */
+                        && (key.charCode != 95)  /* _ */ && (key.charCode != 47)  /* / */
+                        && (key.charCode != 46)  /* . */ && (key.charCode != 44)  /* , */
+                        && (key.keyCode != 13)  /* Enter */ && key.which != 8 /* Back Space */
+                        && key.which != 32 /* Space */ && key.keyCode != 37 /* Left Arrow */
+                        && key.keyCode != 38 /* Up Arrow */ && key.keyCode != 39 /* Right Arrow */
+                        && key.keyCode != 40 /* Down Arrow */ && key.keyCode != 9 /* Tab */
+                        && key.keyCode != 116 /* F5 */
+                        ) {
+                        $('#divMessageUserName').html('Invalid Key');
+                        return false;
+                    }
+                }
+
+                $('#txtPassword').keypress(function (key) {
+                    $('#divMessagePassword').html('');
+                    if ((key.charCode < 48 || key.charCode > 57) /* Numeric */
+                        && (key.charCode < 65 || key.charCode > 90) /* Upper Alpha */
+                        && (key.charCode < 97 || key.charCode > 122) /* Lower Alpha */
+                        && (key.charCode != 126) /* ~ */ && (key.charCode != 64)  /* @@ */
+                        && (key.charCode != 37)  /* % */ && (key.charCode != 38)  /* & */
+                        && (key.charCode != 42)  /* * */ && (key.charCode != 40)  /* ( */
+                        && (key.charCode != 41)  /* ) */ && (key.charCode != 45)  /* - */
+                        && (key.charCode != 95)  /* _ */ && (key.charCode != 47)  /* / */
+                        && (key.charCode != 46)  /* . */ && (key.charCode != 44)  /* , */
+                        && (key.keyCode != 13)  /* Enter */ && key.which != 8 /* Back Space */
+                        && key.which != 32 /* Space */ && key.keyCode != 37 /* Left Arrow */
+                        && key.keyCode != 38 /* Up Arrow */ && key.keyCode != 39 /* Right Arrow */
+                        && key.keyCode != 40 /* Down Arrow */ && key.keyCode != 9 /* Tab */
+                        && key.keyCode != 116 /* F5 */
+                        ) {
+                        $('#divMessagePassword').html('Invalid Key');
+                        return false;
+                    }
+                });
+            });
+            $("#txtMacAddress").prop("disabled", true);
+            $('#txtPIN').keypress(function (key) {
+                $('#divPIN').html('');
+                if ((key.charCode < 48 || key.charCode > 57) /* Numeric */
+                    && (key.keyCode != 13)  /* Enter */ && key.which != 8 /* Back Space */
+                    && key.which != 32 /* Space */ && key.keyCode != 37 /* Left Arrow */
+                    && key.keyCode != 38 /* Up Arrow */ && key.keyCode != 39 /* Right Arrow */
+                    && key.keyCode != 40 /* Down Arrow */ && key.keyCode != 9 /* Tab */
+                    ) {
+                    $('#divPIN').html('Invalid Key. Enter Numbers Only');
+                    return false;
+                }
+            });
+    var click = 0;
+    $(".resolution-icon").click(function (e) {
+        click++
+        if (click == 5) {
+            $("#Resolutionerror").hide();
+            $(".login-container").show();
+        }
+    });
+</script>
+

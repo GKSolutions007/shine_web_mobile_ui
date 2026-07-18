@@ -1,0 +1,1654 @@
+@model ShineWebMobile.Models.SingleMasterModel
+@{
+    ViewBag.Title = ViewData["FormName"];
+    Layout = "~/Views/Shared/_LayoutBT5.cshtml";
+}
+<link href="~/Content/chosen.min.css" rel="stylesheet" />
+<link href="~/Content/navbar.css" rel="stylesheet" />
+<link href="~/Content/buttonTop.css" rel="stylesheet" />
+<link rel="stylesheet" href="~/Content/jquery-ui.css">
+<link href="~/Content/dataTables.dataTables.2.2.2.css" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery-3.7.1.js"></script>
+<script src="~/Scripts/chosen.jquery.min.js"></script>
+<script src="~/Scripts/jquerychoose.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Scripts/dataTables.2.2.2.js"></script>
+
+<header>
+    <link rel="stylesheet" href="~/Content/index.css">
+</header>
+
+<style>
+    :root {
+        --primary: hsl(220, 90%, 56%);
+        --primary-dark: hsl(220, 90%, 44%);
+        --primary-light: hsl(220, 90%, 95%);
+        --success: hsl(145, 63%, 42%);
+        --danger: hsl(354, 70%, 54%);
+        --warning: hsl(38, 92%, 50%);
+        --info: hsl(195, 85%, 45%);
+        --surface: #ffffff;
+        --surface-2: hsl(220, 20%, 97%);
+        --border: hsl(220, 15%, 88%);
+        --text: hsl(220, 20%, 18%);
+        --text-muted: hsl(220, 10%, 50%);
+        --radius: 14px;
+        --radius-sm: 8px;
+        --shadow: 0 4px 20px rgba(30, 60, 120, 0.10);
+        --shadow-lg: 0 8px 32px rgba(30, 60, 120, 0.16);
+        --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: var(--surface-2);
+        color: var(--text);
+    }
+
+    /* ── Page Header ── */
+    #MainHeading {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--primary);
+        letter-spacing: -0.3px;
+        margin-bottom: 0;
+    }
+
+    .page-header-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 0 8px;
+        border-bottom: 2px solid var(--primary-light);
+        margin-bottom: 14px;
+        animation: slideDown 0.4s ease;
+    }
+
+        .page-header-bar .header-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+            flex-shrink: 0;
+        }
+
+    /* ── Search Box ── */
+    .search-wrapper {
+        position: relative;
+        margin-bottom: 14px;
+        animation: fadeUp 0.4s ease 0.1s both;
+    }
+
+        .search-wrapper .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+    #txtSearchCards {
+        width: 100%;
+        padding: 10px 16px 10px 40px;
+        border: 1.5px solid var(--border);
+        border-radius: 30px;
+        font-size: 0.9rem;
+        font-family: 'Inter', sans-serif;
+        background: var(--surface);
+        color: var(--text);
+        transition: border-color var(--transition), box-shadow var(--transition);
+        outline: none;
+    }
+
+        #txtSearchCards:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+        }
+
+    /* ── Add New Button ── */
+    #btnAddNew {
+        border-radius: 30px;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+        padding: 10px 24px;
+        font-size: 0.92rem;
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        border: none;
+        box-shadow: 0 4px 16px rgba(37,99,235,0.30);
+        transition: all var(--transition);
+        animation: fadeUp 0.4s ease both;
+    }
+
+        #btnAddNew:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(37,99,235,0.38);
+        }
+
+        #btnAddNew:active {
+            transform: scale(0.97);
+        }
+
+    /* ── Customer Cards ── */
+    #divCustomerList {
+        overflow-x: auto;
+        /*height: 500px;*/
+        padding-right: 2px;
+    }
+
+    .card-view-item {
+        background: var(--surface);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        margin-bottom: 10px;
+        padding: 0;
+        overflow: hidden;
+        border: 1.5px solid var(--border);
+        border-left: 4px solid var(--primary);
+        transition: transform var(--transition), box-shadow var(--transition);
+        animation: fadeUp 0.4s ease both;
+    }
+
+        .card-view-item:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+    .card-header-view {
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: var(--text);
+        background: var(--primary-light);
+        padding: 10px 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border-bottom: 1px solid var(--border);
+    }
+
+        .card-header-view i {
+            color: var(--primary);
+            font-size: 1.05rem;
+        }
+
+    .card-body-view {
+        padding: 10px 14px;
+        font-size: 0.82rem;
+        color: var(--text-muted);
+    }
+
+        .card-body-view .row {
+            margin-bottom: 4px;
+        }
+
+    .card-label {
+        font-weight: 500;
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+        .card-label i {
+            color: var(--primary);
+            font-size: 0.78rem;
+        }
+
+    .card-footer-view {
+        padding: 8px 12px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        justify-content: flex-end;
+        gap: 6px;
+        background: hsl(220, 20%, 99%);
+    }
+
+        .card-footer-view .btn {
+            font-size: 0.78rem;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+            transition: all var(--transition);
+        }
+
+            .card-footer-view .btn:hover {
+                transform: translateY(-1px);
+            }
+
+    /* ── Modal ── */
+    #myModalfg .modal-dialog {
+        max-width: 420px;
+        margin: auto;
+    }
+
+    #myModalfg .modal-content {
+        border-radius: var(--radius);
+        border: none;
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+        animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    #myModalfg .modal-header {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+        padding: 16px 20px;
+        border: none;
+    }
+
+        #myModalfg .modal-header .modal-title {
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+    #myModalfg .btn-close {
+        filter: brightness(0) invert(1);
+        opacity: 0.75;
+        transition: opacity var(--transition);
+    }
+
+        #myModalfg .btn-close:hover {
+            opacity: 1;
+        }
+
+    #myModalfg .modal-body {
+        padding: 20px;
+        background: var(--surface);
+    }
+
+    /* ── Floating Label Fields ── */
+    .field-group {
+        position: relative;
+        margin-bottom: 10px;
+    }
+
+        .field-group .field-icon {
+            position: absolute;
+            left: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            pointer-events: none;
+            z-index: 3;
+            transition: color var(--transition);
+        }
+
+        .field-group.textarea-group .field-icon {
+            top: 14px;
+            transform: none;
+        }
+
+        .field-group .form-control {
+            width: 100%;
+            padding: 11px 14px 11px 36px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 0.88rem;
+            font-family: 'Inter', sans-serif;
+            background: var(--surface-2);
+            color: var(--text);
+            transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+            outline: none;
+            appearance: none;
+        }
+
+            .field-group .form-control:focus {
+                border-color: var(--primary);
+                box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+                background: var(--surface);
+            }
+
+            /* ── Enabled vs Disabled field differentiation ── */
+            .field-group .form-control:not(:disabled) {
+                cursor: text;
+            }
+
+            .field-group .form-control:disabled {
+                background: hsl(220, 14%, 90%);
+                color: var(--text-muted);
+                border-color: var(--border);
+                cursor: not-allowed;
+                opacity: 1;
+                box-shadow: none;
+            }
+
+                .field-group .form-control:disabled ~ .field-icon {
+                    color: hsl(220, 10%, 65%);
+                }
+
+                .field-group .form-control:disabled + .field-label {
+                    color: hsl(220, 10%, 60%);
+                }
+
+            .field-group .form-control:focus + .field-label,
+            .field-group .form-control:not(:placeholder-shown) + .field-label {
+                top: 0px;
+                left: 10px;
+                font-size: 1rem;
+                color: var(--primary);
+                background: var(--surface);
+                padding: 0 4px;
+            }
+
+        .field-group .field-label {
+            position: absolute;
+            top: 50%;
+            left: 36px;
+            transform: translateY(-50%);
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            pointer-events: none;
+            background: transparent;
+            transition: all var(--transition);
+            padding: 0 2px;
+            z-index: 4;
+            white-space: nowrap;
+        }
+
+        .field-group.textarea-group .field-label {
+            top: 14px;
+            transform: none;
+        }
+
+        .field-group .form-control:focus ~ .field-icon {
+            color: var(--primary);
+        }
+
+        .field-group textarea.form-control {
+            min-height: 80px;
+            resize: vertical;
+            padding-top: 12px;
+        }
+
+    .clrdiv, .clrdivs {
+        color: var(--danger);
+    }
+
+    /* ── Two-fields-in-a-row layout (Mobile No 1 + GSTIN) ── */
+    .form-row-2 {
+        display: flex;
+        gap: 10px;
+    }
+
+        .form-row-2 .form-col {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .form-row-2 .field-group {
+            margin-bottom: 0;
+        }
+
+    /* Location row (Pin Location + Get Location button + Pincode) */
+    .location-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        margin-bottom: 18px;
+    }
+
+        .location-row .field-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .location-row .form-col {
+            min-width: 0;
+        }
+
+            .location-row .form-col.loc-col {
+                flex: 0.8;
+            }
+
+            .location-row .form-col.pincode-col {
+                flex: 1;
+            }
+
+    #btnGetLocation {
+        flex-shrink: 0;
+        width: 35px;
+        height: 35px;
+        border-radius: var(--radius-sm);
+        border: none;
+        background: linear-gradient(135deg, var(--danger), hsl(354,70%,44%));
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        box-shadow: 0 3px 10px rgba(220,53,69,.35);
+        transition: all var(--transition);
+        cursor: pointer;
+        margin-top: 2px;
+    }
+
+        #btnGetLocation:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(220,53,69,.45);
+        }
+
+    /* ── Modal Footer ── */
+    #myModalfg .modal-footer {
+        background: hsl(220,20%,97%);
+        border-top: 1.5px solid var(--border);
+        padding: 12px 20px;
+        gap: 8px;
+        justify-content: flex-end;
+    }
+
+    #btnSave {
+        background: linear-gradient(135deg, var(--success), hsl(145,63%,32%));
+        border: none;
+        border-radius: 22px;
+        font-weight: 600;
+        font-size: 0.88rem;
+        padding: 9px 22px;
+        color: white;
+        box-shadow: 0 3px 12px rgba(34,197,94,.35);
+        transition: all var(--transition);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+        #btnSave:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(34,197,94,.45);
+        }
+
+    #btnClose {
+        background: var(--warning);
+        border: 1.5px solid var(--border);
+        border-radius: 22px;
+        font-weight: 600;
+        font-size: 0.88rem;
+        padding: 9px 22px;
+        color: white;
+        transition: all var(--transition);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+        #btnClose:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(34,197,94,.45);
+        }
+
+    #btnClear {
+        background: linear-gradient(135deg, var(--danger), hsl(145,63%,32%));
+        border: 1.5px solid var(--danger);
+        border-radius: 22px;
+        font-weight: 600;
+        font-size: 0.88rem;
+        padding: 9px 18px;
+        color: var(--danger);
+        transition: all var(--transition);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+        #btnClear:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+    /* ── General ── */
+    .selected-row {
+        background-color: var(--primary-light) !important;
+    }
+
+    .toastBox {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+    }
+
+    th, td {
+        white-space: nowrap;
+    }
+
+    .toolbar, .dt-search {
+        float: right;
+    }
+
+    .gdInput {
+        width: 100%;
+        height: 25px;
+        border-width: 0 0 0.1px 0;
+        border-color: #e0d6d6;
+    }
+
+    .trtext-line {
+        border: none;
+        border-bottom: 1px #000000;
+    }
+
+    div.dataTables_wrapper {
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    td {
+        font-size: 11px;
+    }
+
+    input[type=number] {
+        text-align: right;
+    }
+
+        input[type=number]::placeholder {
+            text-align: left;
+        }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+
+    .clsProd {
+        position: fixed;
+        right: 1%;
+        bottom: 8%;
+        width: 30%;
+        height: 45%;
+        color: black;
+        background-color: #c2f6b5;
+        z-index: 1000;
+    }
+
+    .each {
+        border-bottom: 1px solid #555;
+        padding: 3px 0;
+    }
+
+    .acItem .name {
+        font-size: 14px;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .acItem .desc {
+        font-size: 10px;
+        font-family: Arial, Helvetica, sans-serif;
+        color: #555;
+    }
+
+    .ui-autocomplete {
+        max-height: 245px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .footerAction {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        width: 85%;
+        color: white;
+        background-color: azure;
+    }
+
+    .btn-animated {
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+
+        .btn-animated:hover {
+            transform: scale(1.05);
+        }
+
+    .bi {
+        -webkit-text-stroke: 0.5px;
+    }
+
+    /* ── Animations ── */
+    @@keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-12px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes fadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(14px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes modalPop {
+        from {
+            opacity: 0;
+            transform: scale(0.88);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes pulse-blue {
+        0% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(37,99,235,.6);
+        }
+
+        70% {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 8px rgba(37,99,235,0);
+        }
+
+        100% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(37,99,235,0);
+        }
+    }
+
+    /* No records state */
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: var(--text-muted);
+        animation: fadeUp 0.5s ease;
+    }
+
+        .empty-state i {
+            font-size: 2.5rem;
+            color: var(--border);
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+    /* ── Mobile Responsive ── */
+    @@media (max-width: 576px) {
+        #MainHeading {
+            font-size: 1.1rem;
+        }
+
+        .page-header-bar .header-icon {
+            width: 34px;
+            height: 34px;
+            font-size: 0.95rem;
+        }
+
+        #divCustomerList {
+            height: auto;
+            max-height: 650px;
+        }
+
+        .card-view-item {
+            font-size: 0.82rem;
+        }
+
+        #myModalfg .modal-dialog {
+            margin: 10px;
+            max-width: calc(100% - 20px);
+        }
+
+        #myModalfg .modal-body {
+            padding: 14px;
+        }
+
+        .field-group .form-control {
+            font-size: 1rem;
+            padding: 10px 12px 10px 34px;
+        }
+
+        #btnSave, #btnClose, #btnClear {
+            padding: 8px 14px;
+            font-size: 0.82rem;
+        }
+
+        #myModalfg .modal-footer {
+            flex-wrap: wrap;
+        }
+    }
+
+    @@media (max-width: 400px) {
+        .card-footer-view {
+            flex-wrap: wrap;
+        }
+
+            .card-footer-view .btn {
+                flex: 1 1 auto;
+                text-align: center;
+            }
+    }
+
+    /* ── Image Upload / Preview Section ── */
+    .image-upload-section {
+        margin-top: 4px;
+        margin-bottom: 6px;
+    }
+
+    .image-upload-title {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 8px;
+    }
+
+        .image-upload-title i {
+            color: var(--primary);
+            font-size: 0.95rem;
+        }
+
+    .image-upload-area {
+        border: 1.5px dashed var(--border);
+        border-radius: var(--radius-sm);
+        background: var(--surface-2);
+        overflow: hidden;
+        transition: all var(--transition);
+    }
+
+    .image-empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 10px 10px;
+        cursor: pointer;
+        color: var(--text-muted);
+        transition: all var(--transition);
+    }
+
+        .image-empty-state:hover {
+            background: var(--primary-light);
+        }
+
+    .image-upload-area.image-disabled .image-empty-state {
+        cursor: not-allowed;
+        background: hsl(220, 14%, 90%);
+        color: var(--text-muted);
+        opacity: 0.85;
+    }
+
+        .image-upload-area.image-disabled .image-empty-state:hover {
+            background: hsl(220, 14%, 90%);
+        }
+
+    .image-upload-area.image-disabled .image-preview-wrap {
+        background: hsl(220, 14%, 92%);
+    }
+
+    .image-upload-area:has(.image-empty-state:hover) {
+        border-color: var(--primary);
+    }
+
+    .image-empty-state i {
+        font-size: 1.8rem;
+        color: var(--primary);
+    }
+
+    .image-empty-state span {
+        font-size: 0.82rem;
+        font-weight: 500;
+    }
+
+    .image-empty-state small {
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        opacity: 0.8;
+    }
+
+    .image-preview-wrap {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px;
+        background: var(--surface);
+    }
+
+        .image-preview-wrap img {
+            max-width: 100%;
+            max-height: 150px;
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow);
+            object-fit: cover;
+            display: block;
+        }
+
+    .image-preview-actions {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        display: flex;
+        gap: 6px;
+    }
+
+    .img-action-btn {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255,255,255,0.94);
+        color: var(--text);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        cursor: pointer;
+        transition: all var(--transition);
+        font-size: 0.82rem;
+    }
+
+        .img-action-btn:hover {
+            transform: scale(1.08);
+        }
+
+        .img-action-btn.img-action-remove {
+            background: var(--danger);
+            color: #fff;
+        }
+
+    /* Image preview modal */
+    #imagePreviewModal .modal-content {
+        border-radius: var(--radius);
+        border: none;
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+    }
+
+    #imagePreviewModal .modal-header {
+        background: var(--primary-light);
+        border-bottom: 1px solid var(--border);
+        padding: 12px 16px;
+    }
+
+    #imagePreviewModal .modal-title {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+        #imagePreviewModal .modal-title i {
+            color: var(--primary);
+        }
+
+    #imagePreviewModal .modal-body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: hsl(220, 20%, 96%);
+        padding: 18px;
+    }
+
+    .img-modal-full {
+        max-width: 100%;
+        max-height: 65vh;
+        border-radius: var(--radius-sm);
+        box-shadow: var(--shadow);
+    }
+</style>
+
+<body>
+    <div class="row" style="margin-bottom:50px;">
+        @Html.HiddenFor(model => model.Add, new { @autocomplete = "off", @class = "form-control", @id = "txtAddID" })
+        @Html.HiddenFor(model => model.Modify, new { @autocomplete = "off", @class = "form-control", @id = "txtModifyID" })
+        @Html.HiddenFor(model => model.View, new { @autocomplete = "off", @class = "form-control", @id = "txtViewID" })
+
+
+
+        <!-- Page Header -->
+        <div class="page-header-bar">
+            <div class="d-flex align-items-center gap-3">
+                <div class="header-icon">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+                <h4 id="MainHeading">@ViewData["FormName"]</h4>
+            </div>
+        </div>
+
+        <div id="dvDocuments">
+            <div class="col-12">
+
+                <!-- Add New Button -->
+                <div class="row text-center mb-2 w-100">
+                    <div class="col-12">
+                        <button id="btnAddNew" type="button"
+                                class="btn btn-primary btn-lg btn-animated w-100"
+                                style="border-radius:25px;">
+                            <i class="bi bi-plus-circle-fill me-1"></i> New Customer
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Search Box -->
+                <div class="search-wrapper">
+                    <i class="bi bi-search search-icon"></i>
+                    <input type="text"
+                           id="txtSearchCards"
+                           class="form-control"
+                           placeholder="Search customers..."
+                           onkeyup="filterCards()">
+                </div>
+
+                <!-- Card View Container -->
+                <div id="divCustomerList"
+                     class="row"
+                     style="overflow-x:auto;height:750px;">
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="myModalfg" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="toastBox"></div>
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold" id="lblPopupheading">
+                            <i class="bi bi-person-plus-fill"></i>
+                            Add @ViewData["FormName"]
+                        </h5>
+                        <button type="button" class="btn-close" id="modelcloseX"></button>
+                    </div>
+
+                    <!-- Modal Body -->
+                    <div class="modal-body">
+                        <input id="txtID" hidden />
+
+                        <!-- Code -->
+                        <div class="field-group">
+                            <i class="bi bi-hash field-icon"></i>
+                            <input type="text" id="txtCode" class="form-control" placeholder=" " />
+                            <label class="field-label labelup" for="txtCode">Code *</label>
+                        </div>
+                        <div class="clrdivs text-danger" id="dvErrorCode"></div>
+
+                        <!-- Name -->
+                        <div class="field-group">
+                            <i class="bi bi-person field-icon"></i>
+                            <input type="text" id="txtName" class="form-control" placeholder=" " />
+                            <label class="field-label labelup" for="txtName">Name *</label>
+                        </div>
+                        <div class="clrdivs text-danger" id="dvErrorName"></div>
+
+                        <!-- Mobile & GSTIN (same line) -->
+                        <div class="form-row-2">
+                            <div class="form-col">
+                                <div class="field-group">
+                                    <i class="bi bi-telephone field-icon"></i>
+                                    <input tabindex="10" class="form-control FormclrField" type="number"
+                                           id="txtMob1" placeholder=" " maxlength="12"
+                                           oninput="javascript: if (this.value.length > this.maxLength) { this.value = this.value.slice(0, this.maxLength); }">
+                                    <label class="field-label labelup" for="txtMob1">Mobile No 1</label>
+                                </div>
+                                <div class="clrdivs" id="divErrorOnMob1"></div>
+                            </div>
+                            <div class="form-col">
+                                <div class="field-group">
+                                    <i class="bi bi-building field-icon"></i>
+                                    <input class="form-control FormclrField" type="text"
+                                           id="txtGSTIN" style="text-transform:uppercase"
+                                           placeholder=" " maxlength="15">
+                                    <label class="field-label labelup" for="txtGSTIN">GSTIN</label>
+                                </div>
+                                <div class="clrdivs" id="divErrorOnGSTIN"></div>
+                            </div>
+                        </div>
+
+                        <!-- Pin Location, Get Location button & Pincode (same line) -->
+                        <div class="location-row mt-3">
+                            <div class="form-col loc-col">
+                                <div class="field-group">
+                                    <i class="bi bi-geo-alt field-icon"></i>
+                                    <input class="form-control FormclrField" type="text"
+                                           id="txtLatLong" placeholder=" " disabled>
+                                    <label class="field-label labelup">Pin Location</label>
+                                </div>
+                                <div class="clrdivs" id="divErrorOnLatLong"></div>
+                            </div>
+                            <button type="button" class="btn btn-danger" id="btnGetLocation"
+                                    title="Get / View Location">
+                                <span class="fa fa-location-arrow" id="viewlocicon"></span>
+                                <span class="fa fa-location-crosshairs" id="editlocicon"></span>
+                            </button>
+                            <div class="form-col pincode-col">
+                                <div class="field-group bgclrfortr">
+                                    <i class="bi bi-pin-map field-icon"></i>
+                                    <input tabindex="19" class="form-control FormclrField" type="number"
+                                           id="txtPincode" placeholder=" " maxlength="6"
+                                           oninput="javascript: if (this.value.length > this.maxLength) { this.value = this.value.slice(0, this.maxLength); }">
+                                    <label class="field-label labelup" for="txtPincode">Pincode *</label>
+                                </div>
+                                <div class="clrdivs" id="divErrorOnPincode"></div>
+                            </div>
+                        </div>
+
+                        <!-- Address -->
+                        <div class="field-group textarea-group bgclrfortr">
+                            <i class="bi bi-house field-icon"></i>
+                            <textarea class="form-control FormclrField" rows="3" id="txtAddress"
+                                      placeholder=" "
+                                      onbeforeinput="return AlphaNumericBeforeInput(event, this,'#divErrAddress')"
+                                      oninput="sanitizeAlphaNumeric(this, '#divErrAddress')"></textarea>
+                            <label class="field-label labelupfortextarea">Address</label>
+                        </div>
+
+                        <!-- Customer Image -->
+                        <div class="image-upload-section">
+                            <label class="image-upload-title"><i class="bi bi-image"></i> Customer Image</label>
+                            <div class="image-upload-area" id="imageUploadArea">
+                                <input type="file" id="txtCustomerImage" accept="image/*" hidden />
+                                <div class="image-empty-state" id="imageEmptyState">
+                                    <i class="bi bi-cloud-arrow-up"></i>
+                                    <span>Click to select an image</span>
+                                    <small>PNG, JPG up to 10MB</small>
+                                </div>
+                                <div class="image-preview-wrap" id="imagePreviewWrap" style="display:none;">
+                                    <img id="imgPreviewThumb" src="" alt="Selected image" />
+                                    <div class="image-preview-actions">
+                                        <button type="button" class="img-action-btn" id="btnPreviewImage" title="Preview">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                        <button type="button" class="img-action-btn img-action-remove" id="btnRemoveImage" title="Remove">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clrdivs" id="divErrorOnImage"></div>
+                        </div>
+                    </div>
+
+                    <!-- Modal Footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" id="btnClear" hidden>
+                            <i class="bi bi-arrow-counterclockwise"></i> Clear
+                        </button>
+                        <button type="button" class="btn btn-success" id="btnSave">
+                            <i class="bi bi-check2-circle"></i> Save
+                        </button>
+                        <button type="button" class="btn btn-warning" id="btnClose">
+                            <i class="bi bi-x-circle"></i> Close
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Image Preview Modal -->
+        <div class="modal fade" id="imagePreviewModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6 class="modal-title"><i class="bi bi-image"></i> Image Preview</h6>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <img id="imgModalFull" class="img-modal-full" src="" alt="Full preview" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript">
+    var UID = '@Session["LoginUserID"]';
+var Aurl = '@Session["APIurl"]';
+   var DecVal = '@Session["DecimalValues"]';
+    var strCompanyCode = '@Session["CompanyCode"]';
+    $("#btnAddNew").hide();
+    //if ($("#txtAddID").val() == 0) {
+    //    $("#btnAddNew").hide();
+    //}
+    var nTransMode = 1;
+    CustomerListData();
+    function CustomerListData() {
+        $.ajax({
+            url: Aurl + "customer/customerlist",
+            type: 'get',
+            contentType: 'json',
+            data: {
+                CompanyCode: strCompanyCode
+            },
+            success: function (data) {
+                //console.log(data)
+                var Docjsdata = JSON.parse(data.CustomerData);
+                    var cardHtml = "";
+                    if (Docjsdata.length === 0) {
+                        cardHtml = '<div class="col-md-12 empty-state"><i class="bi bi-person-x d-block"></i><p>No customers found</p></div>';
+                    } else {
+                        $.each(Docjsdata, function (index, value) {
+
+                            var rowIndex = index;
+
+                            cardHtml += '<div class="col-12 col-md-4 card-item mb-2" style="animation-delay:' + (index * 0.05) + 's">';
+                            cardHtml += '  <div class="card card-view-item shadow-sm h-100">';
+
+                            // Header
+                            cardHtml += '    <div class="card-header card-header-view fs-5">';
+                            cardHtml += '      <i style="font-size:12px;" class="bi ' + (value.Imagestate == "0" ? 'bi-circle' : 'bi-person-circle') +'"></i><span class="text-truncate">' + (value.Name || "Unknown Customer") + '</span>';
+                            cardHtml += '    </div>';
+
+                            // Body
+                            cardHtml += '    <div class="card-body card-body-view  fs-6">';
+
+                            // Row 1: Code & Mobile
+                            cardHtml += '      <div class="row mb-2">';
+                            cardHtml += '        <div class="col-6">';
+                            cardHtml += '          <span class="card-label d-block"><i class="bi bi-hash"></i> ' + (value.Code || "-") + '</span>';
+                            cardHtml += '        </div>';
+                            cardHtml += '        <div class="col-6">';
+                            cardHtml += '          <span class="card-label fw-bold d-block"><a href="tel:' + (value.Mob1 || "-") + '"><i class="bi bi-telephone"></i> ' + (value.Mob1 || "-") + '</a></span>';
+                            cardHtml += '        </div>';
+                            cardHtml += '      </div>';
+
+                            // Row 2: Owner & GSTIN
+                            cardHtml += '      <div class="row mb-2">';
+                            cardHtml += '        <div class="col-6">';
+                            cardHtml += '          <span class="card-label d-block"><i class="bi bi-person"></i> ' + (value.OwnerName || value.ContactPerson || "-") + '</span>';
+                            cardHtml += '        </div>';
+                            cardHtml += '        <div class="col-6">';
+                            cardHtml += '          <span class="card-label d-block small"><i class="bi bi-person-vcard"></i> ' + (value.GSTIN || "-") + '</span>';
+                            cardHtml += '        </div>';
+                            cardHtml += '      </div>';
+
+                            // Row 3: Location & Status
+                            cardHtml += '      <div class="row">';
+                            cardHtml += '        <div class="col-6">';
+                            var latlong = value.Latitude + "," + value.Longtitude;
+
+                            var Redirectlink = value.Latitude != "" && value.Longtitude != "" ?
+                                /Android/i.test(navigator.userAgent) ? `geo:${latlong}?q=${latlong}` :  `https://www.google.com/maps/dir/?api=1&destination=${latlong}` : ``;
+                            var locationlink = Redirectlink != "" ? '<a href="' + Redirectlink + '" target="_blank"><i class="bi bi-geo-fill"></i> ' + (value.Pincode || "Navigate") + '</a>' : '<i class="bi bi-geo-fill"></i> ' + (value.Pincode || "-");
+                            cardHtml += '          <span class="card-label d-block small">' + locationlink + '</span>';
+                            cardHtml += '        </div>';
+
+                            var status = value.Active || "-";
+                            var statusIcon = "bi-info-circle";
+                            var statusClass = "bg-secondary";
+
+                           if (status === "No") {
+                                statusIcon = "bi-x-circle";
+                                statusClass = "bg-danger";
+                            }
+                           else if (status === "Yes") {
+                                statusIcon = "bi-check-circle";
+                                statusClass = "bg-success";
+                            }
+
+                            cardHtml += '        <div class="col-6">';
+                            cardHtml += '          <span class="badge ' + statusClass + '"><i class="bi ' + statusIcon + '"></i> ' + status + '</span>';
+                            cardHtml += '        </div>';
+                            cardHtml += '      </div>';
+
+                            cardHtml += '    </div>'; // Body End
+
+                            // Footer
+                            cardHtml += '    <div class="card-footer card-footer-view text-right">';
+
+                            cardHtml += $("#txtViewID").val() == 0 ? '' :
+                                '<button id="btnView' + rowIndex + '" type="button" class="btn btn-info btn-sm clsview" data-id="' + value.ID + '" data-customername="' + value.Name + '"><i class="bi bi-eye"></i> View</button>';
+
+                            cardHtml += $("#txtModifyID").val() == 1 ?
+                                '<button id="btnEdit' + rowIndex + '" type="button" class="btn btn-warning btn-sm clsedit ms-2" data-id="' + value.ID + '" data-customername="' + value.Name + '"><i class="bi bi-pencil"></i> Edit</button>' : '';
+
+                            cardHtml += '    </div>';
+
+                            cardHtml += '  </div>';
+                            cardHtml += '</div>';
+
+                        });
+                    }
+
+                $('#divCustomerList').html(cardHtml);
+            },
+            error: function (data) {
+                if (data.status == "401") {
+                    var msg = data.responseJSON.Message;
+                }
+            }
+        });
+    }
+
+    var modal = new bootstrap.Modal(document.getElementById('myModalfg'));
+    $("#btnAddNew").click(function () {
+        if (ClosecfFocus != 3) { CloseConfirmDialogMsg("Do you want to close?"); } else { CloseForm(); }
+    });
+
+    function CloseForm() {
+        clearImageSelection();
+        setImageEditable(true);
+        existingImageFileName = null;
+        RemoveCustomers = null;
+        modal.hide();
+    }
+    $("#btnClose,#modelcloseX").click(function () {
+        if (ClosecfFocus != 3) { CloseConfirmDialogMsg("Do you want to close?"); } else { CloseForm(); }
+    });
+    $("#txtCode,#txtName,#txtLatLong").prop("disabled", true);
+    function getCustomerData(nID) {
+        $.ajax({
+            url: Aurl + "customer/customerdata",
+            type: 'get',
+            contentType: 'json',
+            data: {
+                CompanyCode: strCompanyCode,ID:nID
+            },
+            success: function (data) {
+                var Docjsdata = data[0];
+                console.log("Customer Data", Docjsdata);
+
+                $.each(JSON.parse(Docjsdata.Table1), function (i, items) {
+                    $("#txtID").val(items.ID),
+                        $("#txtCode").val(items.Code),
+                        $("#txtName").val(items.Name),
+                        $("#txtMob1").val(items.Mob1),
+                        $("#txtGSTIN").val(items.GSTIN),
+                        $("#txtPincode").val(items.Pincode),
+                        $("#txtLatLong").val(items.Latitude + "," + items.Longtitude),
+                        $("#txtAddress").val(items.Billadd1 + "," + items.Billadd2 + "," + items.Billadd3);
+                });
+
+                // Reset any previous image state before loading this customer's image
+                clearImageSelection();
+                existingImageFileName = null;
+                RemoveCustomers = null;
+
+                var CompressImageData = null;
+                if (Docjsdata.CompressImageData) {
+                    CompressImageData = (Docjsdata.CompressImageData);
+                }
+
+                if (CompressImageData && CompressImageData.length > 0) {
+                    var imgData = CompressImageData[0];
+                    existingImageFileName = imgData.FileName;
+                    $("#imgPreviewThumb").attr("src", "data:image/png;base64," + imgData.CompressImageData);
+                    $("#imageEmptyState").hide();
+                    $("#imagePreviewWrap").show();
+                }
+            }
+        });
+    }
+    $("#btnGetLocation").click(function (e) {
+        getGeo()
+    });
+    function isValidLatitude(lat) {
+        const num = parseFloat(lat);
+        return !isNaN(num) && num >= -90 && num <= 90;
+    }
+    function getGeo() {
+        if (nTransMode != 3) {
+            if (!navigator.geolocation) {
+                showErrorSnackbar('Geolocation not supported by your app');
+                return;
+            }
+            navigator.geolocation.getCurrentPosition(
+                function (pos) {
+                    const val = pos.coords.latitude.toFixed(6) + ', ' + pos.coords.longitude.toFixed(6);
+                    document.getElementById('txtLatLong').value = val;
+                    getReverseGeocodingData(pos.coords.latitude, pos.coords.longitude);
+                },
+                function () {
+                    showErrorSnackbar('Could not get location. Please allow location access.');
+                }
+            );
+        }
+        else {
+            var latlong = $("#txtLatLong").val();
+            if (latlong) {
+                var lat = latlong.split(',')[0];
+                if (isValidLatitude(lat)) {
+                    //const url = `https://www.google.com/maps/dir/?api=1&destination=${latlong}`;
+                    //const url = `geo:${latlong}q=${latlong}`;
+                    //window.open(url, '_blank');
+                    if (/Android/i.test(navigator.userAgent)) {
+                        window.location.href = `geo:${latlong}?q=${latlong}`;
+                    } else {
+                        window.location.href = `https://www.google.com/maps/dir/?api=1&destination=${latlong}`;
+                    }
+                }
+                else {
+                    showErrorSnackbar("Invalid Location point");
+                }
+            } else {
+                showErrorSnackbar("Location not found");
+            }
+        }
+    }
+    function getReverseGeocodingData(lat, lng) {
+        var latlng = new google.maps.LatLng(lat, lng);
+        var geocoder = new google.maps.Geocoder();
+        geocoder.geocode({ 'latLng': latlng }, (results, status) => {
+            if (status !== google.maps.GeocoderStatus.OK) {
+                alert(status);
+            }
+            if (status == google.maps.GeocoderStatus.OK) {
+                console.log(results);
+                var address = (results[0].formatted_address);
+
+                var value = address.split(",");
+                count = value.length;
+                country = value[count - 1];
+                statewithcode = value[count - 2];
+                state = statewithcode.substr(0, statewithcode.length - 6);
+                pincode = statewithcode.substr(statewithcode.length - 6);
+                city = value[count - 3];
+                var madds1 = "", madds2 = "", madds3 = "";;
+                var ncount = Math.round((count - 3) / 2);
+                for (var i = 0; i < count - 3; i++) {
+                    if (ncount > i) {
+                        madds1 += value[i] + ",";
+                    } else {
+                        madds2 += value[i].trim() + ",";
+                    }
+                }
+                madds3 = city.trim() + " - " + pincode.trim() + ", " + state.trim();
+                address = madds1 + madds2 + madds3;
+                $('#txtAddress').val(address.trim());
+                $('#txtPincode').val(pincode.trim());
+            }
+        });
+    }
+    $(document).on('click', '.clsview', function () {
+        nTransMode = 3;
+        $(".clrdivs").html("");
+        var id = $(this).data('id');
+        getCustomerData(id);
+        $("#btnSave").hide();
+        $("#viewlocicon").show();
+        $("#editlocicon").hide();
+        $("#lblPopupheading").html('<i class="bi bi-eye-fill me-1"></i> View Customer');
+        $("#txtCode,#txtName,#txtLatLong").prop("disabled", true);
+        $("input,textarea").prop("disabled", true);
+        clearImageSelection();
+        setImageEditable(false);
+        modal.show();
+    });
+    $(document).on('click', '.clsedit', function () {
+        nTransMode = 2;
+        $(".clrdivs").html("");
+        var id = $(this).data('id');
+        getCustomerData(id);
+        $("#btnSave").show();
+        $("#viewlocicon").hide();
+        $("#editlocicon").show();
+        $("#lblPopupheading").html('<i class="bi bi-pencil-square me-1"></i> Edit Customer');
+        $("input,textarea").prop("disabled", false);
+        $("#txtCode,#txtName,#txtLatLong").prop("disabled", true);
+        clearImageSelection();
+        setImageEditable(true);
+        modal.show();
+    });
+    function SaveValidation() {
+        var IsValid = true, ChkFormation = true;
+        $(".clrdivs").html("");
+        if (nTransMode != 1) {
+            if ($("#txtID").val() == "") {
+                IsValid = false;
+                $("#divErrorOnCode").html("Select Valid Customer");
+                showErrorSnackbar("Select Valid Customer");
+            }
+        }
+        if ($("#txtCode").val() == "") {
+            IsValid = false;
+            $("#divErrorOnCode").html("Customer Code should not be empty");
+            showErrorSnackbar("Customer Code should not be empty");
+        }
+        if ($("#txtName").val() == "") {
+            IsValid = false;
+            $("#divErrorOnName").html("Customer Name should not be empty");
+            showErrorSnackbar("Customer Name should not be empty");
+        }
+        ChkFormation = MobilenoValidation($("#txtMob1"), $("#divErrorOnMob1"), false);
+        if (!ChkFormation) {
+            IsValid = false;
+        }
+        ChkFormation = GSTINValidation($("#txtGSTIN"), $("#divErrorOnGSTIN"), false);
+        if (!ChkFormation) {
+            IsValid = false;
+            showErrorSnackbar("Invalid GSTIN Format");
+        }
+        if ($("#txtPincode").val().length != 6) {
+            IsValid = false;
+            $("#divErrorOnPincode").html("Invalid Pincode format(Enter 6 numeric)");
+            showErrorSnackbar("Invalid Pincode format(Enter 6 numeric)");
+        }
+        if (IsValid) {
+            var latlongval = $("#txtLatLong").val();
+            if (latlongval) {
+                LatPin = latlongval.split(",")[0];
+                LongPin = latlongval.split(",")[1];
+                if (LatPin == "" || LongPin == "") {
+                    IsValid = false;
+                    $("#divErrorOnLatLong").html("Select valid location");
+                    showErrorSnackbar("Select valid location");
+                }
+            }
+            else {
+                $("#divErrorOnLatLong").html("Select valid location");
+                IsValid = false;
+                showErrorSnackbar("Select valid location");
+            }
+        }
+        return IsValid;
+    }
+    function SaveData() {
+        $("#btnSave").prop("disabled", true);
+        let LatPin = null, LongPin = null;
+        var latlongval = $("#txtLatLong").val();
+        if (latlongval) {
+            LatPin = latlongval.split(",")[0];
+            LongPin = latlongval.split(",")[1];
+        }
+        var lstMaster = {
+            "CompanyCode": strCompanyCode,
+            "Mode": nTransMode,
+            "ID": $("#txtID").val(),
+            "Code": $("#txtCode").val(),
+            "Name": $("#txtName").val(),
+            "Billadd1": $("#txtAddress").val(),
+            "Mob1": $("#txtMob1").val(),
+            "Pincode": $("#txtPincode").val(),
+            "GSTIN": $("#txtGSTIN").val(),
+            "Latitude": LatPin,
+            "Longtitude": LongPin,
+            "RemoveCustomer": RemoveCustomers,
+            "UserID": UID,
+        }
+        // Build multipart form data instead of raw JSON
+        var formData = new FormData();
+        formData.append("data", JSON.stringify(lstMaster));
+
+        // txtProductImages is your multi-select file input (see the widget we built earlier)
+        var imgInput = document.getElementById("txtCustomerImage");
+        if (imgInput && imgInput.files && imgInput.files.length > 0) {
+            for (var i = 0; i < imgInput.files.length; i++) {
+                formData.append("CustomerImages", imgInput.files[i], imgInput.files[i].name);
+            }
+        }
+        $.ajax({
+            url: Aurl + "customermaster/save",
+            type: 'POST',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                $("#btnSave").prop("disabled", false);
+                $.each(data, function (i, items) {
+                    if (items.MsgID == 0) {
+                        showSuccessSnackbar(items.Message);
+                        existingImageFileName = null;
+                        RemoveCustomers = null;
+                        CustomerListData();
+                        modal.hide();
+                    } else {
+                        showErrorSnackbar(items.Message);
+                    }
+                });
+            },
+            error: function (data) {
+                $("#btnSave").prop("disabled", false);
+
+            }
+        });
+    }
+
+    $("#btnSave").click(function () {
+        if (cfFocus != 3) {
+            if (SaveValidation()) {
+                ConfirmDialogMsg("Do you want to save data?");
+            }
+        } else {
+            if (SaveValidation()) {
+                SaveData();
+            }
+        }
+    });
+    // ── Customer Image: select / preview / remove ──
+    var imagePreviewModalObj = new bootstrap.Modal(document.getElementById('imagePreviewModal'));
+    var selectedImageFile = null;
+    var existingImageFileName = null; // filename of the image currently loaded from server for this customer
+    var RemoveCustomers = null;       // filename captured when an existing image is removed
+    var MaxMB = 5;
+    var Maxfilesize = MaxMB * 1024 * 1024
+    $("#imageEmptyState").click(function () {
+        if ($("#imageUploadArea").hasClass("image-disabled")) return;
+        $("#txtCustomerImage").val("");
+        $("#txtCustomerImage").click();
+    });
+
+    $(document).on('change', '#txtCustomerImage', function (e) {
+        var file = e.target.files && e.target.files[0];
+        if (!file) return;
+        if (!file.type.match('image.*')) {
+            showErrorSnackbar("Please select a valid image file");
+            return;
+        }
+        if (file.size > Maxfilesize) {
+            showErrorSnackbar("Image size should not exceed " + MaxMB +" MB");
+            return;
+        }
+        selectedImageFile = file;
+        var reader = new FileReader();
+        reader.onload = function (ev) {
+            console.log("Image data", ev.target);
+            $("#imgPreviewThumb").attr("src", ev.target.result);
+            $("#imageEmptyState").hide();
+            $("#imagePreviewWrap").show();
+        };
+        reader.readAsDataURL(file);
+    });
+
+    $(document).on('click', '#btnPreviewImage', function (e) {
+        e.stopPropagation();
+        $("#imgModalFull").attr("src", $("#imgPreviewThumb").attr("src"));
+        imagePreviewModalObj.show();
+    });
+
+    $(document).on('click', '#btnRemoveImage', function (e) {
+        e.stopPropagation();
+        if (existingImageFileName) {
+            RemoveCustomers = existingImageFileName;
+            existingImageFileName = null;
+        }
+        clearImageSelection();
+    });
+
+    function clearImageSelection() {
+        selectedImageFile = null;
+        $("#txtCustomerImage").val("");
+        $("#imgPreviewThumb").attr("src", "");
+        $("#imagePreviewWrap").hide();
+        $("#imageEmptyState").show();
+    }
+
+    function setImageEditable(isEditable) {
+        if (isEditable) {
+            $("#imageUploadArea").removeClass("image-disabled");
+            $("#btnRemoveImage").show();
+        } else {
+            $("#imageUploadArea").addClass("image-disabled");
+            $("#btnRemoveImage").hide();
+        }
+    }
+
+    // Function to filter cards based on search input
+    function filterCards() {
+        var input, filter, cards, cardContainer, h5, i, txtValue;
+        input = document.getElementById("txtSearchCards");
+        filter = input.value.toUpperCase();
+        cardContainer = document.getElementById("divCustomerList");
+        cards = cardContainer.getElementsByClassName("card-item");
+
+        for (i = 0; i < cards.length; i++) {
+            // Search in the whole text content of the card
+            txtValue = cards[i].innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                cards[i].style.display = "";
+            } else {
+                cards[i].style.display = "none";
+            }
+        }
+    }
+</script>

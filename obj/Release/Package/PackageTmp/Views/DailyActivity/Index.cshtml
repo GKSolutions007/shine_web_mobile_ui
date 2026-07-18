@@ -1,0 +1,3253 @@
+@model ShineWebMobile.Models.SingleMasterModel
+@{
+    ViewBag.Title = ViewData["FormName"];
+    Layout = "~/Views/Shared/_LayoutBT5.cshtml";
+}
+<link href="~/Content/chosen.min.css" rel="stylesheet" />
+<link href="~/Content/navbar.css" rel="stylesheet" />
+<link href="~/Content/buttonTop.css" rel="stylesheet" />
+<link rel="stylesheet" href="~/Content/jquery-ui.css">
+<link href="~/Content/dataTables.dataTables.2.2.2.css" rel="stylesheet" />
+<link href="~/Content/surroundingcustomerstyle.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery-3.7.1.js"></script>
+<script src="~/Scripts/chosen.jquery.min.js"></script>
+<script src="~/Scripts/jquerychoose.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Scripts/dataTables.2.2.2.js"></script>
+
+<header>
+    <link rel="stylesheet" href="~/Content/index.css">
+</header>
+
+<style>
+    .selected-row {
+        background-color: #cce5ff !important; /* Light blue, change as needed */
+    }
+
+    th, td {
+        white-space: nowrap;
+    }
+
+    .toolbar, .dt-search {
+        float: right;
+    }
+
+    .gdInput {
+        width: 100%;
+        height: 25px;
+        border-width: 0 0 0.1px 0;
+        border-color: #e0d6d6;
+    }
+
+    .trtext-line {
+        border: none;
+        border-bottom: 1px #000000;
+    }
+
+    div.dataTables_wrapper {
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    td {
+        font-size: 11px;
+    }
+
+    input[type=number] {
+        text-align: right;
+    }
+
+        input[type=number]::placeholder {
+            text-align: left;
+        }
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+    /* The Modal (background) */
+    .modalBatch {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 10; /* Sit on top */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+
+    /* Modal Content/Box */
+    @@media only screen and (min-width: 600px) {
+        .modalBatch-content {
+            background-color: #ffffff;
+            margin: 3% auto; /* 15% from the top and centered */
+            padding: 10px;
+            border: 1px solid #888;
+            width: 75%; /* Could be more or less, depending on screen size */
+            height: 70%;
+            top: 5%;
+            overflow: auto;
+        }
+    }
+
+    @@media only screen and (max-width: 600px) {
+        .modalBatch-content {
+            background-color: #ffffff;
+            margin: 10% auto; /* 15% from the top and centered */
+            padding: 25px;
+            border: 1px solid #888;
+            width: 95%; /* Could be more or less, depending on screen size */
+            height: 80%;
+            top: 20%;
+            overflow: auto;
+        }
+    }
+    /* The Close Button */
+    .closefg {
+        color: #aaa;
+        float: right;
+        font-size: 10px;
+        font-weight: bold;
+    }
+
+        .closefg:hover,
+        .closefg:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    .modalProdInfo {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 10; /* Sit on top */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+
+    /* Modal Content/Box */
+    @@media only screen and (min-width: 600px) {
+        .modalProdInfo-content {
+            background-color: #ffffff;
+            margin: 3% auto; /* 15% from the top and centered */
+            padding: 10px;
+            border: 1px solid #888;
+            width: 75%; /* Could be more or less, depending on screen size */
+            height: 70%;
+            top: 5%;
+            overflow: auto;
+        }
+    }
+
+    @@media only screen and (max-width: 600px) {
+        .modalProdInfo-content {
+            background-color: #ffffff;
+            margin: 10% auto; /* 15% from the top and centered */
+            padding: 25px;
+            border: 1px solid #888;
+            width: 95%; /* Could be more or less, depending on screen size */
+            height: 80%;
+            top: 20%;
+            overflow: auto;
+        }
+    }
+    /* The Close Button */
+    .closePinfo {
+        color: #aaa;
+        float: right;
+        font-size: 10px;
+        font-weight: bold;
+    }
+
+        .closePinfo:hover,
+        .closePinfo:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    /* Style the tab */
+    .tab {
+        overflow: hidden;
+        border: 1px solid #ccc;
+        background-color: #f1f1f1;
+    }
+
+        /* Style the buttons inside the tab */
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.5s;
+            font-size: 17px;
+        }
+
+            /* Change background color of buttons on hover */
+            .tab button:hover {
+                background-color: #ddd;
+            }
+
+            /* Create an active/current tablink class */
+            .tab button.active {
+                background-color: #ccc;
+            }
+
+    /* Style the tab content */
+    .tabcontent {
+        display: none;
+        /*padding: 6px 12px;*/
+        border: none;
+        border-top: none;
+    }
+
+    .form-label {
+        position: relative;
+        display: block;
+        clear: both;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .labelup {
+        -webkit-transform: translateY(50%);
+        -moz-transform: translateY(-50%);
+        -ms-transform: translateY(-50%);
+        -o-transform: translateY(-50%);
+        transform: translateY(50%);
+        -webkit-transition: all 0.2s ease-in-out;
+        -moz-transition: all 0.2s ease-in-out;
+        transition: all 0.2s ease-in-out;
+        position: absolute;
+        top: -60%;
+        left: 1em;
+        background: #fffefe;
+        color: #2b2828;
+        font-size: 0.9em;
+        font-weight: 600;
+        cursor: text;
+        pointer-events: none;
+        font-family: sans-serif;
+    }
+
+    .labelupfortextarea {
+        -webkit-transform: translateY(50%);
+        -moz-transform: translateY(-50%);
+        -ms-transform: translateY(-50%);
+        -o-transform: translateY(-50%);
+        transform: translateY(50%);
+        -webkit-transition: all 0.2s ease-in-out;
+        -moz-transition: all 0.2s ease-in-out;
+        transition: all 0.2s ease-in-out;
+        position: absolute;
+        top: -35%;
+        left: 1em;
+        background: #fffefe;
+        color: #2b2828;
+        font-size: 0.9em;
+        font-weight: 600;
+        cursor: text;
+        pointer-events: none;
+        font-family: sans-serif;
+    }
+
+    .footerAction {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        width: 85%;
+        color: white;
+        background-color: azure;
+    }
+    /*input:focus + .labelup,
+    input:not(:placeholder-shown) + .labelup, textarea:focus + .labelup, textarea:not(:placeholder-shown) + .labelup {
+        top: -35%;
+        font-size: .9em;
+        padding: 0 .3em;
+        background: #F9F9F9;
+        color: #000000;
+    }*/
+    .clsProd {
+        position: fixed;
+        right: 1%;
+        bottom: 8%;
+        width: 30%;
+        height: 45%;
+        color: black;
+        background-color: #c2f6b5;
+        z-index: 1000;
+    }
+
+    .each {
+        border-bottom: 1px solid #555;
+        padding: 3px 0;
+    }
+
+    .acItem .name {
+        font-size: 14px;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .acItem .desc {
+        font-size: 10px;
+        font-family: Arial, Helvetica, sans-serif;
+        color: #555;
+    }
+
+    .ui-autocomplete {
+        max-height: 245px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+</style>
+<style>
+    #tblProductInfo tr td input {
+        font-weight: 600;
+    }
+
+    /* ===== Merged Product Info Column (Image + Name + PriceDesc + Inputs) ===== */
+    .prod-row-wrap {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        white-space: normal;
+    }
+
+    .prod-img-col {
+        flex: 0 0 85px;
+        width: 46px;
+    }
+
+    .prod-thumb {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 1px solid #ddd;
+        display: block;
+    }
+
+    .prod-thumb-empty {
+        width: 90px;
+        height: 90px;
+    }
+
+    .prod-detail-col {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .prod-name-row {
+        font-size: 12px;
+        white-space: normal;
+        word-break: break-word;
+    }
+
+    .prod-pricedesc-row {
+        font-size: 11px;
+        color: #666;
+        margin: 2px 0 4px 0;
+        white-space: normal;
+        word-break: break-word;
+    }
+
+    .prod-inputs-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 2px;
+    }
+
+    .prod-input-group {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 11px;
+        white-space: nowrap;
+    }
+
+        .prod-input-group label {
+            margin: 0;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+    /* Image Show/Hide toggle - when hidden, only the image column disappears,
+       name / price-desc / inputs remain visible */
+    #tblProductInfo.hide-prod-image .prod-img-col {
+        display: none;
+    }
+
+    .img-toggle-bar {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 6px;
+    }
+
+        .img-toggle-bar label {
+            font-size: 12px;
+            font-weight: 600;
+            margin: 0;
+            cursor: pointer;
+        }
+    /* =============================================
+       MODERNIZED dvMain STYLES
+    ============================================= */
+    /* Form Section Cards */
+    .form-section-card {
+        background: #ffffff;
+        border-radius: 14px;
+        box-shadow: 0 2px 12px rgba(0,120,200,0.08);
+        border: 1px solid #e8f0fe;
+        margin-bottom: 14px;
+        padding: 14px 16px 10px 16px;
+        animation: slideInCard 0.35s cubic-bezier(.4,0,.2,1) both;
+        transition: box-shadow 0.2s;
+    }
+
+        .form-section-card:hover {
+            box-shadow: 0 6px 24px rgba(0,120,200,0.13);
+        }
+
+    .form-section-title {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        color: #1a73e8;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        border-bottom: 1.5px solid #e8f0fe;
+        padding-bottom: 6px;
+    }
+
+        .form-section-title i {
+            font-size: 14px;
+            color: #1a73e8;
+        }
+    /* Floating label inputs */
+    .field-wrap {
+        position: relative;
+        margin-bottom: 6px;
+    }
+
+        .field-wrap .field-icon {
+            position: absolute;
+            left: 10px;
+            top: 40%;
+            transform: translateY(-50%);
+            color: #1a73e8;
+            font-size: 14px;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .field-wrap .mod-input,
+        .field-wrap .mod-select,
+        .field-wrap .mod-textarea {
+            width: 100%;
+            padding: 10px 10px 7px 34px;
+            font-size: 13px;
+            border: 1.5px solid #d0dff7;
+            border-radius: 8px;
+            background: #f8fbff;
+            color: #222;
+            transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+            .field-wrap .mod-input:focus,
+            .field-wrap .mod-select:focus,
+            .field-wrap .mod-textarea:focus {
+                border-color: #1a73e8;
+                background: #fff;
+                box-shadow: 0 0 0 3px rgba(26,115,232,0.12);
+            }
+
+        .field-wrap .mod-label {
+            position: absolute;
+            top: 0px;
+            left: 34px;
+            font-size: 10px;
+            font-weight: 700;
+            color: #1a73e8;
+            letter-spacing: 0.05em;
+            pointer-events: none;
+            transition: all 0.2s;
+        }
+
+        .field-wrap .field-error {
+            font-size: 10.5px;
+            color: #d32f2f;
+            margin-top: 2px;
+            min-height: 0px;
+            padding-left: 4px;
+        }
+        /* Chosen select reset for field-wrap */
+        .field-wrap .chosen-container {
+            width: 100% !important;
+            position: relative;
+            z-index: 1000; /* Ensure it stays above siblings within field-wrap */
+        }
+
+        .field-wrap .chosen-container-active {
+            z-index: 3000 !important; /* Extremely high when open/active */
+        }
+
+        .field-wrap .chosen-single {
+            border-radius: 8px !important;
+            border: 1.5px solid #d0dff7 !important;
+            background: #f8fbff !important;
+            box-shadow: none !important;
+            height: 46px !important;
+            line-height: 42px !important;
+            padding-left: 28px !important;
+        }
+    /* Fix for dropdowns getting cut off or hidden by subsequent section cards */
+    .form-section-card {
+        position: relative;
+    }
+
+    .field-wrap .chosen-drop {
+        z-index: 5000 !important; /* Ensure the actual list is topmost */
+    }
+
+    /* Radio button pill groups */
+    .radio-pill-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+        .radio-pill-group input[type=radio] {
+            display: none;
+        }
+
+        .radio-pill-group label {
+            padding: 5px 13px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1.5px solid #c5d9f5;
+            background: #f0f6ff;
+            color: #1a73e8;
+            cursor: pointer;
+            transition: all 0.18s;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .radio-pill-group input[type=radio]:checked + label {
+            background: linear-gradient(135deg, #1a73e8, #0d52b8);
+            color: #fff;
+            border-color: #1a73e8;
+            box-shadow: 0 2px 8px rgba(26,115,232,0.28);
+        }
+
+        .radio-pill-group label:hover {
+            border-color: #1a73e8;
+            background: #e3eeff;
+        }
+    /* Filter toggle group (Manuf/Category/Product) */
+    .filter-pill-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+        .filter-pill-group input[type=radio] {
+            display: none;
+        }
+
+        .filter-pill-group label {
+            padding: 4px 11px;
+            border-radius: 16px;
+            font-size: 11.5px;
+            font-weight: 600;
+            border: 1.5px solid #b2d0fb;
+            background: #f0f7ff;
+            color: #0b57d0;
+            cursor: pointer;
+            transition: all 0.18s;
+            user-select: none;
+        }
+
+        .filter-pill-group input[type=radio]:checked + label {
+            background: linear-gradient(135deg, #0b57d0, #1a73e8);
+            color: #fff;
+            border-color: #0b57d0;
+            box-shadow: 0 1px 6px rgba(26,115,232,0.22);
+        }
+    /* Action bar */
+    .dvMain-action-bar {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 5px;
+        padding: 5px 0 6px 0;
+        border-top: 1.5px solid #e8f0fe;
+        margin-top: 5px;
+    }
+
+        .dvMain-action-bar .btn {
+            border-radius: 22px;
+            font-size: 12.5px;
+            font-weight: 600;
+            padding: 6px 18px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.18s;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+        }
+
+            .dvMain-action-bar .btn:hover {
+                transform: translateY(-2px) scale(1.04);
+                box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+            }
+    /* Cart badge row */
+    .cart-badge-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        font-weight: 700;
+        color: #1a73e8;
+        font-size: 13px;
+        padding: 4px 0;
+    }
+
+        .cart-badge-row i {
+            font-size: 18px;
+        }
+    /* Table header modernize */
+    #tblProductInfo thead th {
+        background: linear-gradient(135deg, #1a73e8, #0d52b8) !important;
+        color: #fff !important;
+        font-size: 11px !important;
+        text-align: center;
+        border: none;
+        padding: 8px 5px;
+    }
+
+    #tblProductInfo {
+        font-size: 12px;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    /* Load Selected Data button */
+    .customdabuttons {
+        border-radius: 22px;
+        font-weight: 700;
+        font-size: 12.5px;
+        background: linear-gradient(135deg, #00bcd4, #0097a7);
+        border: none;
+        color: #fff;
+        padding: 8px 16px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        transition: all 0.18s;
+        box-shadow: 0 2px 8px rgba(0,150,200,0.2);
+    }
+
+    #customdabuttons:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 14px rgba(0,150,200,0.35);
+    }
+    /* Animations */
+    @@keyframes slideInCard {
+        from {
+            opacity: 0;
+            transform: translateY(16px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    /* Toggle buttons for select all/deselect */
+    .toggle-btn-sm {
+        border-radius: 14px;
+        font-size: 11px;
+        font-weight: 600;
+        padding: 3px 10px;
+        border: 1.5px solid;
+        cursor: pointer;
+        transition: all 0.15s;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+        .toggle-btn-sm.select-all {
+            color: #1a73e8;
+            border-color: #1a73e8;
+            background: #f0f6ff;
+        }
+
+            .toggle-btn-sm.select-all:hover {
+                background: #1a73e8;
+                color: #fff;
+            }
+
+        .toggle-btn-sm.deselect-all {
+            color: #d32f2f;
+            border-color: #d32f2f;
+            background: #fff5f5;
+        }
+
+            .toggle-btn-sm.deselect-all:hover {
+                background: #d32f2f;
+                color: #fff;
+            }
+    /* Responsive tweaks */
+    @@media (max-width: 576px) {
+        .form-section-card {
+            padding: 10px 10px 8px 10px;
+        }
+
+        .dvMain-action-bar .btn {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .radio-pill-group label {
+            font-size: 11px;
+            padding: 4px 10px;
+        }
+    }
+    /* Card collapse toggle button */
+    .card-collapse-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        border: 1.5px solid #1a73e8;
+        background: #f0f6ff;
+        color: #1a73e8;
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 0.18s;
+        padding: 0;
+        flex-shrink: 0;
+        line-height: 1;
+    }
+
+        .card-collapse-btn:hover {
+            background: #1a73e8;
+            color: #fff;
+        }
+    /* Collapsible card body */
+    .card-collapsible-body {
+        overflow: hidden;
+        max-height: 500px;
+        transition: max-height 0.35s cubic-bezier(.4,0,.2,1), opacity 0.3s ease;
+        opacity: 1;
+    }
+
+        .card-collapsible-body.collapsed {
+            max-height: 0;
+            opacity: 0;
+        }
+</style>
+<style>
+    /* Card View Styles */
+    .card-view-item {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1px;
+        padding: 5px;
+        transition: transform 0.2s, box-shadow 0.2s;
+        border-left: 5px solid deepskyblue;
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+        .card-view-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+    .card-header-view {
+        font-size: 12px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 5px;
+    }
+
+        .card-header-view i {
+            margin-right: 8px;
+            color: deepskyblue;
+        }
+
+    .card-body-view {
+        font-size: 11px;
+        color: #555;
+        line-height: 2;
+    }
+
+    .card-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 4px;
+    }
+
+    .card-label {
+        font-weight: 600;
+        color: #777;
+    }
+
+    .card-value {
+        text-align: right;
+        font-weight: 500;
+    }
+
+    .card-footer-view {
+        border-top: 1px solid #eee;
+        text-align: right;
+    }
+
+        .card-footer-view .btn {
+            margin-left: 5px;
+            font-size: 11px;
+            padding: 5px 10px;
+        }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes pulse-blue {
+        0% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(51, 122, 183, 0.7);
+        }
+
+        70% {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 10px rgba(51, 122, 183, 0);
+        }
+
+        100% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(51, 122, 183, 0);
+        }
+    }
+
+    .btn-animated {
+        /* animation: pulse-blue 2s infinite; */
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+
+        .btn-animated:hover {
+            animation: none;
+            transform: scale(1.1);
+        }
+
+    .bi {
+        -webkit-text-stroke: 0.5px;
+    }
+</style>
+<style>
+
+    /* ===== Surrounding Customer Modal — Modern UI ===== */
+    @@keyframes scModal {
+        from {
+            opacity: 0;
+            transform: translateY(-28px) scale(0.97);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    #myModalfg .modal-dialog {
+        max-width: 460px;
+    }
+
+    #myModalfg .modal-content {
+        border: none;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(30, 90, 180, 0.22);
+        animation: scModal 0.35s cubic-bezier(.22,.68,0,1.2) both;
+    }
+
+    /* Gradient header */
+    #myModalfg .sc-modal-header {
+        background: linear-gradient(135deg, #1565c0 0%, #1e88e5 60%, #42a5f5 100%);
+        padding: 8px 10px 3px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        position: relative;
+    }
+
+    #myModalfg .sc-header-icon-wrap {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.18);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+
+        #myModalfg .sc-header-icon-wrap i {
+            font-size: 1.35rem;
+            color: #fff;
+        }
+
+    #myModalfg .sc-modal-title {
+        color: #fff;
+        font-size: 1rem;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        margin: 0;
+        flex: 1;
+        line-height: 1.2;
+    }
+
+    #myModalfg .sc-modal-subtitle {
+        font-size: 0.7rem;
+        color: rgba(255,255,255,0.78);
+        font-weight: 400;
+        display: block;
+    }
+
+    #myModalfg .sc-close-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.18);
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.2s;
+        flex-shrink: 0;
+    }
+
+        #myModalfg .sc-close-btn:hover {
+            background: rgba(255,255,255,0.32);
+            transform: rotate(90deg);
+        }
+
+    /* Pulse badge */
+    #myModalfg .sc-live-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: rgba(255,255,255,0.15);
+        color: #fff;
+        font-size: 0.65rem;
+        font-weight: 600;
+        border-radius: 20px;
+        padding: 2px 8px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
+
+    @@keyframes scPulse {
+        0%, 100% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0.3;
+        }
+    }
+
+    #myModalfg .sc-live-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #69f0ae;
+        display: inline-block;
+        animation: scPulse 1.4s ease-in-out infinite;
+    }
+
+    /* Modal body */
+    #myModalfg .modal-body {
+        padding: 1px;
+        background: #f4f7fb;
+    }
+
+    /* Error message */
+    #myModalfg .sc-error-box {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: #fff3f3;
+        border-left: 3px solid #e53935;
+        border-radius: 6px;
+        color: #c62828;
+        font-size: 0.78rem;
+        padding: 0;
+        margin-bottom: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease, padding 0.3s ease, margin-bottom 0.3s ease;
+    }
+
+        #myModalfg .sc-error-box:not(:empty) {
+            padding: 7px 10px;
+            margin-bottom: 10px;
+            max-height: 80px;
+        }
+
+            #myModalfg .sc-error-box:not(:empty)::before {
+                font-family: "bootstrap-icons";
+                content: "\F33A"; /* bi-exclamation-triangle-fill */
+                font-size: 0.9rem;
+                flex-shrink: 0;
+            }
+
+    /* Table */
+    #myModalfg #tblSurroundCustomers_wrapper .dt-search {
+        width: 100%;
+        margin-bottom: 8px;
+    }
+
+        #myModalfg #tblSurroundCustomers_wrapper .dt-search input {
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid #c8d8f0;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            background: #fff;
+        }
+
+    #myModalfg #tblSurroundCustomers thead th {
+        background: linear-gradient(135deg, #1565c0, #1e88e5);
+        color: #fff;
+        font-size: 11px;
+        font-weight: 700;
+        text-align: center;
+        border: none;
+        padding: 9px 10px;
+        letter-spacing: 0.04em;
+    }
+
+    #myModalfg #tblSurroundCustomers tbody tr {
+        transition: background 0.18s;
+    }
+
+        #myModalfg #tblSurroundCustomers tbody tr:hover {
+            background: #e3efff !important;
+            cursor: pointer;
+        }
+
+    #myModalfg #tblSurroundCustomers tbody td {
+        font-size: 12px;
+        padding: 8px 10px;
+        border-bottom: 1px solid #e8eef8;
+        vertical-align: middle;
+    }
+
+    /* Distance chip */
+    #myModalfg .sc-dist-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: #e3efff;
+        color: #1565c0;
+        border-radius: 12px;
+        padding: 2px 9px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    /* Footer */
+    #myModalfg .sc-modal-footer {
+        background: #eef3fb;
+        border-top: 1px solid #dce8f5;
+        padding: 12px 16px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+    }
+
+    #myModalfg .sc-btn-close {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: linear-gradient(135deg,#e53935,#ef5350);
+        color: #fff;
+        border: none;
+        border-radius: 20px;
+        padding: 7px 20px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.18s, box-shadow 0.18s;
+        box-shadow: 0 3px 10px rgba(229,57,53,0.28);
+    }
+
+        #myModalfg .sc-btn-close:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(229,57,53,0.38);
+        }
+    /* ===== End Surrounding Customer Modal ===== */
+    .input-with-icon {
+        position: relative;
+    }
+
+        .input-with-icon .mod-input {
+            padding-right: 40px; /* Space for the icon */
+        }
+
+    .info-icon {
+        position: absolute;
+        top: 50%;
+        right: 12px;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #0d6efd;
+        font-size: 18px;
+        transition: color .2s;
+    }
+
+        .info-icon:hover {
+            color: #084298;
+        }
+
+        .top-action-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    flex-wrap: nowrap;
+}
+
+.load-btn-wrap {
+    flex: 0 0 75%;
+}
+
+.load-btn-wrap button {
+    width: 100%;
+}
+
+.img-toggle-bar {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+/* Large Desktop */
+@@media (max-width: 1400px) {
+    .load-btn-wrap {
+        flex-basis: 75%;
+    }
+}
+
+/* Laptop / Tablet */
+@@media (max-width: 992px) {
+    .load-btn-wrap {
+        flex-basis: 50%;
+    }
+}
+
+/* Mobile */
+@@media (max-width: 576px) {
+    .load-btn-wrap {
+        flex-basis: 60%;
+    }
+
+    .img-toggle-bar label {
+        font-size: 12px;
+    }
+}
+</style>
+<body>
+    <div style="margin-bottom:50px;">
+        @Html.HiddenFor(model => model.FormName, new { @autocomplete = "off", @class = "form-control", @id = "txtFormName" })
+        @Html.HiddenFor(model => model.EnablePrice, new { @autocomplete = "off", @class = "form-control", @id = "txtEnablePrice" })
+        @Html.HiddenFor(model => model.TransType, new { @autocomplete = "off", @class = "form-control", @id = "txtTransType" })
+        @Html.HiddenFor(model => model.TransID, new { @autocomplete = "off", @class = "form-control", @id = "txtTransID" })
+
+        @Html.HiddenFor(model => model.Add, new { @autocomplete = "off", @class = "form-control", @id = "txtAddID" })
+        @Html.HiddenFor(model => model.Modify, new { @autocomplete = "off", @class = "form-control", @id = "txtModifyID" })
+        @Html.HiddenFor(model => model.View, new { @autocomplete = "off", @class = "form-control", @id = "txtViewID" })
+        @Html.HiddenFor(model => model.ShowAllUserData, new { @autocomplete = "off", @class = "form-control", @id = "txtShowAllUserData" })
+        @Html.HiddenFor(model => model.ProductFilter, new { @autocomplete = "off", @class = "form-control", @id = "txtPermProductFilter" })
+
+        @Html.HiddenFor(model => model.CategoryFilter, new { @autocomplete = "off", @class = "form-control", @id = "txtPermCategoryFilter" })
+
+        @Html.HiddenFor(model => model.ManufacturerFilter, new { @autocomplete = "off", @class = "form-control", @id = "txtPermManufacturerFilter" })
+
+        @Html.HiddenFor(model => model.Feedback, new { @autocomplete = "off", @class = "form-control", @id = "txtPermFeedback" })
+
+        @Html.HiddenFor(model => model.NoOrder, new { @autocomplete = "off", @class = "form-control", @id = "txtPermNoOrder" })
+
+        @Html.HiddenFor(model => model.OrderTaken, new { @autocomplete = "off", @class = "form-control", @id = "txtPermOrderTaken" })
+        <input hidden id="txtAllowTrackLocation" />
+        <h4 id="MainHeading">@ViewData["FormName"]</h4>
+
+        <hr class="style14" />
+        <div class="toastBox"></div>
+
+        <div id="dvDocuments" class="container-fluid py-3">
+            <div class="col-12">
+
+                <!-- Add New Button -->
+                <div class="row text-center mb-2 w-100">
+                    <div class="col-12">
+                        <button id="btnAddNew" type="button"
+                                class="btn btn-primary btn-lg btn-animated w-100"
+                                style="border-radius:25px;">
+                            <i class="bi bi-plus"></i> New Activity
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Search Box -->
+                <div class="row mb-2">
+                    <div class="col-12 p-0">
+
+                        <label class="mb-2">
+                            <input type="checkbox" id="chkShowAll"> <label style="font-size:14px" for="chkShowAll"> Show All</label>
+                        </label>
+
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-search"></i>
+                            </span>
+
+                            <input type="text"
+                                   id="txtSearchCards"
+                                   class="form-control"
+                                   placeholder="Search..."
+                                   onkeyup="filterCards()">
+                        </div>
+
+                    </div>
+                </div>
+                <!-- Card View Container -->
+                <div id="divMobCollDocsList"
+                     class="row"
+                     style="overflow-x:auto;height:700px;">
+                </div>
+            </div>
+        </div>
+        <div id="dvMain">
+            @Html.HiddenFor(model => model.TransType, new { @autocomplete = "off", @class = "form-control", @id = "txtTransType" })
+            @Html.HiddenFor(model => model.TransID, new { @autocomplete = "off", @class = "form-control", @id = "txtTransID" })
+            <input id="txtID" hidden />
+            <input id="txtStatusID" hidden />
+            <input id="txtCustomerID" hidden class="FormclrField" />
+            <input hidden type="number" class="FormclrField" id="txtLatitude" />
+            <input hidden type="number" class="FormclrField" id="txtLongtitude" />
+
+
+            <div class="form-section-card" style="animation-delay:0.05s; z-index:3">
+                <div class="form-section-title" style="cursor:pointer; user-select:none" onclick="toggleCustomerCard()">
+                    <i class="bi bi-person-vcard"></i> Customer Information
+                    <button type="button" id="btnToggleCustomer" class="card-collapse-btn ms-auto" title="Expand / Collapse">
+                        <i class="bi bi-plus-lg" id="icoToggleCustomer"></i>
+                    </button>
+                </div>
+
+
+
+                <div id="customerInfoBody" class="card-collapsible-body collapsed">
+                    <div class="row g-2">
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <div class="field-wrap">
+                                <i class="bi bi-house field-icon"></i>
+                                <label class="mod-label">Branch <span style="color:#d32f2f">*</span></label>
+                                <select class="mod-select FormclrcmbField" id="cmbBranchName">
+                                    <option value="0">Select</option>
+                                </select>
+                                <div class="field-error clrdivs" id="divErrorOnBranchName"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <div class="field-wrap">
+                                <i class="bi bi-geo-alt field-icon"></i>
+                                <label class="mod-label">Beat Name</label>
+                                <select class="mod-select FormclrcmbField" id="cmbBeatName">
+                                    <option value="0">Select</option>
+                                </select>
+                                <div class="field-error clrdivs" id="divErrorOnBeatName"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <div class="field-wrap">
+                                <i class="bi bi-person-badge field-icon"></i>
+                                <label class="mod-label">Salesman</label>
+                                <select class="mod-select FormclrcmbField" id="cmbSalesManName">
+                                    <option value="0">Select</option>
+                                </select>
+                                <div class="field-error clrdivs" id="divErrorOnSalesManName"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row g-2 mb-2">
+                    @*<div class="col-12 col-md-4">
+                        <div class="field-wrap">
+                            <i class="bi bi-person field-icon" id="Custinfo" style="cursor:pointer"></i>
+                            <label class="mod-label">Customer <span style="color:#d32f2f">*</span></label>
+                            <input type="text" class="mod-input FormclrField" id="txtCustomerName" autocomplete="off" />
+                            <div class="field-error clrdivs" id="divErrorOnCustName"></div>
+                        </div>
+                    </div>*@
+                    <div class="col-12 col-md-4">
+                        <div class="field-wrap">
+                            <i class="bi bi-person field-icon" style="cursor:pointer"></i>
+                            <label class="mod-label">
+                                Customer <span style="color:#d32f2f">*</span>
+                            </label>
+
+                            <div class="input-with-icon">
+                                <input type="text"
+                                       class="mod-input FormclrField"
+                                       id="txtCustomerName"
+                                       autocomplete="off" />
+
+                                <i class="bi bi-info-circle-fill info-icon"
+                                   id="btnCustomerInfo"
+                                   title="Customer Information"></i>
+                            </div>
+
+                            <div class="field-error clrdivs" id="divErrorOnCustName"></div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="field-wrap">
+                            <button class="customdabuttons hidewhenview" id="btnGetSurrCustomers" style="align-content:center"><span class="glyphicon glyphicon-map-marker"></span>&nbsp;Surrounding Customers</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="form-section-card" style="animation-delay:0.12s; z-index:2">
+                <div class="form-section-title">
+                    <i class="bi bi-funnel"></i> Activity Type &amp; Product Filter
+                </div>
+                <div class="row g-2 align-items-start">
+
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div style="font-size:10.5px;font-weight:700;color:#555;margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em">Activity Type</div>
+                        <div class="radio-pill-group dvrdoAction">
+                            <div class="rdoAct1">
+                                <input type="radio" name="rdoSelect" id="rdoOT" checked />
+                                <label for="rdoOT"><i class="bi bi-bag-check"></i> Order Taken</label>
+                            </div>
+                            <div class="rdoAct2">
+                                <input type="radio" name="rdoSelect" id="rdoFeedback" />
+                                <label for="rdoFeedback"><i class="bi bi-chat-dots"></i> Feedback</label>
+                            </div>
+                            <div class="rdoAct3">
+                                <input type="radio" name="rdoSelect" id="rdoNOT"/>
+                                <label for="rdoNOT"><i class="bi bi-x-circle"></i> No Order</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-sm-6 col-md-2 tblot1">
+                        <div class="hidewhenview">
+                            <div style="font-size:10.5px;font-weight:700;color:#555;margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em">Filter By</div>
+                            <div class="filter-pill-group dvrdoFilter">
+                                <div class="rdoFilter1">
+                                    <input type="radio" name="rdoFilter" id="rdo1" checked />
+                                    <label for="rdo1">Manufacturer</label>
+                                </div>
+                                <div class="rdoFilter2">
+                                    <input type="radio" name="rdoFilter" id="rdo2" />
+                                    <label for="rdo2">Category</label>
+                                </div>
+                                <div class="rdoFilter3">
+                                    <input type="radio" name="rdoFilter" id="rdo3" />
+                                    <label for="rdo3">Product</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-5 tblot1">
+                        <div class="hidewhenview">
+                            <div id="MainFilterData">
+                                <div class="field-wrap">
+                                    <input type="text" class="mod-input" id="txtProductName" autocomplete="off" />
+                                    <div class="field-error clrdivs" id="divErrorOnProductName"></div>
+                                </div>
+                            </div>
+                            <div id="ManufCC">
+                                <div class="field-wrap">
+                                    <select style="width:100%" data-placeholder="Select Manufacturer..." multiple class="chosen-Manuf form-control" name="Manuf">
+                                        @{
+                                            <option value="0"></option>
+                                        }
+                                    </select>
+                                    <button type="button" class="mfr-chosen-toggle select toggle-btn-sm select-all"><i class="bi bi-check2-all"></i> All</button>
+        <button type="button" class="mfr-chosen-toggle deselect toggle-btn-sm deselect-all"><i class="bi bi-x-lg"></i> None</button>                                    
+                                </div>
+                            </div>
+                            <div id="ProdGrpCC">
+                                <div class="field-wrap">
+
+                                    <select style="width:100%" data-placeholder="Select Category..." multiple class="chosen-Category form-control">
+                                        @{
+                                            <option value="0"></option>
+                                        }
+                                    </select>
+                                    
+                                    <button type="button" class="pgrp-chosen-toggle select toggle-btn-sm select-all" title="Select All"><i class="bi bi-check2-all"></i> All</button>
+        <button type="button" class="pgrp-chosen-toggle deselect toggle-btn-sm deselect-all" title="De-select All"><i class="bi bi-x-lg"></i> None</button>
+                                </div>
+                            </div>
+                           
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-2">
+                        
+                        <div class="top-action-bar">
+                            <div class="load-btn-wrap">
+                                <button id="btnLoadSelData" type="button" class="tblot1 customdabuttons">
+                                    <i class="bi bi-cloud-download"></i> Load Data
+                                </button>
+                            </div>
+
+                            <div class="img-toggle-bar">
+                                <label for="chkShowImage">
+                                    <i class="bi bi-image"></i> Show Image
+                                </label>
+
+                                <div class="form-check form-switch m-0">
+                                    <input class="form-check-input" type="checkbox" id="chkShowImage" checked>
+                                </div>
+                            </div>
+                        </div>
+                           
+                        @*<div class="hidewhenview">
+            <button id="btnLoadSelData" type="button" class="tblot1 customdabuttons">
+                <i class="bi bi-cloud-download"></i> Load Selected Data
+            </button>
+        </div>*@
+                    </div>
+                   
+                </div>
+            </div>
+
+
+            <div class="form-section-card" style="animation-delay:0.19s; z-index:1" id="cardDiscounts">
+                <div class="form-section-title" style="cursor:pointer;user-select:none" onclick="toggleDiscountsCard()">
+                    <i class="bi bi-percent"></i> Discounts &amp; Notes
+                    <button type="button" id="btnToggleDiscounts" class="card-collapse-btn ms-auto" title="Expand / Collapse">
+                        <i class="bi bi-plus-lg" id="icoToggleDiscounts"></i>
+                    </button>
+                </div>
+                <div id="discountsBody" class="card-collapsible-body collapsed">
+                    <div class="row g-2">
+
+                        <div class="col-6 col-sm-4 col-md-2 tblot1">
+                            <div class="field-wrap">
+                                <i class="bi bi-gift field-icon"></i>
+                                <label class="mod-label">Addnl Disc%</label>
+                                <input type="number" class="mod-input" id="txtAddnlDisc" />
+                                <div class="field-error clrdivs" id="divErrorOnAdtnlDisc"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-6 col-sm-4 col-md-2 tblot1">
+                            <div class="field-wrap">
+                                <i class="bi bi-tags field-icon"></i>
+                                <label class="mod-label">Trade Disc%</label>
+                                <input type="number" class="mod-input" id="txtTradeDisc" />
+                                <div class="field-error clrdivs" id="divErrorOnTradeDisc"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-sm-4 col-md-3">
+                            <div id="tblFeedBack">
+                                <div class="field-wrap">
+                                    <i class="bi bi-chat-text field-icon"></i>
+                                    <label class="mod-label">Feedback</label>
+                                    <input type="text" class="mod-input" id="txtFeedBack" />
+                                    <div class="field-error clrdivs" id="divErrorOnFeedBack"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-5">
+                            <div class="field-wrap">
+                                <i class="bi bi-pencil-square field-icon" style="top:18px;transform:none;"></i>
+                                <label class="mod-label">Narration</label>
+                                <textarea class="mod-textarea FormclrField" id="txtNarration" rows="2" style="padding-top:24px;"></textarea>
+                                <div class="field-error clrdivs" id="divErrorOnNarration"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="dvMain-action-bar">
+                <button id="btnClose" type="button" class="btn btn-warning">
+                    <i class="bi bi-x-circle"></i> Close
+                </button>
+                <button id="btnAddTop" type="button" class="btn btn-primary tblot1">
+                    <i class="bi bi-cart-plus"></i>
+                </button>
+                <button id="btnClear" type="button" class="btn btn-danger">
+                    <i class="bi bi-arrow-counterclockwise"></i> Clear
+                </button>
+                <button id="btnViewTop" type="button" class="btn btn-info text-white tblot1">
+                    <i class="bi bi-eye"></i>
+                </button>
+                <button id="btnSave" type="button" class="btn btn-success">
+                    <i class="bi bi-save2"></i> Save
+                </button>
+            </div>
+
+
+            <div class="row w-100 d-flex justify-content-center align-items-center">
+                <div id="dvTable">
+                    <hr class="style14" id="hrline2" />
+                    <div class="cart-badge-row">
+                        <i class="bi bi-cart3" id="cartTop"></i>
+                        <span id="divAddedItemsCountTop"></span>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table id="tblProductInfo" class="table table-hover table-bordered" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th style="width:0%">ProdID</th>
+                                    <th style="width:0%">OrgPrice</th>
+                                    <th style="width:0%">ImageData</th>
+                                    <th style="width: 100%; text-align: center">Product Details</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="cart-badge-row d-none">
+                        <i class="bi bi-cart3" id="cartBottom"></i>
+                        <span id="divAddedItemsCountBottom"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Surrounding Customer Modal — Modernized UI -->
+        <div class="modal fade" id="myModalfg" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="toastBox"></div>
+
+                    <!-- Modern Gradient Header -->
+                    <div class="sc-modal-header">
+                        <div class="sc-header-icon-wrap">
+                            <i class="bi bi-geo-alt-fill"></i>
+                        </div>
+                        <div class="flex-fill">
+                            <div class="sc-modal-title" id="lblPopupheading">
+                                Surrounding Customers
+                                <span class="sc-live-badge ms-2">
+                                    <span class="sc-live-dot"></span> Live
+                                </span>
+                            </div>
+                            <span class="sc-modal-subtitle">Customers near your current location</span>
+                        </div>
+                        <button type="button" class="sc-close-btn" id="modelcloseX" title="Close">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+
+                    <!-- Modal Body -->
+                    <div class="modal-body">
+                        <div id="dvCustLoc">
+                            <!-- Error box with icon -->
+                            <div class="sc-error-box" id="divErrorOnPopupSurrCust"></div>
+
+                            <div class="table-responsive">
+                                <table id="tblSurroundCustomers" class="table table-hover table-bordered w-100">
+                                    <thead>
+                                        <tr>
+                                            <th>CustomerID</th>
+                                            <th>Customer Name</th>
+                                            <th style="width:100%">
+                                                <i class="bi bi-person-fill me-1"></i>Customer Info
+                                            </th>
+
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modern Footer -->
+                    <div class="sc-modal-footer">
+                        <button type="button" class="sc-btn-close" id="btnSCClose">
+                            <i class="bi bi-x-circle"></i> Close
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <a href="javascript:" id="return-to-top"><i class="icon-chevron-up"></i></a>
+    </div>
+</body>
+<script type="text/javascript">
+    var Permissions = {
+        PermProductFilter: $('#txtPermProductFilter').val() == "1",
+        PermCategoryFilter: $('#txtPermCategoryFilter').val() == "1",
+        PermManufacturerFilter: $('#txtPermManufacturerFilter').val() == "1",
+        PermFeedback: $('#txtPermFeedback').val() == "1",
+        PermNoOrder: $('#txtPermNoOrder').val() == "1",
+        PermOrderTaken: $('#txtPermOrderTaken').val() == "1"
+    };
+     var UID = '@Session["LoginUserID"]';
+ var Aurl = '@Session["APIurl"]';
+    var DecVal = '@Session["DecimalValues"]';
+    var strCompanyCode = '@Session["CompanyCode"]';
+    var nTransMode = 1;
+    $(".chosen-Manuf").chosen({
+        no_results_text: "Oops, nothing found!"
+    })
+    $(".chosen-Category").chosen({
+        no_results_text: "Oops, nothing found!"
+    })
+    $('#ProdGrpCC').hide();
+    $('#ProdCC').hide();
+    $('#MainFilterData').hide();
+    if ($("#txtAddID").val() == 0) {
+        $("#btnAddNew").hide();
+    }
+
+
+    $("#dvMain").hide();
+    var Table = $('#tblProductInfo').DataTable({
+        "bFilter": true,
+        "bSearchable": false,
+        "bInfo": false,
+        "bPaginate": false,
+        "ordering": false,
+        scrollX: true,
+        scrollCollapse: true,
+        
+        "columnDefs": [{ "targets": [0, 1, 2], "visible": false, searchable: false, ordering: false }],
+       
+    });
+    
+    // ===== Merged Product Info Column helper =====
+    // Builds the single merged column markup: image on the left,
+    // and on the right: Name (line 1), PriceDesc (line 2), all inputs with labels (line 3).
+    function buildProdInfoCell(value, meta, options) {
+        options = options || {};
+        var rowIndex = meta.row;
+
+        var imgHtml;
+        if (value.Imagedata) {
+            var src = 'data:image/png;base64,' + value.Imagedata;
+            imgHtml = '<img class="prod-thumb" src="' + src + '" />';
+        } else {            
+            imgHtml = '<div class="prod-thumb prod-thumb-empty"></div>';            
+        }
+
+        var qtyVal = options.qtyVal !== undefined && options.qtyVal !== null ? options.qtyVal : 0;
+        var priceVal = options.priceVal !== undefined && options.priceVal !== null ? options.priceVal : 0;
+        var discVal = options.discVal !== undefined && options.discVal !== null ? options.discVal : 0;
+
+        var fidsQty = 'chkProductsQty_' + rowIndex;
+        var fidsPrice = 'chkProductsPrice_' + rowIndex;
+        var fidsDisc = 'chkProductsDiscPern_' + rowIndex;
+
+        var qtyDisabled = options.qtyDisabled ? 'disabled' : '';
+        var priceDisabled = options.priceDisabled ? 'disabled' : '';
+        var discDisabled = options.discDisabled ? 'disabled' : '';
+
+        var qtyInput = '<input ' + qtyDisabled + ' type="number" class="dgvQty" txttag="' + qtyVal + '" name="Qty" id="' + fidsQty + '" value="' + parseFloat(qtyVal).toFixed(DecVal) + '" title="' + qtyVal + '" style="text-align:right;width:55px;" maxlength="16"/>';
+        var priceInput = '<input ' + priceDisabled + ' type="number" class="dgvPrice" txttag="' + priceVal + '" name="Price" id="' + fidsPrice + '" value="' + parseFloat(priceVal).toFixed(DecVal) + '" title="' + priceVal + '" style="text-align:right;width:55px;" maxlength="16"/>';
+        var discInput = '<input ' + discDisabled + ' type="number" class="dgvDiscPern" txttag="' + discVal + '" name="DiscountPern" id="' + fidsDisc + '" value="' + parseFloat(discVal).toFixed(DecVal) + '" title="' + discVal + '" style="text-align:right;width:55px;" maxlength="16"/>';
+
+        var _action =
+            '<div class="prod-row-wrap">' +
+                '<div class="prod-img-col">' + imgHtml + '</div>' +
+                '<div class="prod-detail-col">' +
+                    '<div class="prod-name-row"><b>' + (value.Name != null ? value.Name : '') + '</b></div>' +
+                    '<div class="prod-pricedesc-row">' + (value.PriceDesc != null ? value.PriceDesc : '') + '</div>' +
+                    '<div class="prod-inputs-row">' +
+                        '<span class="prod-input-group"><label>Qty :</label>' + qtyInput + '</span>' +
+                        '<span class="prod-input-group"><label>\u20B9 :</label>' + priceInput + '</span>' +
+                        '<span class="prod-input-group d-none"><label>D %:</label>' + discInput + '</span>' +
+                    '</div>' +
+                '</div>' +
+            '</div>';
+        return _action;
+    }
+
+    // Applies the current "Show Image" checkbox state to the table
+    // (only the image column is affected; other details stay visible).
+    function applyImageToggleState() {
+        var showImg = $('#chkShowImage').is(':checked');
+        $('#tblProductInfo').toggleClass('hide-prod-image', !showImg);
+    }
+    $('#chkShowImage').on('change', function () {
+        applyImageToggleState();
+    });
+    applyImageToggleState();
+    var TableSurroundCustomers = $('#tblSurroundCustomers').DataTable({
+        "bFilter": true,
+        "bSearchable": true,
+        "bInfo": false,
+        "bPaginate": false,
+        "ordering": false,
+        scrollY: "500px",
+        scrollX: true,
+        scrollCollapse: true,
+        "columnDefs": [{ "targets": [0,1], "visible": false, searchable: false, ordering: false }]
+        //"selected":true,
+    });
+    var modal = new bootstrap.Modal(document.getElementById('myModalfg'));// document.getElementById("myModalfg");
+
+    $('#btnSCClose,#modelcloseX').click(function (e) {
+        modal.hide();
+    });
+    if ($('.chosen-container').length > 0) {
+        $('.chosen-container').on('touchstart', function (e) {
+            e.stopPropagation(); e.preventDefault();
+            // Trigger the mousedown event.
+            $(this).trigger('mousedown');
+        });
+    }
+    GetSetFilterData(6, UID, 0);
+    function GetSetFilterData(nMode, strID, strAllsts = "0") {
+        $.ajax({
+            url: Aurl + "dailyactivity/getdata",
+            type: 'get',
+            contentType: 'json',
+            data: {
+                CompanyCode: strCompanyCode, Mode: nMode, ID: strID, SalesmanID: strAllsts
+            },
+            success: function (data) {
+                if (nMode == 6) {
+                    var Docjsdata = JSON.parse(data);// JSON.parse(data);
+                    var cardHtml = "";
+                    if (Docjsdata.length === 0) {
+                        cardHtml = '<div class="col-md-12 text-center" style="margin-top:20px;"><h5>No records found</h5></div>';
+                    } else {
+                        $.each(Docjsdata, function (index, value) {
+
+                            var rowIndex = index;
+
+                            cardHtml += '<div class="col-12 col-md-4 card-item">';
+                            cardHtml += '  <div class="card card-view-item shadow-sm">';
+
+                            // Header
+                            cardHtml += '    <div class="card-header card-header-view">';
+                            cardHtml += '      <i class="bi bi-person"></i> <span>' + (value.CustomerName || "Unknown Customer") + '</span>';
+                            cardHtml += '    </div>';
+
+                            // Body
+                            cardHtml += '    <div class="card-body card-body-view">';
+
+                            // Row 1: Date & Activity
+                            cardHtml += '      <div class="row mb-1">';
+                            cardHtml += '        <div class="col-6">';
+                            cardHtml += '          <span class="card-label d-block small"><i class="bi bi-calendar"></i> ' + (value.DocDate || "-") + '</span>';
+                            cardHtml += '        </div>';
+
+                            cardHtml += '        <div class="col-6">';
+                            cardHtml += '          <span class="card-label d-block small"><i class="bi bi-cart"></i> ' + (value.Activity || "-") + '</span>';
+                            cardHtml += '        </div>';
+                            cardHtml += '      </div>';
+
+                            // Row 2: Amount & Beat
+                            cardHtml += '      <div class="row mb-1">';
+                            cardHtml += '        <div class="col-6">';
+                            cardHtml += '          <span class="card-label d-block text-success fw-bold small"><i class="bi bi-currency-rupee"></i> ' + (value.Value || "0.00") + '(' + (value.ItemsCount || "0") + ')</span>';
+                            cardHtml += '        </div>';
+
+                            cardHtml += '        <div class="col-6">';
+                            cardHtml += '          <span class="card-label d-block small"><i class="bi bi-geo-alt"></i> ' + (value.BeatName || "-") + '</span>';
+                            cardHtml += '        </div>';
+                            cardHtml += '      </div>';
+
+                            // Row 3: Salesman & Status
+                            cardHtml += '      <div class="row">';
+                            cardHtml += '        <div class="col-6">';
+                            cardHtml += '          <span class="card-label d-block small"><i class="bi bi-person-badge"></i> ' + (value.SalesmanName || "-") + '</span>';
+                            cardHtml += '        </div>';
+
+                            // Status Logic
+                            var status = value.Status || "-";
+                            var statusIcon = "bi-info-circle";
+                            var statusClass = "bg-secondary";
+
+                            if (status === "Open" || status === "Amendment") {
+                                statusIcon = "bi-envelope-open";
+                                statusClass = "bg-primary";
+                            }
+                            else if (status === "Amended") {
+                                statusIcon = "bi-pencil-square";
+                                statusClass = "bg-warning";
+                            }
+                            else if (status === "Cancelled") {
+                                statusIcon = "bi-x-circle";
+                                statusClass = "bg-danger";
+                            }
+                            else if (status === "Processed") {
+                                statusIcon = "bi-check-circle";
+                                statusClass = "bg-success";
+                            }
+
+                            cardHtml += '        <div class="col-6">';
+                            cardHtml += '          <span class="badge ' + statusClass + '"><i class="bi ' + statusIcon + '"></i> ' + status + '</span>';
+                            cardHtml += '        </div>';
+
+                            cardHtml += '      </div>';
+
+                            cardHtml += '    </div>'; // Body End
+
+                            // Footer
+                            cardHtml += '    <div class="card-footer card-footer-view text-right">';
+
+                            cardHtml += $("#txtViewID").val() == 0 ? '' :
+                                '<button id="btnView' + rowIndex + '" type="button" class="btn btn-info btn-sm clsview" data-id="' + value.ID + '" data-customername="' + value.CustomerName + '"><i class="bi bi-eye"></i> View</button>';
+
+                            cardHtml += (value.StatusID == 1 || value.StatusID == 3) && $("#txtModifyID").val() == 1 ?
+                                '<button id="btnEdit' + rowIndex + '" type="button" class="btn btn-warning btn-sm clsedit ms-2" data-id="' + value.ID + '" data-customername="' + value.CustomerName + '"><i class="bi bi-pencil"></i> Edit</button>' : '';
+
+                            cardHtml += '    </div>';
+
+                            cardHtml += '  </div>';
+                            cardHtml += '</div>';
+
+                        });
+                    }
+
+                    $('#divMobCollDocsList').html(cardHtml);
+                }
+                else if (nMode == 8 || nMode == 7) {
+                    var Colljsdata = JSON.parse(data);
+                    var HeaderData = Colljsdata.Table[0];
+                    var DocData = Colljsdata.Table1;
+                    $('#txtID').val(HeaderData.ID),
+                        $('#txtStatusID').val(HeaderData.StatusID),
+                        $('#cmbBeatName').val(HeaderData.BeatID),
+                        $('#cmbSalesManName').val(HeaderData.SalesManID),
+                        $('#txtCustomerID').val(HeaderData.CustomerID),
+                        $('#txtCustomerName').val(HeaderData.CustomerName),
+                        $('#cmbBranchName').val(HeaderData.BranchID),
+                        $('#txtFeedBack').val(HeaderData.FeedBack),
+                        $('#txtNarration').val(HeaderData.Narration);
+                    $('#txtAddnlDisc').val(parseFloat(HeaderData.AdDiscPern).toFixed(DecVal));
+                    $('#txtTradeDisc').val(parseFloat(HeaderData.TrDiscPern).toFixed(DecVal));
+
+                    $('#rdoOT').prop('checked', HeaderData.ActivityID == 1);
+                    $('#rdoFeedback').prop('checked', HeaderData.ActivityID == 2);
+                    $('#rdoNOT').prop('checked', HeaderData.ActivityID == 3);
+                    rdoActionID = HeaderData.ActivityID;
+                    var isView = nTransMode == 5 ? "disabled" : "";
+                    $('#tblProductInfo').DataTable({
+                        scrollY: "500px",
+                        scrollX: true,
+                        scrollCollapse: true,
+                        paging: false,
+                        destroy: true,
+                        data: DocData,
+                        fixedColumns: false,
+                        ordering: false,
+                        searching: true,
+                        sorting: false,
+                        columns: [
+                            { "data": "ID", "autoWidth": true, "visible": false, className: "dt-body-left" },
+                            { "data": "Rate", "autoWidth": true, "visible": false, className: "dt-body-left" },
+                            { "data": "Imagedata", "autoWidth": true, "visible": false, className: "dt-body-left" },
+                            {
+                                className: "dt-body-left",
+                                "mRender": function (data, type, value, meta) {
+                                    var enbPrice = ($("#txtEnablePrice").val() == '0' || nTransMode == 5);
+                                    return buildProdInfoCell(value, meta, {
+                                        qtyVal: value.Qty,
+                                        priceVal: value.Price,
+                                        discVal: value.Discount,
+                                        qtyDisabled: nTransMode == 5,
+                                        priceDisabled: enbPrice,
+                                        discDisabled: nTransMode == 5
+                                    });
+                                },
+                            }
+                        ],
+                        initComplete: function () {
+                            // ? Attach row click event AFTER table is loaded
+                            $('#tblProductInfo tbody').on('click', 'tr', function () {
+                                //showSuccessSnackbar("row click");
+                                $(this).toggleClass('selected-row');
+                            });
+                            applyImageToggleState();
+                        }
+                    });
+                    Table = $('#tblProductInfo').DataTable();
+                    if (Table.rows().count() == 0) {
+                        showErrorSnackbar("No items added")
+                    }
+                    FieldPermissions();
+                    setTimeout(() => {
+                        ShowHideFields(HeaderData.ActivityID == 1);
+                        CalcProdDtl();
+                    }, 500);
+                    
+
+                }
+            },
+            error: function (data) {
+                if (data.status == "401") {
+                    var msg = data.responseJSON.Message;
+                    ////showErrorSnackbar(msg + " Logout and Login again.");
+                }
+            }
+        });
+    }
+    function FieldPermissions() {
+        //return;
+        //rdo1,#rdo2,#rdo3
+        if (Permissions.PermManufacturerFilter) {
+            $(".rdoFilter1").show();
+        } else {
+            $(".rdoFilter1").hide();
+        }
+        if (Permissions.PermCategoryFilter) {
+            $(".rdoFilter2").show();
+        } else {
+            $(".rdoFilter2").hide();
+        }
+        if (Permissions.PermProductFilter) {
+            $(".rdoFilter3").show();
+        } else {
+            $(".rdoFilter3").hide();
+        }
+        var firstVisibleInputId = $(".dvrdoFilter > div:visible")
+            .first()
+            .find("input[type='radio']")
+            .attr("id");
+
+        $("#" + firstVisibleInputId).trigger('click');
+        
+        //$('.dvrdoFilter input[type="radio"]:visible:first').prop('checked', true).trigger('click');
+        if (Permissions.PermOrderTaken) {
+            $(".rdoAct1").show();
+        } else {
+            $(".rdoAct1").hide();
+        }
+        if (Permissions.PermFeedback) {
+            $(".rdoAct2").show();
+        } else {
+            $(".rdoAct2").hide();
+        }
+        if (Permissions.PermNoOrder) {
+            $(".rdoAct3").show();
+        } else {
+            $(".rdoAct3").hide();
+        }
+        firstVisibleInputId = $(".dvrdoAction > div:visible")
+            .first()
+            .find("input[type='radio']")
+            .attr("id");
+
+        $("#" + firstVisibleInputId).trigger('click');
+        //$('.dvrdoAction input[type="radio"]:visible:first').prop('checked', true).trigger('click');
+    }
+    // Function to filter cards based on search input
+    function filterCards() {
+        var input, filter, cards, cardContainer, h5, i, txtValue;
+        input = document.getElementById("txtSearchCards");
+        filter = input.value.toUpperCase();
+        cardContainer = document.getElementById("divMobCollDocsList");
+        cards = cardContainer.getElementsByClassName("card-item");
+
+        for (i = 0; i < cards.length; i++) {
+            // Search in the whole text content of the card
+            txtValue = cards[i].innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                cards[i].style.display = "";
+            } else {
+                cards[i].style.display = "none";
+            }
+        }
+    }
+    $("#chkShowAll").click(function () {
+        var chkid = $("#chkShowAll").is(":checked") ? 1 : 0
+        GetSetFilterData(6, UID, chkid);
+    });
+
+    $(document).on('click', '.clsedit', function () {
+        $(".hidewhenview").show();
+        console.log("Row Data : ", this);
+        $('input,select,textarea').prop("disabled", false);
+        nTransMode = 2;
+        var id = $(this).data('id');
+        GetSetFilterData(8, id);
+        $("#dvMain,#btnClose,#btnClear,#btnSave,#btnViewTop,#btnAddTop").show();
+        $("#dvDocuments").hide();
+        $('input,select,textarea').prop("disabled", false);
+        $('#txtSearchCards,#chkShowAll,#btnLoadSelData').prop("disabled", false);
+
+    });
+    $(document).on('click', '.clsview', function () {
+        console.log("Row Data : ", this);
+        nTransMode = 5;
+        var id = $(this).data('id');
+        GetSetFilterData(7, id);
+        // btnClose,#btnClear,#btnSave
+        $("#dvMain,#btnClose").show();
+        $("#dvDocuments,#btnClear,#btnSave,#btnViewTop,#btnAddTop").hide();
+        $('input,select,textarea,#btnLoadSelData').prop("disabled", true);
+        $('#txtSearchCards,#chkShowAll,#chkShowImage').prop("disabled", false);
+        $(".hidewhenview").hide();
+    });
+    $("#btnAddNew").click(function () {
+        //dvDocuments,
+        nTransMode = 1;
+        $("#dvMain").show();
+        $("#dvDocuments").hide();
+        ClearForm();
+        $('input,select,textarea').prop("disabled", false);
+        $("#dvMain,#btnClose,#btnClear,#btnSave,#btnViewTop,#btnAddTop").show();
+        $("#dvDocuments").hide();
+        $(".hidewhenview").show();
+        $('input,select,textarea,#btnLoadSelData').prop("disabled", false);
+        $('#txtSearchCards,#chkShowAll').prop("disabled", false);
+        FieldPermissions();
+        
+    });
+    $("#btnClose").click(function () {
+        //dvDocuments,
+        if (ClosecfFocus != 3) { CloseConfirmDialogMsg("Do you want to close?"); } else { CloseForm(); }
+    });
+    function CloseForm() {
+        $("#dvMain").hide();
+        $("#dvDocuments").show();
+        $("#MainHeading").text($("#txtFormName").val());
+        $('#txtSearchCards,#chkShowAll').prop("disabled", false);
+    }
+    GetData(1, UID);
+    var allProducts = [], arrParty = [];
+    function GetData(nMode, strID = null, strSalesmanID = null)
+    {
+        $.ajax({
+            url: Aurl + "dailyactivity/getdata",
+            type: 'get',
+            contentType: 'json',
+            data: {
+                CompanyCode: strCompanyCode,  Mode: nMode, ID: strID,SalesmanID: strSalesmanID
+            },
+            //xhrFields: {
+            //    withCredentials: true
+            //},
+            success: function (data) {
+                if (nMode == 1) {
+                    //cmbBeatName,cmbSalesManName,txtCustomerName,chosen-Manuf,chosen-Category,txtProductName
+                    $('#cmbBeatName,#cmbSalesManName,#cmbFilterSalesman,#cmbBranchName').find("option").remove();
+                    $('#cmbBeatName,#cmbSalesManName,#cmbFilterSalesman,#cmbBranchName').append($('<option/>', {
+                        value: 0,
+                        text: "-- Select --",
+                    }));
+                    $('.chosen-Manuf').empty().trigger('chosen:updated');
+                    $('.chosen-Category').empty().trigger('chosen:updated');
+                    allProducts = [];
+                    $.each(data, function (i, items) {
+                        if (items.FType == 5) {
+                            var Prod = {
+                                "label": items.Code + " | " + items.Name,
+                                "name": items.Name,
+                                "code": items.Code,
+                                "id": items.ID,
+                            }
+                            allProducts.push(Prod);
+                        }
+                        if (items.FType == 1) {
+                            $('#cmbSalesManName').append($('<option/>', {
+                                value: items.ID,
+                                text: items.Name,
+                            }));
+                        }
+                        if (items.FType == 2) {
+                            $('#cmbBeatName').append($('<option/>', {
+                                value: items.ID,
+                                text: items.Name,
+                            }));
+                        }
+                        if (items.FType == 3) {
+                            $('.chosen-Manuf').append($('<option/>', {
+                                value: items.ID,
+                                text: items.Name,
+                            }));
+                        }
+                        if (items.FType == 4) {
+                            $('.chosen-Category').append($('<option/>', {
+                                value: items.ID,
+                                text: items.Name,
+                            }));
+                        }
+                        if (items.FType == 6) {
+                            $('#cmbBranchName').append($('<option/>', {
+                                value: items.ID,
+                                text: items.Name,
+                            }));
+                        }
+                        if (items.FType == 7) {
+                            //console.log("Beat : " + items.Code + " ,Salesman : " + items.Name);
+                            $('#cmbSalesManName').val(items.Name);
+                            $('#cmbBeatName').val(items.Code);
+                            $('#cmbBranchName').val(items.ID);
+                        }
+                    });
+                    $('.chosen-Manuf,.chosen-Category').trigger('chosen:updated');
+                    SetAutlistforFields("txtProductName", allProducts);
+                    setTimeout(() => {
+                        GetData(2, $('#cmbBeatName').val(), $('#cmbSalesManName').val());
+                    }, 500);
+                }
+                else if (nMode == 2) {
+                    arrParty = [];
+                    $.each(data, function (i, items) {
+                        if (items.FType == 8) {
+                            var Prod = {
+                                "label": items.Code + " | " + items.Name,
+                                "name": items.Name,
+                                "code": items.Code,
+                                "id": items.ID,
+                            }
+                            arrParty.push(Prod);
+                        }
+                    });
+                    SetAutlistforFields("txtCustomerName", arrParty);
+                }
+                else if (nMode == 5) {
+                    $.each(data, function (i, items) {
+                        if ($('#cmbBeatName').val() == 0 && $('#cmbSalesManName').val() == 0) {
+                            $('#cmbBeatName').val(items.Code)
+                            $('#cmbSalesManName').val(items.Name)
+                        }
+                        else if ($('#cmbSalesManName').val() == 0) {
+                            $('#cmbSalesManName').val(items.Name)
+                        }
+                        else if ($('#cmbBeatName').val() == 0) {
+                            $('#cmbBeatName').val(items.Code)
+                        }
+                        if ($('#txtCustomerName').val() == '') {
+                            $('#txtCustomerName').val(items.Billadd2);
+                        }
+                        if ($("#txtTransType").val() == "2" && $("#txtTransID").val() != "") {
+                            setTimeout(() => {
+                                GetData(2, $('#cmbBeatName').val(), $('#cmbSalesManName').val());
+                            }, 500);
+                        }
+                        //else if ($('#cmbBeatName').val() != '' && $('#cmbSalesManName').val() != '') {
+                        //    $('#txtAdtnlDisc').val(items.ot_AdtnlDisc)
+                        //    $('#lblCustOS').text(items.ot_OSValue.toString())
+                        //    $('#txtPincode').val(items.Pincode)
+                        //    Adddisc = items.ot_AdtnlDisc;
+                        //    $('#lbllastOTdate').text(items.LastOTDate.toString());
+                        //}
+                    });
+                }
+            }, error: function (data) {
+                if (data.status == "401") {
+                    var msg = data.responseJSON.Message;
+                    ////showErrorSnackbar(msg + " Logout and Login again.");
+                }
+            }
+        });
+    }
+    $('#cmbBeatName,#cmbSalesManName').change(function () {
+        $(".clrdivs").html("");
+        $("txtCustomerName").val();
+         GetData(2, $('#cmbBeatName').val(), $('#cmbSalesManName').val());
+    });
+    function SetAutlistforFields(FieldID, arryvalue) {
+        $("#" + FieldID).autocomplete({
+            minLength: 0,
+            source: arryvalue,
+            select: function (event, ui) {
+                $("#" + FieldID).val(ui.item.name);
+                if (FieldID == "txtCustomerName") {
+                    //customer info function
+                    GetData(5, ui.item.id);
+                    $("#txtCustomerID").val(ui.item.id);
+                }
+                return false;
+            },
+        }).autocomplete("instance")._renderItem = function (ul, item) {
+            return $("<li class='each'>")
+                .append("<div class='acItem'><span class='name'>" +
+                    item.label + "</span></div>")
+                .appendTo(ul);
+        };
+    }
+    var rdoCheckedID = 0;
+    var rdoActionID = 0;
+    assignCheckedID();
+    assignActionID();
+
+    function assignCheckedID() {
+        rdoCheckedID = (
+            $('#rdo1').is(':checked') ? 1 :
+                $('#rdo2').is(':checked') ? 2 : 3
+        );
+    }
+    function assignActionID() {
+        rdoActionID = (
+            $('#rdoOT').is(':checked') ? 1 :
+                $('#rdoFeedback').is(':checked') ? 2 : 3
+        );
+    }
+    $('#rdo1,#rdo2,#rdo3').click(function () {
+        FilterCheckedchange();
+        //LoadMLPcmb("MANUF_NAME", rdoCheckedID)
+    });
+    function FilterCheckedchange() {
+        assignCheckedID();
+        //GetAutolistNames("MANUF_NAME", rdoCheckedID);
+        if (rdoCheckedID == 1) {//Manuf
+            $('#ManufCC').show();
+            $('#ProdGrpCC').hide();
+            $('#ProdCC').hide();
+            $('#MainFilterData').hide();
+            $('#btnLoadSelData').show();
+        }
+        else if (rdoCheckedID == 2) {//Prod Grp
+            $('#ProdGrpCC').show();
+            $('#ManufCC').hide();
+            $('#ProdCC').hide();
+            $('#MainFilterData').hide();
+            $('#btnLoadSelData').show();
+        }
+        else {//Prod
+            $('#ProdCC').hide();
+            $('#ManufCC').hide();
+            $('#ProdGrpCC').hide();
+            $('#MainFilterData').show();
+            $('#btnLoadSelData').show();
+            $('#txtProductName').val('');
+            $('#txtProductName').focus();
+        }
+        $('.chosen-Manuf').val('').trigger('chosen:updated');
+        $('.chosen-Category').val('').trigger('chosen:updated');
+    }
+    $(window).scroll(function () {
+        if ($(this).scrollTop() >= 200) {        // If page is scrolled more than 50px
+            $('#return-to-top').fadeIn(200);    // Fade in the arrow
+        } else {
+            $('#return-to-top').fadeOut(200);   // Else fade out the arrow
+        }
+    });
+    $('#return-to-top').click(function () {      // When arrow is clicked
+        $('body,html').animate({
+            scrollTop: 0                       // Scroll to top of body
+        }, 500);
+    });
+    $('#cmbBeatName').focus()
+    $('#tblFeedBack').hide();
+    function ShowHideFields(IsShow) {
+        $('#tblFeedBack').hide();
+        if (IsShow == false) {
+            $('#dvTable').hide(); $('.tblot1').hide();
+            $('#divAddedItemsCountBottom').hide(); $('#divAddedItemsCountTop').hide();
+            $('#cartBottom').hide(); $('#cartTop').hide();
+            $('#BottomButtons').hide();
+            $('#btnAddTop').hide(); $('#btnViewTop').hide();
+            $('#hrline2').hide(); $('#hrline3').hide();
+            $("#btnSave,#btnSubmitBottom").prop("disabled", false);
+            Table.search('').columns().search('').draw();
+            $("div.dataTables_filter,.img-toggle-bar").hide();
+            
+            if (rdoActionID == 2) $('#tblFeedBack').show(); else $('#tblFeedBack').hide();
+        }
+        else {
+            $('#dvTable').show(); $('.tblot1').show();
+            $('#divAddedItemsCountBottom').show(); $('#divAddedItemsCountTop').show();
+            $('#cartBottom').show(); $('#cartTop').show();
+            $('#BottomButtons').show();
+            if (nTransMode == 5)
+                $('#btnAddTop,#btnViewTop').hide();
+            else
+                $('#btnAddTop,#btnViewTop').show();
+            $('#hrline2').show(); $('#hrline3').show();
+            $("#btnSave,#btnSubmitBottom").prop("disabled", true);
+            Table.search('').columns().search('').draw();
+            $("div.dataTables_filter,.img-toggle-bar").show();
+        }
+    }
+    $("#btnViewTop,#btnViewBottom").prop("disabled", true);
+    $('#rdoOT').click(function () {
+        assignActionID();
+        ShowHideFields(true);
+    });
+    $('#rdoFeedback').click(function () {
+        assignActionID();
+        ShowHideFields(false);
+    });
+    $('#rdoNOT').click(function () {
+        assignActionID();
+        ShowHideFields(false);
+    });
+    $('#Custinfo').click(function () {
+        $('#divErrorOnCustName').html('');
+        if ($('#txtCustomerName').val() != "") {
+            GetCustomerInfo();
+            //ShowMsgPopup(CusInfo);
+        } else {
+            $('#divErrorOnCustName').html('Select Customer');
+        }
+    });
+    $('#tblProductInfo tbody').on('click', 'tr', function () {
+        $(this).toggleClass('selected-row');
+    });
+    function GetCustomerInfo() {
+
+        var CusInfo = "";
+        //$.ajax({
+        //    url: URLink,//'http://localhost:51918/api/DailyActivities',//URLink,//
+        //    type: "GET",
+        //    datatype: "JSON",
+        //    data: { Flag: 7, Connection: StrCon, ALFieldName: "", BeatorManuf: $('#txtCustomerName').val(), Salesman: "", CheckedID: 0 },
+        //    success: function (data) {
+        //        if (data.length > 0) {
+        //            $.each(data, function (i, items) {
+        //                CusInfo += '<table style="width:100%;" class="table table-hover table-bordered"><tr><td>Billing Address</td><td>' + items.BillAdd + '</td></tr><tr><td>Shipping Address</td><td>' + items.ShipAdd + '</td></tr>'
+        //                CusInfo += '<tr><td>Contact Person</td><td>' + items.ContPerson + '</td></tr><tr><td>Mob No</td><td>' + items.MobileNo + '</td></tr><tr><td>GSTIN</td><td>' + items.GSTIN + '</td></tr></table></body>'
+        //            });
+        //            ShowMsgPopup(CusInfo);
+        //        } else {
+        //            $('#divErrorOnCustName').html('Select Valid Customer');
+        //        }
+        //    }
+        //});
+    }
+    function updateLabelColumn(labelID, netValue) {
+        //const label = document.getElementById(`dgvProdGross${rowId}`);
+        const label = document.getElementById(labelID);
+        label.setAttribute('lbltag', netValue.toFixed(4));
+        label.innerText = netValue.toFixed(DecVal);
+        label.title = netValue.toFixed(4);
+    }
+    function updateInputColumn(inputID, netValue) {
+        //const label = document.getElementById(`dgvProdGross${rowId}`);
+        const input = document.getElementById(inputID);
+        var value = netValue != "" ? netValue : 0;
+        input.setAttribute('txttag', parseFloat(value).toFixed(4));
+        input.value = parseFloat(value).toFixed(DecVal);
+        input.title = netValue;
+    }
+    $('#tblProductInfo234 tbody').on('focusin', 'td>.txtsettag', function (e) {
+        // .clsdgvTag
+        var id = e.target.id;
+        var name = e.target.name;
+        var value = e.target.value;
+        //getTagValue(id, name);
+        const val = document.getElementById(id).getAttribute("txttag");
+        $("#" + id).val(val);
+        $("#" + id).select();
+        ProdGridChange = false;
+    });
+    var ProdGridChange = false;
+    $('#tblProductInfo234 tbody').on('blur', 'td>.txtsettag', function (e) {
+        // .clsdgvTag
+        var id = e.target.id;
+        var name = e.target.name;
+        var value = e.target.value;
+        //setTagValue(id, name, value);
+        if (!ProdGridChange) {
+            updateInputColumn(id, e.target.value);
+        }
+        //CalculateBatchGrid();
+    });
+    $('#btnLoadSelData').click(function () {
+        $("#divErrorOnTransName,#divErrorOnBranchName,#divErrorOnCustName").html("");
+        var var_FilterValues = rdoCheckedID == 3 ? $('#txtProductName').val() : rdoCheckedID == 1 ? $(".chosen-Manuf").val() : $(".chosen-Category").val();
+        var var_Cust = $('#txtCustomerID').val();//1;
+        var var_Branch = $('#cmbBranchName').val();
+        Table.search('').columns().search('').draw();
+        if (var_FilterValues == "") {
+            if (rdoCheckedID == 1) {
+                $('.mfr-chosen-toggle').each(function (index) {
+                    var pn = $(this).parent();
+                    var fnd = $(this).parent().find('option');
+                    $(this).parent().find('option').prop('selected', $(this).hasClass('select')).parent().trigger('chosen:updated');
+                    return false;
+                });
+            } else if (rdoCheckedID == 2) {
+                $('.pgrp-chosen-toggle').each(function (index) {
+                    var pn = $(this).parent();
+                    var fnd = $(this).parent().find('option');
+                    $(this).parent().find('option').prop('selected', $(this).hasClass('select')).parent().trigger('chosen:updated');
+                    return false;
+                });
+            }
+            var_FilterValues = rdoCheckedID == 3 ? $('#txtProductName').val() : rdoCheckedID == 1 ? $(".chosen-Manuf").val() : $(".chosen-Category").val();
+            
+        }
+        if (rdoCheckedID == 3) {
+            var_FilterValues = $('#txtProductName').val();
+        }
+        else {
+            var selids = "";
+            var selectitems = var_FilterValues;
+            for (var i = 0; i < selectitems.length; i++) {
+                selids += selectitems[i] + ((selectitems.length - 1) != i ? "," : "");
+            }
+            var_FilterValues = selids;
+        }
+        //AddItemsinCart();
+        //ShowMsgPopup(var_ManufName);
+        var isf = false;
+        if (var_Cust != "" && var_Branch > 0 && var_FilterValues != "") {
+
+            document.getElementById('tblProductInfo').scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+            $('#tblProductInfo').DataTable({
+                scrollY: "500px",
+                scrollX: true,
+                scrollCollapse: true,
+                paging: false,
+                destroy: true,
+                ajax: {
+                    url: Aurl + "dailyactivity/itemfilter",
+                    type: "GET",
+                    datatype: "JSON",
+                    //xhrFields: {
+                    //    withCredentials: true
+                    //},
+                    data: { CompanyCode: strCompanyCode, Mode: 4, CustomerID: var_Cust, BranchID: var_Branch, FilterType: rdoCheckedID, FilterValue: var_FilterValues }
+                },
+                fixedColumns: false,
+                searching: true,
+                ordering: true,
+                sorting: true,
+                info: false,
+                columns: [
+                    { "data": "ID", "autoWidth": true, "visible": false, className: "dt-body-left" },
+                    { "data": "Rate", "autoWidth": true, "visible": false, className: "dt-body-left" },
+                    { "data": "Imagedata", "autoWidth": true, "visible": false, className: "dt-body-left" },
+                    {
+                        className: "dt-body-left",
+                        "mRender": function (data, type, value, meta) {
+                            var enbPrice = ($("#txtEnablePrice").val() == '0');
+                            return buildProdInfoCell(value, meta, {
+                                qtyVal: 0,
+                                priceVal: value.Rate,
+                                discVal: value.Discount,
+                                qtyDisabled: false,
+                                priceDisabled: enbPrice,
+                                discDisabled: false
+                            });
+                        },
+                    }
+                ],
+                initComplete: function () {
+                    // ? Attach row click event AFTER table is loaded
+                    $('#tblProductInfo tbody').on('click', 'tr', function () {
+                        //showSuccessSnackbar("row click");
+                        $(this).toggleClass('selected-row');
+                    });
+                    applyImageToggleState();
+                }
+                
+            });
+            //CalcProdDtl();
+            Table = $('#tblProductInfo').DataTable();
+        }
+        else {
+            //
+            if (var_Cust == "") {
+                $("#divErrorOnCustName").html("Select Customer");
+                $("#txtCustomerName").trigger('focus');
+                showErrorSnackbar("Select Customer");
+            }
+            if (var_FilterValues == "") {                
+                showErrorSnackbar("Select filter value before load data");
+            }
+            if (var_Branch == 0) {
+                $("#divErrorOnBranchName").html("Select Branch");
+                $('#cmbBranchName').trigger('focus');
+                showErrorSnackbar("Select Branch");
+                const body = document.getElementById('customerInfoBody');
+                const icon = document.getElementById('icoToggleCustomer');
+
+                if (body.classList.contains('collapsed')) {
+                    body.classList.remove('collapsed');
+                    icon.classList.replace('bi-plus-lg', 'bi-dash-lg');
+                }
+            }
+        }
+    });
+    Table = $('#tblProductInfo').DataTable();
+
+    $(document).on("focusin", ".dgvQty,.dgvPrice,.dgvDiscPern", function (e) {
+        var id = e.target.id;
+        var name = e.target.name;
+        var value = e.target.value;
+        //getTagValue(id, name);
+        const val = document.getElementById(id).getAttribute("txttag");
+        $("#" + id).val(val);
+        $("#" + id).select();
+        ProdGridChange = false;
+    });
+    $(document).on("blur", ".dgvQty,.dgvPrice,.dgvDiscPern", function (e) {
+        var id = e.target.id;
+        var name = e.target.name;
+        var value = e.target.value;
+        //setTagValue(id, name, value);
+        if (!ProdGridChange) {
+            updateInputColumn(id, e.target.value);
+        }
+    });
+    $(document).on("click", ".dgvQty,.dgvPrice,.dgvDiscPern", function (e) {
+        $(this).select();
+    });
+    $(document).on("change", ".dgvQty,.dgvPrice", function (e) {
+        ProdGridChange = true;
+        var id = e.target.id;
+        var val = e.target.value;
+        var name = e.target.name;
+        updateInputColumn(id, val);
+        CalcProdDtl();
+    });
+    
+    $('.mfr-chosen-toggle').each(function (index) {
+        $(this).on('click', function () {
+            var pn = $(this).parent();
+            var fnd = $(this).parent().find('option');
+            $(this).parent().find('option').prop('selected', $(this).hasClass('select')).parent().trigger('chosen:updated');
+        });
+    });
+    $('.pgrp-chosen-toggle').each(function (index) {
+        $(this).on('click', function () {
+            var pn = $(this).parent();
+            var fnd = $(this).parent().find('option');
+            $(this).parent().find('option').prop('selected', $(this).hasClass('select')).parent().trigger('chosen:updated');
+        });
+    });
+    var sum = 0, nCount = 0, mSum = 0;
+    function CalcProdDtl() {
+        var objItemDetails = [];
+        var totamt = sum, amt = 0, isGridEmpty = 0;
+        ClearErrorMsg();
+        //loaditemcounttotamt("0", "0.00");
+        var isGO = false;
+        var prodid = '0', qty = '0', prodname = '0',PDisc = 0;
+        amt = 0, isGridEmpty = 0, mrp = '0', Price = 0;
+        if (Table.rows().count() > 0) {
+            $("#tblProductInfo tbody tr").each(function () {
+                var rowdata = Table.row($(this)).data();
+                var RowIndex = Table.row($(this)).index();
+                var GridProdID = rowdata.ID;//[0];
+                var GridorgRate = rowdata.Rate;//[1];
+                var GridProdRateInfo = rowdata.PriceDesc;//[2];
+                var GridProdName = rowdata.Name;
+
+                $(this).find("input").each(function (index) {
+                    const fieldName = $(this).attr("name");
+                    const fieldID = $(this).attr("id");
+                    if (fieldName == "Qty") {
+                        //qty = $(this).val();
+                        qty = parseFloat($(this).attr("txttag"));
+                    }
+                    if (fieldName == "Price") {
+                        //Price = $(this).val();
+                        Price = parseFloat($(this).attr("txttag"));
+                    }
+                    if (fieldName == "DiscountPern") {
+                        //PDisc = $(this).val();
+                        PDisc = parseFloat($(this).attr("txttag"));
+                    }
+                });
+                if (qty > 0) {
+                    amt = qty * Price;
+                    var singleList = {
+                        'Name': GridProdName.toString(),
+                        'PriceDesc': GridProdRateInfo.toString(),
+                        'ID': GridProdID.toString(),
+                        'Discount': PDisc.toString(),
+                        'Qty': qty.toString(),
+                        'Rate': GridorgRate.toString(),
+                        'AppPrice': Price.toString()
+                    };
+                    objItemDetails.push(singleList);
+                    totamt = totamt + amt;
+                    qty = 0;
+                }
+            });
+            if (objItemDetails.length > 0) {
+                $("#btnSave,#btnSubmitBottom").prop("disabled", false);
+                $("#btnViewTop,#btnViewBottom").prop("disabled", false);
+                loaditemcounttotamt(nCount + objItemDetails.length, totamt, totamt - mSum);
+            }
+        }
+    }
+    var objItemDetails = [];
+    var totamt = 0, amt = 0, isGridEmpty = 0;
+    loaditemcounttotamt("0", "0.00", "0.00");
+    $('#btnAddTop,#btnAddBottom').click(function () {
+        AddItemsinCart();
+    });
+    function ClearErrorMsg() {
+        $(".clrdivs").html("");
+    }
+    function loaditemcounttotamt(count, totamt, amt) {
+        $('#divAddedItemsCountTop').html('' + count + ' items in cart - Tot Amt : ' + parseFloat(totamt).toFixed(2)) //+ ',' +'<br\>' + 'M. Amt :' + parseFloat(amt).toFixed(2));
+        $('#divAddedItemsCountBottom').html('' + count + ' items in cart -  Tot Amt : ' + parseFloat(totamt).toFixed(2)) //+ ',' +'<br\>' + 'M. Amt :' + parseFloat(amt).toFixed(2));
+    }
+    function AddItemsinCart() {
+        ClearErrorMsg();
+        var isGO = false;
+        var prodid = '0', qty = '0', prodname = '0', PDisc = 0;
+        amt = 0, isGridEmpty = 0, mrp = '0', Price = 0;
+        var ProdCount = Table.rows().count();
+        if (ProdCount > 0) {
+            $("#tblProductInfo tbody tr").each(function () {
+                var rowdata = Table.row($(this)).data();
+                var RowIndex = Table.row($(this)).index();
+                var GridProdID = rowdata.ID;//[0];
+                var GridorgRate = rowdata.Rate;//[1];
+                var GridProdRateInfo = rowdata.PriceDesc;//[2];
+                var GridProdName = rowdata.Name;
+                var gridimage = rowdata.Imagedata;
+                $(this).find("input").each(function (index) {
+                    const fieldName = $(this).attr("name");
+                    const fieldID = $(this).attr("id");
+                    if (fieldName == "Qty") {
+                        //qty = $(this).val();
+                        qty = parseFloat($(this).attr("txttag"));
+                    }
+                    if (fieldName == "Price") {
+                        //Price = $(this).val();
+                        Price = parseFloat($(this).attr("txttag"));
+                    }
+                    if (fieldName == "DiscountPern") {
+                        //PDisc = $(this).val();
+                        PDisc = parseFloat($(this).attr("txttag"));
+                    }
+                });
+                if (qty > 0) {
+                    amt = qty * Price;
+                    var singleList = {
+                        'Name': GridProdName.toString(),
+                        'PriceDesc': GridProdRateInfo.toString(),
+                        'ID': GridProdID.toString(),
+                        'Discount': PDisc.toString(),
+                        'Qty': qty.toString(),
+                        'Rate': GridorgRate.toString(),
+                        'AppPrice': Price.toString(),
+                        'Imagedata': gridimage
+                    };
+                    objItemDetails.push(singleList);
+                    totamt = totamt + amt;
+                    qty = 0;
+                }
+            });
+            if (objItemDetails.length > 0) {
+                //$("#btnSave,#btnSubmitBottom").prop("disabled", false);
+                $("#btnViewTop,#btnViewBottom").prop("disabled", false);
+                loaditemcounttotamt(objItemDetails.length, totamt, 0);
+                Table.clear().draw();
+                $('.chosen-Manuf').val('').trigger('chosen:updated');
+                $('.chosen-Category').val('').trigger('chosen:updated');
+                $('#txtProductName').val('');
+                //$('#txtManufName').focus();
+            }
+            else {
+                //ShowMsgPopup('Choose atleast one item in grid');
+            }
+            sum = totamt;
+            nCount = objItemDetails.length;
+            mSum = totamt;
+        }
+    }
+    $('#btnViewTop,#btnViewBottom').click(function () {
+        Table.search('').columns().search('').draw();
+        AddItemsinCart();
+        totamt = 0;
+        ClearErrorMsg();
+        if (objItemDetails.length > 0) {
+            loaditemcounttotamt("0", "0.00", "0.00");
+            //$("#txtManufName").prop("disabled", true);
+            //$("#btnSave,#btnSubmitBottom").prop("disabled", true);
+            $("#btnViewTop,#btnViewBottom").prop("disabled", true);
+            Table.clear().draw();
+            var IsreadOnly = "";// $('#txtPriceEditable').val() == "0" ? "Readonly=" + "Readonly" : "";
+            $('#tblProductInfo').DataTable({
+                scrollY: "500px",
+                scrollX: true,
+                scrollCollapse: true,
+                paging: false,
+                destroy: true,
+                fixedColumns: false,
+                data: objItemDetails,
+                searching: true,
+                ordering: true,
+                sorting: false,
+                info: false,
+                //"pagingType": "full_numbers",
+                dom: 'l<"toolbar">frtip',
+                initComplete: function () {
+                    $("div.toolbar").html('<button type="button"  id="plus_button"><b> Add </b></button>');
+                },
+                columns: [
+                    { "data": "ID", "autoWidth": true, "visible": false, className: "dt-body-left" },
+                    { "data": "Rate", "autoWidth": true, "visible": false, className: "dt-body-left" },
+                    { "data": "Imagedata", "autoWidth": true, "visible": false, className: "dt-body-left" },
+                    {
+                        className: "dt-body-left",
+                        "mRender": function (data, type, value, meta) {
+                            var enbPrice = ($("#txtEnablePrice").val() == '0');
+                            return buildProdInfoCell(value, meta, {
+                                qtyVal: value.Qty,
+                                priceVal: value.AppPrice,
+                                discVal: value.Discount,
+                                qtyDisabled: false,
+                                priceDisabled: enbPrice,
+                                discDisabled: false
+                            });
+                        },
+                    }
+                ],
+            });
+            Table = $('#tblProductInfo').DataTable();
+            applyImageToggleState();
+            objItemDetails = [];
+        }
+        else {
+            ShowMsgPopup('No items in cart');
+        }
+    });
+    $("#btnClear").click(function () {
+        //ClearForm();
+        if (cfFocus != 3) { ClearConfirmDialogMsg("Do you want to clear?"); } else { ClearForm(); }
+    });
+    function isNullOrEmpty(val) {
+        return val === null || val === undefined || val === "" || val == 0;
+    }
+    function SaveValidation() {
+        var IsValid = true;
+        $(".clrdivs").html("");
+        if ($('#txtCustomerName').val() == '') {
+            IsValid = false;
+            $('#divErrorOnCustName').html('* Customer Name should not be empty');
+            $('#txtCustomerName').focus();
+        }
+        else {
+            const exists = arrParty.filter(c => c.name == $("#txtCustomerName").val().trim());
+            if (exists.length == 0) {
+                IsValid = false;
+                $("#divErrorOnCustName").html("Select Party Name from list");
+                showErrorSnackbar("Select Party Name from list");
+            }
+        }
+        var branchid = $('#cmbBranchName').val();
+        if (isNullOrEmpty(branchid)) {
+            IsValid = false;
+            $('#divErrorOnBranchName').html('* Select Valid Branch');
+            $('#cmbBranchName').focus();
+            toggleCustomerCard();
+        }
+        //txtAddnlDisc,txtTradeDisc,divErrorOnAdtnlDisc,divErrorOnTradeDisc
+        if (rdoActionID == 1) {
+            if ($('#txtAddnlDisc').val() != "" && $('#txtAddnlDisc').val() < 0 || $('#txtAddnlDisc').val() > 100) {
+                IsValid = false;
+                $('#divErrorOnAdtnlDisc').html('* Discount should be between 0 - 100 only');
+                $('#txtAddnlDisc').focus();
+                toggleDiscountsCard();
+            }
+            if ($('#txtTradeDisc').val() != "" && $('#txtTradeDisc').val() < 0 || $('#txtTradeDisc').val() > 100) {
+                IsValid = false;
+                $('#divErrorOnTradeDisc').html('* Discount should be between 0 - 100 only');
+                $('#txtTradeDisc').focus();
+                toggleDiscountsCard();
+            }
+            //if (objItemDetails.length == 0) {
+            //    IsValid = false;
+            //    showErrorSnackbar("Add atleast one items");
+            //}
+            if (IsValid) {
+                AddItemsinCart();
+            }
+        }
+        else {
+            objItemDetails = [];
+            $('#txtAddnlDisc,#txtTradeDisc').val(0);
+        }
+        return IsValid;
+    }
+    function ClearForm() {
+        $(".FormclrField").val("");
+        $(".FormclrcmbField").val(0);
+        $(".clrdivs").html("");
+        GetData(1, UID);
+        Table.clear().draw();
+        objItemDetails = [];
+        loaditemcounttotamt("0", "0.00", "0.00");
+        Table.search('').columns().search('').draw();
+        $('.chosen-Manuf').val('').trigger('chosen:updated');
+        $('.chosen-Category').val('').trigger('chosen:updated');
+    }
+    function SaveData() {
+        //cmbBeatName, cmbSalesManName, txtCustomerName, chosen - Manuf, chosen - Category, txtProductName
+        var SwapCustID = $('#txtCustomerID').val();
+        var SwapSMID = $('#cmbSalesManName').val();
+        lstTrans = {
+            CompanyCode: strCompanyCode,
+            ID: nTransMode == 1 ? 0 : $('#txtID').val(),
+            TransMode: nTransMode,
+            "CurrentStatus": nTransMode == 1 ? 1 : $('#txtStatusID').val(),
+            BeatID: $('#cmbBeatName').val(),
+            SalesManID: $('#cmbSalesManName').val(),
+            CustomerID: $('#txtCustomerID').val(),
+            BranchID: $('#cmbBranchName').val(),
+            AddnlDisc: $('#txtAddnlDisc').val(),
+            TrdDisc: $('#txtTradeDisc').val(),
+            FeedBack: $('#txtFeedBack').val(),
+            Narration: $('#txtNarration').val(),
+            lstProdDetails: objItemDetails,
+            ActivityID: rdoActionID,
+            "Flags": 1,
+            "UserID": UID,
+            "CusLatitude": $('#txtLatitude').val(),
+            "CusLongtitude": $('#txtLongtitude').val(),
+            "TransType": 1,// $('#txtTransType').val(),
+            "TransID": 0,//$('#txtTransID').val()
+        };
+        $.ajax({
+            url: Aurl + "dailyactivity/save",
+            type: 'POST',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(lstTrans),
+            cache: false,
+            processData: false,
+            //xhrFields: {
+            //    withCredentials: true
+            //},
+            success: function (data) {
+                $.each(data, function (i, items) {
+                    if (items.MsgID == 0) {
+                        //alert(items.Message);
+                        showSuccessSnackbar(items.Message);
+                        ClearForm();
+                        NavigatetoNext("Switch to", SwapCustID, SwapSMID);
+                    }
+                    else {
+                        //$("#dvErrorName").html(items.Message);
+                        //alert(items.Message);
+                        showErrorSnackbar(items.Message);
+                    }
+                });
+            }
+        });
+    }
+    $("#btnSave").click(function () {
+        if (cfFocus != 3) {
+            if (SaveValidation()) {
+                ConfirmDialogMsg("Do you want to save data?");
+            }
+        } else {
+            if (SaveValidation()) {
+                SaveData();
+            }
+        }
+    });
+
+    function NavigatetoNext(Msg, CustName,SMID) {
+            $('<div></div>').appendTo('body')
+                .html('<div><h6>' + Msg + '</h6></div>')
+                .dialog({
+                    modal: true,
+                    title: 'Switch Confirm Popup',
+                    zIndex: 10000,
+                    autoOpen: true,
+                    width: '60%',
+                    resizable: false,
+                    buttons: {
+                        Collection: function () {
+                            $(this).dialog("close");
+                            window.location.href = "MobileCollection?name=Mobile%20Collection&TypeID=2&TranID=" + CustName + "&SMID=" + SMID;
+                        },
+                        //Return: function () {
+                        //    $(this).dialog("close");
+                        //    window.location.href = "SalesReturn?Name=Sales%20%Return&TypeID=5&TranID=" + CustName;
+                        //},
+                        Close: function () {
+                            $(this).dialog("close");
+                            //return false;
+                        },
+
+                    },
+                    close: function (event, ui) {
+                        $(this).remove();
+                    }
+                });
+
+    }
+    if ($("#txtTransType").val() == "2" && $("#txtTransID").val() != "") {
+        //ShowMsgPopup("Customer Name : " + $("#txtTransID").val());
+        //GetTodayRoute(4, $("#txtTransID").val(), "");
+        setTimeout(() => {
+            var SwCust = $("#txtTransID").val();
+
+        GetData(5, SwCust);
+            $("#txtCustomerID").val(SwCust);
+        }, 300)
+        setTimeout(() => {
+            GetData(2, $('#cmbBeatName').val(), $('#cmbSalesManName').val());
+        }, 500);
+    }
+
+    function toggleDiscountsCard() {
+        const body = document.getElementById('discountsBody');
+        const icon = document.getElementById('icoToggleDiscounts');
+
+        if (body.classList.contains('collapsed')) {
+            body.classList.remove('collapsed');
+            icon.classList.replace('bi-plus-lg', 'bi-dash-lg');
+        } else {
+            body.classList.add('collapsed');
+            icon.classList.replace('bi-dash-lg', 'bi-plus-lg');
+        }
+    }
+
+    function toggleCustomerCard() {
+        const body = document.getElementById('customerInfoBody');
+        const icon = document.getElementById('icoToggleCustomer');
+
+        if (body.classList.contains('collapsed')) {
+            body.classList.remove('collapsed');
+            icon.classList.replace('bi-plus-lg', 'bi-dash-lg');
+        } else {
+            body.classList.add('collapsed');
+            icon.classList.replace('bi-dash-lg', 'bi-plus-lg');
+        }
+    }
+    $('#txtAllowTrackLocation').val(1);
+
+    $('#btnGetSurrCustomers').click(function () {
+        $('#divErrorOnCustName').html('');
+        var IsAllow = $('#txtAllowTrackLocation').val() == "0" ? false : true;
+        if (IsAllow) {
+            $('#dvCustLoc').show();
+            geolocate(2);
+        }
+        else {
+            $('#divErrorOnCustName').html('You dont have Location tracking Permission. Cannot load data');
+        }
+    });
+    function geolocate(nMode) {
+        var IsAllow = $('#txtAllowTrackLocation').val() == "0" ? false : true;
+        if (IsAllow) {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    //var geolocation = new google.maps.LatLng(
+                    //position.coords.latitude, position.coords.longitude);
+                    var PinLat = position.coords.latitude;
+                    var PinLong = position.coords.longitude;
+
+                    $('#txtLatitude').val(PinLat);
+                    $('#txtLongtitude').val(PinLong);
+                    if (nMode == 2) {
+                        GetCustomerbyLocation();
+                    }
+                }, function (error) {
+                    showErrorSnackbar(error.message);
+                });
+            } else {
+                showErrorSnackbar("Geolocation is not supported by this browser.")
+            }
+        }
+    }
+    $(document).on("click", "#btnCustomerInfo", function () {
+        var CustID = $("#txtCustomerID").val();
+        if (CustID != "") {
+            CustomerInfo(CustID)
+        }
+        else {
+            showErrorSnackbar("Select valid customer");
+        }
+        // Your code here
+    });
+    function CustomerInfo(nCustID) {
+
+        $.ajax({
+            url: Aurl + "customerinfo",
+            type: "GET",
+            datatype: "JSON",
+            data: {
+                CompanyCode: strCompanyCode, CustomerID: nCustID
+            },
+            success: function (data) {
+                
+                var CustomerData = JSON.parse(data[0].Customerdata);
+                var Imagedata = data[0].Imagedata.length > 0 ? data[0].Imagedata[0].ImageData : null;                
+                InfoDialogMsg(buildCustomerInfoHtml(CustomerData[0], Imagedata), "Customer Details");                
+            },
+            error: function (data) {
+
+            }
+        });
+    }
+    function buildCustomerInfoHtml(cust, imagedata) {
+        const fullAddress = [cust.Billadd1, cust.Billadd2, cust.Billadd3]
+            .filter(Boolean)
+            .join(', ');
+
+        const imageHtml = imagedata
+            ? `<img src="data:image/jpeg;base64,${imagedata}" alt="Customer" class="custinfo-avatar" />`
+            : `<div class="custinfo-avatar custinfo-avatar--placeholder">${(cust.Name || '?').charAt(0).toUpperCase()}</div>`;
+
+        const html = `
+  <div class="custinfo-card">
+    <div class="custinfo-card__header">
+      ${imageHtml}
+      <div class="custinfo-card__title">
+        <h3>${cust.Name || '-'}</h3>
+        <span class="custinfo-code">${cust.Code || '-'}</span>
+      </div>
+    </div>
+
+    <div class="custinfo-card__body">
+      <div class="custinfo-row">
+        <span class="custinfo-label">Address</span>
+        <span class="custinfo-value">${fullAddress || '-'}</span>
+      </div>
+      <div class="custinfo-row">
+        <span class="custinfo-label">Pincode</span>
+        <span class="custinfo-value">${cust.Pincode || '-'}</span>
+      </div>
+      <div class="custinfo-row">
+        <span class="custinfo-label">Contact Person</span>
+        <span class="custinfo-value">${cust.ContactPerson || '-'}</span>
+      </div>
+      <div class="custinfo-row">
+        <span class="custinfo-label">Mobile</span>
+        <span class="custinfo-value">${cust.Mob1 || '-'}</span>
+      </div>
+      <div class="custinfo-row">
+        <span class="custinfo-label">Email</span>
+        <span class="custinfo-value">${cust.Email || '-'}</span>
+      </div>
+      <div class="custinfo-row">
+        <span class="custinfo-label">GSTIN</span>
+        <span class="custinfo-value">${cust.GSTIN || '-'}</span>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .custinfo-card {
+      font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+      max-width: 420px;
+      border-radius: 12px;
+      background: #ffffff;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      overflow: hidden;
+      border: 1px solid #eef0f3;
+    }
+    .custinfo-card__header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 20px;
+      background: linear-gradient(135deg, #4f7cff, #6a5cff);
+      color: #fff;
+    }
+    .custinfo-avatar {
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(255,255,255,0.7);
+      flex-shrink: 0;
+    }
+    .custinfo-avatar--placeholder {
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.2);
+      font-weight: 600; font-size: 20px;
+    }
+    .custinfo-card__title h3 {
+      margin: 0; font-size: 16px; font-weight: 600;
+    }
+    .custinfo-code {
+      font-size: 12px; opacity: 0.85;
+    }
+    .custinfo-card__body {
+      padding: 16px 20px;
+    }
+    .custinfo-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid #f2f3f5;
+      font-size: 13.5px;
+    }
+    .custinfo-row:last-child { border-bottom: none; }
+    .custinfo-label {
+      color: #8a8f98;
+      font-weight: 500;
+      min-width: 110px;
+    }
+    .custinfo-value {
+      color: #1f2329;
+      text-align: left;
+      word-break: break-word;
+    }
+  </style>
+  `;
+
+        return html;
+    }
+
+
+
+    function GetCustomerbyLocation() {
+
+        //alert("Time :" + curtime);
+        $('#divErrorOnCustName').html('');
+        $('#divErrorOnPopupSurrCust').html('');
+        $('#lblCurrLocation').text("");
+        var lats = $('#txtLatitude').val();
+        var longs = $('#txtLongtitude').val();
+        if (lats != "" && longs != "") {
+            TableSurroundCustomers.clear().draw();
+            $.ajax({
+                url: Aurl + "surroundingcustomers",
+                type: "GET",
+                datatype: "JSON",
+                data: {
+                    CompanyCode: strCompanyCode, UserID: UID, Latitude: lats, Longitude: longs
+                },
+                success: function (data) {
+                    $('#lblCurrLocation').text(lats + "," + longs);
+                    if (data.length > 0) {
+                        if (data[0].Mode == 0) {
+                            modal.show();
+                            var customerdata = (data[0].Customerdata);
+                            console.log("customerdata", customerdata);
+                            $.each(customerdata, function (i, items) {
+                                TableSurroundCustomers.row.add([
+                                    items.ID,
+                                    items.Customername,
+                                    renderCustomerCell(items, i)                                  
+                                ]).draw(false);
+                            });
+                        } else {
+                            modal.hide();
+                            showErrorSnackbar(data[0].Message);
+                        }
+                    } else {
+                        $('#divErrorOnCustName').html('No Customers surrounding you.');
+                        $('#divErrorOnPopupSurrCust').html('No Customers surrounding you.');
+                    }
+                }
+            });
+        } else {
+            modal.hide();
+            $('#divErrorOnCustName').html('Location Not Identified. Try again');
+        }
+    }
+    function initials(name) {
+        if (!name) return "?";
+        var parts = name.trim().split(/\s+/);
+        var chars = parts.length > 1 ? parts[0][0] + parts[1][0] : parts[0].slice(0, 2);
+        return chars.toUpperCase();
+    }
+
+    function renderCustomerCell(items, rowIndex) {
+        var avatar;
+        if (items.ImageData && items.ImageData.trim() !== "") {
+            var imgSrcdata = "data:image/jpeg;base64," + items.ImageData;
+            avatar = '<img class="cust-avatar" src="' + imgSrcdata + '" alt="' + items.Customername + '" />';
+        } else {
+            avatar = '<div class="cust-avatar-fallback">' + initials(items.Customername) + '</div>';
+        }
+
+        // Stagger the entrance animation per row, capped so long lists don't feel sluggish
+        var delay = Math.min(rowIndex * 60, 400);
+
+        return (
+            '<div class="cust-card" style="animation-delay:' + delay + 'ms">' +
+            avatar +
+            '<div class="cust-body">' +
+            '<div class="cust-name">' + items.Customername + '</div>' +
+            '<div class="cust-meta">' +            
+            '<span><i class="bi bi-signpost-split-fill"></i>' + items.Radius + '</span>' +
+            '<span><i class="bi bi-geo-alt-fill"></i>' + items.Address + '</span>' +
+            '</div>' +
+            '</div>' +
+            '</div>'
+        );
+    }
+    $('#tblSurroundCustomers tbody').on('click', 'tr', function () {
+        $('#txtBeatName').val('');
+        $('#txtSalesManName').val('');
+        var CustID = TableSurroundCustomers.row(this).data()[0];
+        var Cust = TableSurroundCustomers.row(this).data()[1];
+        $('#txtCustomerName').val(Cust);
+        GetData(5, CustID);
+        $("#txtCustomerID").val(CustID);
+        modal.hide();
+    });
+</script>

@@ -1,0 +1,680 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <title> @ViewBag.Title</title>
+    <link rel="SHORTCUT ICON" href="~/images/G_large_Transparent.png" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,100,300,500" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+    @*<link href="~/Content/bootstrap.min.css" rel="stylesheet" />*@
+    <link href="~/Content/5.3.8/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/dataTables.bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/navbar.css" rel="stylesheet" />
+    <link href="~/Content/buttonTop.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/Content/jquery-ui.css">
+    <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/Snackbar.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    @*<script src="~/Scripts/bootstrap.min.js"></script>*@
+    <script src="~/Scripts/5.3.8/bootstrap.min.js"></script>
+    <script src="~/Scripts/bootstrap-typeahead.min.js"></script>
+    <script src="~/Scripts/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/dataTables.bootstrap.min.js"></script>
+    <script src="~/Scripts/Autocomplete/GKBSautocomplete.js"></script>
+    <script src="~/Scripts/Validation.js"></script>
+
+
+    @*<link href="~/Content/Site.css" rel="stylesheet" />
+        <link href="~/Content/navbar.css" rel="stylesheet" />*@
+    <style>
+        table tr th {
+            background-color: var(--gridheaderbackground) !important;
+            color: var(--gridheadertextcolor) !important;
+        }
+
+        .btn {
+            padding: 7px 10px !important;
+            font-size: 13px !important;
+            font-weight: 600 !important;
+            color: var(--ButtonTextColor) !important;
+        }
+
+        .dt-info {
+            font-size: 11px !important;
+        }
+
+        .loader,
+        .loader:after {
+            border-radius: 50%;
+            width: 10em;
+            height: 10em;
+        }
+
+        .loader {
+            margin: 60px auto;
+            font-size: 10px;
+            position: center;
+            text-indent: -9999em;
+            border-top: 1.1em solid rgba(255, 255, 255, 0.2);
+            border-right: 1.1em solid rgba(255, 255, 255, 0.2);
+            border-bottom: 1.1em solid rgba(255, 255, 255, 0.2);
+            border-left: 1.1em solid #ffffff;
+            -webkit-transform: translateZ(0);
+            -ms-transform: translateZ(0);
+            transform: translateZ(0);
+            -webkit-animation: load8 1.1s infinite linear;
+            animation: load8 2.1s infinite linear;
+        }
+
+        @@-webkit-keyframes load8 {
+            0% {
+                -webkit-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+
+            100% {
+                -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+
+        @@keyframes load8 {
+            0% {
+                -webkit-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+
+            100% {
+                -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+
+        #loadingDiv {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 150%;
+            opacity: 90%;
+            background-color: #C7E1BA;
+        }
+
+        .LoaderMsg {
+            font-size: 20px;
+            text-align: center;
+        }
+
+        .elipstyle {
+            width: 25px;
+            height: 40px;
+            border-radius: 50%;
+            transform: rotate(50deg);
+            background-color: white;
+        }
+
+        .dropdown-menu li {
+            position: relative;
+            color: white;
+        }
+
+        .dropdown-menu .dropdown-submenu {
+            display: none;
+            position: absolute;
+            left: 100%;
+            top: -17px;
+            width: 200px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            color: darkblue;
+        }
+
+        .dropdown-menu .dropdown-submenu-left {
+            right: 100%;
+            left: auto;
+        }
+
+        .dropdown-menu > li:hover > .dropdown-submenu {
+            display: block;
+            background-color: white;
+            border-radius: 5px;
+        }
+
+        @@media (max-width: 500px) {
+            .sidenav {
+                width: 60%;
+            }
+        }
+
+        @@media (min-width: 501px) and (max-width: 849px) {
+            .sidenav {
+                width: 40%;
+            }
+        }
+
+        @@media (min-width: 850px) {
+            .sidenav {
+                width: 20%;
+            }
+        }
+        /* Fixed sidenav, full height */
+        .sidenav {
+            height: 100%;
+            position: fixed;
+            z-index: 500;
+            top: 0;
+            left: 0;
+            background-color: black;
+            overflow-x: hidden;
+            padding-top: 50px;
+            color: white;
+        }
+
+            /* Style the sidenav links and the dropdown button */
+            .sidenav li, .dropdown-btn {
+                /*                padding: 6px 8px 6px 16px;*/
+                text-decoration: none;
+                font-size: 16px;
+                color: black;
+                display: block;
+                border: none;
+                background: none;
+                width: 100%;
+                text-align: left;
+                cursor: pointer;
+                outline: none;
+                font-weight: bold;
+                font-family: 'Times New Roman';
+            }
+                /* On mouse-over */
+                .sidenav a:hover, .dropdown-btn:hover {
+                    color: #f1f1f1;
+                }
+
+        /* Main content */
+        .main {
+            top: 0px;
+            margin-left: 20%; /* Same as the width of the sidenav */
+            padding: 0px 1px;
+        }
+
+        /* Add an active class to the active dropdown button */
+        .active {
+            /*background-color: lightcoral;*/
+            color: white;
+        }
+
+        /* Dropdown container (hidden by default). Optional: add a lighter background color and some left padding to change the design of the dropdown content */
+        .dropdown-container {
+            display: none;
+            background-color: #262626;
+            padding-left: 8px;
+        }
+
+        /* Optional: Style the caret down icon */
+        .mendwn {
+            float: right;
+            padding-right: 8px;
+        }
+
+        /* Some media queries for responsiveness */
+        @@media screen and (max-height: 450px) {
+            .sidenav {
+                padding-top: 10px;
+            }
+
+                .sidenav li {
+                    font-size: 12px;
+                }
+        }
+    </style>
+    <style>
+
+        /* Style the tab */
+        .tab {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+            width: 100%;
+            /*height:40px;*/
+        }
+
+            /* Style the buttons inside the tab */
+            .tab button {
+                background-color: inherit;
+                float: left;
+                border: none;
+                outline: none;
+                cursor: pointer;
+                padding-top: 5px;
+                padding-bottom: 5px;
+                padding-left: 12px;
+                transition: 0.5s;
+                font-size: 15px;
+                border-radius: 5px;
+                width: 50%;
+            }
+
+                /* Change background color of buttons on hover */
+                .tab button:hover {
+                    background-color: lightskyblue;
+                }
+
+                /* Create an active/current tablink class */
+                .tab button.active {
+                    background-color: #ccc;
+                }
+
+        /* Style the tab content */
+        .tabcontent {
+            display: none;
+            /*padding: 6px 12px;*/
+            border: none;
+            border-top: none;
+        }
+    </style>
+    <style>
+        .dropdown-container ul {
+            list-style: gujarati; /* remove default bullets */
+            margin: 0;
+            padding: 0 0 0 20px; /* left padding for line space */
+            position: relative;
+        }
+
+            .dropdown-container ul::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 10px; /* line position */
+                width: 2px;
+                background: #ccc; /* line color */
+            }
+
+            .dropdown-container ul li {
+                position: relative;
+                padding: 3px 0 0px 15px; /* spacing for text */
+            }
+
+                .dropdown-container ul li::before {
+                    content: "";
+                    position: absolute;
+                    top: 15px; /* aligns with text */
+                    left: -10px; /* same as ul::before left */
+                    width: 18px;
+                    height: 2px;
+                    background: #ccc; /* horizontal connector */
+                }
+
+                .dropdown-container ul li:last-child::after {
+                    content: "";
+                    position: absolute;
+                    left: -10px;
+                    bottom: 0;
+                    width: 2px;
+                    height: calc(100% - 20px);
+                    background: white; /* hides extra vertical line after last item */
+                }
+    </style>
+    <style>
+        ul {
+            list-style-type: none;
+            padding-left: 20px;
+            margin: 0;
+            font-size: 16px; /* 🔹 Font size for UL */
+        }
+
+        li {
+            margin: 4px 0;
+            cursor: pointer;
+            user-select: none;
+            font-size: 11px; /* 🔹 Font size for LI */
+        }
+
+        .toggle {
+            margin-right: 6px;
+            font-weight: bold;
+            color: #007acc;
+        }
+
+        .collapsed {
+            display: none;
+        }
+
+        span.menu-name {
+            font-weight: normal;
+        }
+    </style>
+
+</head>
+<body>
+    @{
+        <input type="hidden" id="hdnApiurl" value="@Session["APIurl"]" />
+        <input type="hidden" id="hdnurl" value="@Session["url"]" />
+        string LayoutName = Convert.ToString(Session["NavBarVisible"]);
+        string User = Convert.ToString(Session["LoginUser"]);
+        string UIDs = Convert.ToString(Session["LoginUserID"]);
+        System.Data.DataTable dtParent = (System.Data.DataTable)Session["dtReportParent"];
+        System.Data.DataTable dtPermission = (System.Data.DataTable)Session["dtReportPermission"];
+        System.Data.DataTable dtCompany = (System.Data.DataTable)Session["dtCompany"];
+        string CompCode = Convert.ToString(Session["CompanyCode"]);
+        string CompName = Convert.ToString(Session["CompanyName"]);
+        if (LayoutName == "LogOn")
+        {
+            <header id="LoginPage" class="navbar navbar-bright navbar-fixed-top" role="banner">
+                <div class="container">
+                    <div class="navbar-header">
+                        <a href="~/LogOn/Index" class="navbar-brand">Login Page</a>
+                    </div>
+                </div>
+            </header>
+        }
+        else if (LayoutName == "UserPermission")
+        {
+
+            <div class="sidenav">
+                <div style="top: 0; position: fixed; width: 100%;height:50px; " class="dvmainmenuheader">
+                    <table>
+                        <tr>
+                            <td style="width:1%" align="center">
+                                <div id="sidedivcollapsed" style="color: black; padding-top: 5px;font-size:20px">
+                                    <i title="Collapse" class="fa-solid fa-xmark"></i>
+                                </div>
+                                <div id="sidedivexpand" style="color: black; padding-top: 5px; font-size: 20px">
+                                    <i title="Expand" class="fa-solid fa-bars"></i>
+                                </div>
+                            </td>
+                            <td style="width:25%">
+                                <a href="~/Home" style="color:white;font-size:16px;font-weight:800;"><img src="~/Images/Logo/G_large_Transparent.png" style="width:45px;height:35px" /></a>
+                                <label id="acompname" style="color:brown;font-size:16px;font-weight:800">@CompCode</label>
+                                @*<img src="~/Images/search-icon.png" id="icQS" data-toggle="modal" data-target="#myModal" style="padding-left:10px;width:35px;height:25px;" title="Quick Search" />*@
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="tab">
+                    <button class="tablinks active" id="tabCD" onclick="openTabs(event, 'ReportDetails')">Reports</button>
+                    <button class="tablinks" onclick="openTabs(event, 'FilterDetails')">Filters</button>
+                </div>
+                <div id="ReportDetails" class="tabcontent">
+                    <div id="menuContainer"></div>
+                </div>
+                <div id="FilterDetails" class="tabcontent" style="color: black; padding-left: 10px">
+                    <h4 id="RepMainHeading">@ViewData["FormName"]</h4>
+                    <div id="dvAssign" style="width:100%;padding-bottom:7px">
+                        <table style="width: 100%" id="tblFilterData">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:center;font-size: 12px;width:40%;"><u>Filter Name </u></th>
+                                    <th style="text-align:center;font-size: 12px;width:60%;"><u>Filter Value </u></th>
+                                </tr>
+                            </thead>
+                        </table>
+                        <div style="padding-top:5px" align="right">
+                            <button type="button" class="btn btn-primary" id="btnScript"><span class="glyphicon glyphicon-file"> Script</span></button>
+                            <button type="button" class="btn btn-danger" id="btnClear" tabindex="5"><span class="glyphicon glyphicon-refresh"> Clear</span></button>
+                            <button type="button" class="btn btn-success" id="btnPopupGenerate" tabindex="4"><span class="glyphicon glyphicon-import"> Generate</span></button>
+                            @*<button type="button" class="btn btn-warning" id="btnClose" tabindex="6"><i class="bi bi-x-circle"></i> Close</button>*@
+                        </div>
+                    </div>
+                </div>
+                @*<div class="dvmainmenuheader" style="bottom: 0; position: fixed; width: 20%;padding:15px;font-size:16px; ">
+                        @Html.ActionLink("Sample Grid from Rep", "index", "sampgrid", null, new { @class = "dropdown", @style = "font-weight:bold;color:white", @title = User })<br />
+                        @Html.ActionLink("LogOut - " + User, "LogOff", "Login", null, new { @class = "dropdown", @style = "font-weight:bold;color:white", @title = User })
+                    </div>*@
+            </div>
+        }
+    }
+    <link href="~/Content/SlidePopup.css" rel="stylesheet" />
+    <script>
+        var Table = $('#tblFilterData').DataTable({
+            "bFilter": false,
+            "bSearchable": false,
+            "bInfo": false,
+            "bPaginate": false,
+            "ordering": false,
+            //scrollY: "400px",
+            //scrollX: true,
+            //scrollCollapse: true,
+        });
+    </script>
+    <div style="padding-left: 15px;padding-top: 30px" class="main">
+        @RenderBody()
+    </div>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    @*@Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/bundles/bootstrap")*@
+</body>
+</html>
+<script type="text/javascript">
+    window.onload = function (e) {
+        let screenWidth = $(window).width();
+        let sideNavWidth = "25%";
+        let mainWidth = "75%";
+        let marginLeft = "25%";
+
+        if (screenWidth <= 500) {
+            sideNavWidth = "60%";
+            mainWidth = "40%";
+            marginLeft = "60%";
+        } else if (screenWidth >= 501 && screenWidth <= 849) {
+            sideNavWidth = "40%";
+            mainWidth = "60%";
+            marginLeft = "40%";
+        }
+
+        $(".sidenav,#sidenavfooter").css("width", sideNavWidth);
+        $(".main,.footerAction").css("width", mainWidth);
+        $(".main").css("margin-left", marginLeft);
+        // simulate a fake event if your function expects it
+        openTabs(null, 'ReportDetails', 1);
+
+        $("#sidenavfooter").show();
+        $("#sidedivexpand").hide();
+        $("#sidedivcollapsed").show();
+        if (typeof FID !== "undefined" && FID > 0) {
+            openTabs(e, 'FilterDetails', 1);
+        }
+    };
+    //$("#sidedivcollapsed").hide();
+    //$("#sidenavfooter").hide();
+    //$(".sidenav,#sidenavfooter").css("width", "0%");// !important;
+    //$(".main,.footerAction").css("width", "98%");
+    //$(".main").css("margin-left", "0");
+
+    //$(".sidenav").mouseleave(function () {
+    $("#sidedivcollapsed").click(function () {
+        $(".sidenav,#sidenavfooter").css("width", "0%");
+        $(".main,.footerAction").css("width", "98%");
+        $(".main").css("margin-left", "0");
+        $("#sidenavfooter").hide();
+        $("#sidedivexpand").show();
+        $("#sidedivcollapsed").hide();
+    });
+    //$("#sidedivexpand,.sideallmenus,#tdSideMenuIcon,#sidenav,.ui-autocomplete,.ui-menu-item").mouseenter(function (e) {
+    $("#sidedivexpand").click(function (e) {
+let screenWidth = $(window).width();
+        let sideNavWidth = "25%";
+        let mainWidth = "75%";
+        let marginLeft = "25%";
+
+        if (screenWidth <= 500) {
+            sideNavWidth = "60%";
+            mainWidth = "40%";
+            marginLeft = "60%";
+        } else if (screenWidth >= 501 && screenWidth <= 849) {
+            sideNavWidth = "40%";
+            mainWidth = "60%";
+            marginLeft = "40%";
+        }
+
+        $(".sidenav,#sidenavfooter").css("width", sideNavWidth);
+        $(".main,.footerAction").css("width", mainWidth);
+        $(".main").css("margin-left", marginLeft);
+        $("#sidenavfooter").show();
+        $("#sidedivexpand").hide();
+        $("#sidedivcollapsed").show();
+        if (typeof FID !== "undefined" && FID > 0) {
+            openTabs(e, 'FilterDetails', 1);
+        }
+    });
+    //$('#btnPopupGenerate,#btnGenerate').click(function (e) {
+    $('#btnPopupGenerate,#btnGenerate').on("click", function (e) {
+        $(".sidenav,#sidenavfooter").css("width", "0%");
+        $(".main,.footerAction").css("width", "98%");
+        $(".main").css("margin-left", "0");
+        $("#sidenavfooter").hide();
+        $("#sidedivexpand").show();
+        $("#sidedivcollapsed").hide();
+    });
+
+    var dropdown = document.getElementsByClassName("dropdown-btn");
+    var i;
+    for (i = 0; i < dropdown.length; i++) {
+        dropdown[i].addEventListener("click", function () {
+            //this.classList.toggle("active");
+            var sibs = $(this).siblings(".dropdown-btn");
+            $(this).siblings(".dropdown-btn").each(function () {
+                var dd = this.nextElementSibling;
+                dd.style.display = "none";
+            });
+            var dropdownContent = this.nextElementSibling;
+            if (dropdownContent.style.display === "block") {
+                dropdownContent.style.display = "none";
+            } else {
+                dropdownContent.style.display = "block";
+            }
+        });
+    }
+
+    function openTabs(evt, TabName, opentype = 0) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(TabName).style.display = "block";
+        if (opentype == 0) {
+            evt.currentTarget.className += " active";
+        } else {
+            document.getElementById(TabName).className += " active";
+        }
+    }
+   var strCompanyCode = '@Session["CompanyCode"]';
+    var Aurl = '@Session["APIurl"]';
+    GetColorData();
+    function GetColorData() {
+        var nThemeID = '@Session["ThemeID"]' || 1;
+        $.ajax({
+            url: Aurl + "colorsettings/get",
+            type: 'get',
+            contentType: 'json',
+            data: { CompanyCode: strCompanyCode, ThemeID: nThemeID },            
+            success: function (data) {
+                $.each(data, function (i, items) {
+                    $(".navbar-fixed-top,.sidenav,.dropdown-container,.dvmainmenuheader").css("background-color", items.MenuHeader);
+                    $("#acompname").css("color", items.CompanyNameColor);
+                    //console.log("dvmainmenuheader ", items.MenuHeader)
+                    $(".btn-info").css("background-color", items.AddButton);
+
+                    $(".btn-primary").css("background-color", items.DraftButton);
+                    $(".btn-success").css("background-color", items.SaveButton);
+
+                    $(".btn-danger").css("background-color", items.ClearButton);
+
+                    $(".btn-warning").css("background-color", items.CloseButton).css("color", "white");
+
+                    $(".clrforpdf").css("background-color", items.PDFButton);
+                    $(".clrforpreview").css("background-color", items.PreviewButton);
+                    $(".clrforpdf").css("color", "white");
+                    $(".clrforpreview").css("color", "white");
+                    $(".modal-header").css("background-color", items.PopupHeader);
+
+                    $(".modal-footer").css("background-color", items.PopupFooter);
+
+                    $(".clsclrYes,.clsYes").css("background-color", items.ConfirmPopupYes);
+
+                    $(".clsclrNo,.clsNo").css("background-color", items.ConfirmPopupNo);
+
+                    $("ul a").css("color", items.SubMenuColor);
+                    $(".dropdown-btn,#algot").css("color", items.MenuColor);
+                    $(".trclrforcolheader").css("background-color", items.GridHeaderBackGround);
+                    $(".trclrforcolheader,.dg-btn").css("color", items.GridHeaderTextColor);
+                    $(".modal-title").css("color", items.PopupHeaderText);
+                    //$(".ui-menu-item-wrapper.ui-state-active").attr("style", "background-color: " + items.AutocompleteBG + " !important");
+                    document.documentElement.style.setProperty('--header-bg', items.GridHeaderBackGround);
+                    document.documentElement.style.setProperty('--header-text', items.GridHeaderTextColor);
+                    document.documentElement.style.setProperty('--primary-color', items.GridHeaderBackGround);
+
+                    document.documentElement.style.setProperty('--dynamic-bg', items.AutocompleteBG);
+                    document.documentElement.style.setProperty('--submenuborderleft', items.MenuHeader);
+                    //$(".acItem .name").css("color", items.AutocompleteLine1);
+                    document.documentElement.style.setProperty('--acitemname', items.AutocompleteLine1);
+                    //$(".acItem .desc").css("color", items.AutocompleteLine2);
+                    document.documentElement.style.setProperty('--acitemdesc', items.AutocompleteLine2);
+                    document.documentElement.style.setProperty('--CompanyNameColor', items.CompanyNameColor);
+                    document.documentElement.style.setProperty('--ButtonTextColor', items.ButtonTextColor);
+                });
+            }
+        });
+    }
+    //GetColorData();
+    function GetColorData_web() {
+        var themedata = localStorage.getItem("ThemeData");
+        ////console.log("themedata ", JSON.parse(themedata));
+        $.each(JSON.parse(themedata), function (i, items) {
+            $(".navbar-fixed-top,.sidenav,.dropdown-container,.dvmainmenuheader").css("background-color", items.MenuHeader);
+            $("#acompname").css("color", items.CompanyNameColor);
+            //console.log("dvmainmenuheader ", items.MenuHeader)
+            $(".btn-info").css("background-color", items.AddButton);
+
+            $(".btn-primary").css("background-color", items.DraftButton);
+            $(".btn-success").css("background-color", items.SaveButton);
+
+            $(".btn-danger").css("background-color", items.ClearButton);
+
+            $(".btn-warning").css("background-color", items.CloseButton).css("color", "white");
+
+            $(".clrforpdf").css("background-color", items.PDFButton);
+            $(".clrforpreview").css("background-color", items.PreviewButton);
+            $(".clrforpdf").css("color", "white");
+            $(".clrforpreview").css("color", "white");
+            $(".modal-header").css("background-color", items.PopupHeader);
+
+            $(".modal-footer").css("background-color", items.PopupFooter);
+
+            $(".clsclrYes,.clsYes").css("background-color", items.ConfirmPopupYes);
+
+            $(".clsclrNo,.clsNo").css("background-color", items.ConfirmPopupNo);
+
+            $("ul a").css("color", items.SubMenuColor);
+            $(".dropdown-btn,#algot").css("color", items.MenuColor);
+            $(".trclrforcolheader").css("background-color", items.GridHeaderBackGround);
+            $(".trclrforcolheader,.dg-btn").css("color", items.GridHeaderTextColor);
+            $(".modal-title").css("color", items.PopupHeaderText);
+            //$(".ui-menu-item-wrapper.ui-state-active").attr("style", "background-color: " + items.AutocompleteBG + " !important");
+            document.documentElement.style.setProperty('--header-bg', items.GridHeaderBackGround);
+            document.documentElement.style.setProperty('--header-text', items.GridHeaderTextColor);
+            document.documentElement.style.setProperty('--primary-color', items.GridHeaderBackGround);
+
+            document.documentElement.style.setProperty('--dynamic-bg', items.AutocompleteBG);
+            document.documentElement.style.setProperty('--submenuborderleft', items.MenuHeader);
+            //$(".acItem .name").css("color", items.AutocompleteLine1);
+            document.documentElement.style.setProperty('--acitemname', items.AutocompleteLine1);
+            //$(".acItem .desc").css("color", items.AutocompleteLine2);
+            document.documentElement.style.setProperty('--acitemdesc', items.AutocompleteLine2);
+            document.documentElement.style.setProperty('--CompanyNameColor', items.CompanyNameColor);
+            document.documentElement.style.setProperty('--ButtonTextColor', items.ButtonTextColor);
+        });
+    }
+</script>

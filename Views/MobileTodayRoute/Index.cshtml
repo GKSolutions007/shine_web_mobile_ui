@@ -1,0 +1,359 @@
+﻿@model ShineWebMobile.Models.SingleMasterModel
+@{
+    ViewBag.Title = ViewData["FormName"];
+    Layout = "~/Views/Shared/_LayoutBT5.cshtml";
+}
+<link href="~/Content/navbar.css" rel="stylesheet" />
+<link href="~/Content/buttonTop.css" rel="stylesheet" />
+<link rel="stylesheet" href="~/Content/jquery-ui.css">
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery-3.7.1.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<header>
+    <link rel="stylesheet" href="~/Content/index.css">
+</header>
+
+<style>
+    body {
+        background-color: #f7f7f7;
+    }
+    .card-containter {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        padding: 25px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        animation: fadeInUp 0.8s ease-out;
+    }
+
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .form-label-custom {
+        color: deepskyblue;
+        font-weight: bold;
+        margin-bottom: 5px;
+        display: block;
+        text-align: right;
+    }
+
+    .input-group-addon {
+        background-color: #e9ecef;
+        border: 1px solid #ced4da;
+        color: #495057;
+    }
+    
+    .form-control {
+        box-shadow: none;
+        border: 1px solid #ced4da;
+    }
+
+    .form-control:focus {
+        border-color: deepskyblue;
+        box-shadow: 0 0 5px rgba(0, 191, 255, 0.3);
+    }
+    
+    .btn-custom-save {
+        width: 100%;
+        background-color: #28a745;
+        color: white;
+        font-weight: bold;
+        border: none;
+        padding: 10px;
+        border-radius: 5px;
+        transition: all 0.3s;
+    }
+    
+    .btn-custom-save:hover {
+        background-color: #218838;
+        transform: scale(1.02);
+    }
+
+    .clrdiv {
+        font-size: 0.9em;
+    }
+    
+    /* Responsive adjustments */
+    @@media (max-width: 768px) {
+        .form-label-custom {
+            text-align: left;
+        }
+    }
+</style>
+
+<body>
+    <!--<div class="container">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
+                <div class="card-containter">
+                    <h4 id="MainHeading" class="text-center" style="color: #333; font-weight: bold; margin-bottom: 25px;">@ViewData["FormName"]</h4>
+                    <hr />
+                    <div class="toastBox"></div>-->
+    <!-- Branch Field -->
+    <!--<div class="row form-group">
+        <div class="col-md-3 col-sm-12">
+            <label class="form-label-custom">Branch :</label>
+        </div>
+        <div class="col-md-9 col-sm-12">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span>
+                <select class="form-control FormclrcmbField" id="cmbBrach">
+                    <option value="0">Select</option>
+                </select>
+            </div>
+            <div style="color: red; padding-top: 5px; padding-left: 5px;" id="divErrBrach" class="clrdiv"></div>
+        </div>
+    </div>-->
+    <!-- Beat Field -->
+    <!--<div class="row form-group">
+        <div class="col-md-3 col-sm-12">
+            <label class="form-label-custom">Beat :</label>
+        </div>
+        <div class="col-md-9 col-sm-12">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="glyphicon glyphicon-map-marker"></i></span>
+                <select class="form-control FormclrcmbField" id="cmbBeat">
+                    <option value="0">Select</option>
+                </select>
+            </div>
+            <div style="color: red; padding-top: 5px; padding-left: 5px;" id="divErrBeat" class="clrdiv"></div>
+        </div>
+    </div>-->
+    <!-- Salesman Field -->
+    <!--<div class="row form-group">
+        <div class="col-md-3 col-sm-12">
+            <label class="form-label-custom">Salesman :</label>
+        </div>
+        <div class="col-md-9 col-sm-12">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                <select class="form-control FormclrcmbField" id="cmbSalesman">
+                    <option value="0">Select</option>
+                </select>
+            </div>
+            <div style="color: red; padding-top: 5px; padding-left: 5px;" id="divErrSalesman" class="clrdiv"></div>
+        </div>
+    </div>-->
+    <!-- Save Button -->
+    <!--<div class="row form-group" style="margin-top: 25px;">
+                            <div class="col-md-9 col-md-offset-3 col-sm-12">
+                                <button type="button" class="btn btn-success btn-custom-save" id="btnSave">
+                                    <span class="glyphicon glyphicon-saved"></span> Save Data
+                                </button>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>-->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 offset-md-2 col-sm-10 offset-sm-1">
+                <div class="card-containter">
+
+                    <h4 id="MainHeading" class="text-center fw-bold mb-4" style="color:#333;">
+                        @ViewData["FormName"]
+                    </h4>
+
+                    <hr />
+                    <div class="toastBox"></div>
+
+                    <!-- Branch Field -->
+                    <div class="row mb-3">
+                        <div class="col-md-3 col-sm-12">
+                            <label class="form-label-custom">Branch :</label>
+                        </div>
+
+                        <div class="col-md-9 col-sm-12">
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-house"></i>
+                                </span>
+
+                                <select class="form-select FormclrcmbField" id="cmbBrach">
+                                    <option value="0">Select</option>
+                                </select>
+                            </div>
+
+                            <div class="text-danger pt-1 ps-1 clrdiv" id="divErrBrach"></div>
+                        </div>
+                    </div>
+
+
+                    <!-- Beat Field -->
+                    <div class="row mb-3">
+                        <div class="col-md-3 col-sm-12">
+                            <label class="form-label-custom">Beat :</label>
+                        </div>
+
+                        <div class="col-md-9 col-sm-12">
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-geo-alt"></i>
+                                </span>
+
+                                <select class="form-select FormclrcmbField" id="cmbBeat">
+                                    <option value="0">Select</option>
+                                </select>
+                            </div>
+
+                            <div class="text-danger pt-1 ps-1 clrdiv" id="divErrBeat"></div>
+                        </div>
+                    </div>
+
+
+                    <!-- Salesman Field -->
+                    <div class="row mb-3">
+                        <div class="col-md-3 col-sm-12">
+                            <label class="form-label-custom">Salesman :</label>
+                        </div>
+
+                        <div class="col-md-9 col-sm-12">
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-person"></i>
+                                </span>
+
+                                <select class="form-select FormclrcmbField" id="cmbSalesman">
+                                    <option value="0">Select</option>
+                                </select>
+                            </div>
+
+                            <div class="text-danger pt-1 ps-1 clrdiv" id="divErrSalesman"></div>
+                        </div>
+                    </div>
+
+
+                    <!-- Save Button -->
+                    <div class="row mt-4">
+                        <div class="col-md-9 offset-md-3 col-sm-12">
+                            <button type="button" class="btn btn-success btn-custom-save" id="btnSave">
+                                <i class="bi bi-save"></i> Save Data
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript">
+    var UID = '@Session["LoginUserID"]';
+    var nMode = 1;
+    var Aurl = '@Session["APIurl"]';
+    var strCompanyCode = '@Session["CompanyCode"]';
+    GetData(1);
+    GetData(2);
+    function GetData(nMode, nBID = 0, nSMID = 0,nBranchID = 0) {
+        $.ajax({
+            url: Aurl + "todayroute/managetodayroute",
+            type: 'get',
+            contentType: 'json',
+            data: { CompanyCode: strCompanyCode, Mode: nMode, UserID: UID, BeatID: nBID, SalesmanID: nSMID, BranchID: nBranchID },
+            async: false,
+            success: function (data) {
+                if (nMode == 1) {
+                    $('#cmbBeat,#cmbSalesman,#cmbBrach').find("option").remove();
+                    $('#cmbBeat,#cmbSalesman,#cmbBrach').append($('<option/>', {
+                        value: 0,
+                        text: "-- Select --",
+                        class: ""
+                    }));
+                    $.each(data, function (i, items) {
+                        if (items.FType == 1) {
+                            $('#cmbBeat').append($('<option/>', {
+                                value: items.ID,
+                                text: items.Name,
+                            }));
+                        }
+                        else if (items.FType == 2) {
+                            $('#cmbSalesman').append($('<option/>', {
+                                value: items.ID,
+                                text: items.Name,
+                            }));
+                        }
+                        else if (items.FType == 3) {
+                            $('#cmbBrach').append($('<option/>', {
+                                value: items.ID,
+                                text: items.Name,
+                            }));
+                        }
+                    });
+                }
+                else if (nMode == 2) {
+                    $.each(data, function (i, items) {
+                        $('#cmbBeat').val(items.BeatID);
+                        $('#cmbSalesman').val(items.SalesmanID);
+                        $('#cmbBrach').val(items.BranchID);
+                    });
+                }
+                else if (nMode == 3) {
+                    $("#btnSave").prop("disabled", false);
+                    $.each(data, function (i, items) {
+                        if (items.MsgID == 0) {
+                            showSuccessSnackbar(items.Message);
+                            //ClearForm();
+                        }
+                        else {
+                            showErrorSnackbar(items.Message);
+                        }
+                    });
+                }
+            },
+            error: function (data) {
+                $("#btnSave").prop("disabled", false);
+                if (data.status == "401") {
+                    var msg = data.responseJSON.Message;
+                    ////showErrorSnackbar(msg + " Logout and Login again.");
+                }
+            }
+        });
+    }
+
+    $('#btnClear').click(function (e) {
+        if (cfFocus != 3) { ClearConfirmDialogMsg("Do you want to clear?"); } else { ClearForm(); }
+    });
+    function ClearForm() {
+        $("select").val(0);
+        $(".clrdiv").html("");
+    }
+    $("#btnSave").click(function () {
+        //SaveData();
+        if (cfFocus != 3) {
+            ConfirmDialogMsg("Do you want to save data?");
+        } else {
+            SaveData();
+        }
+    });
+
+    function SaveData() {
+        $(".clrdiv").html("");
+        var IsValid = true;//cmbSalesman
+        if ($("#cmbBeat").val() == 0 && $("#cmbSalesman").val() > 0) {
+            $("#divErrBeat").html("Select Beat Name");
+            showErrorSnackbar("Select Beat Name");
+            IsValid = false;
+        }
+        if ($("#cmbBeat").val() > 0 && $("#cmbSalesman").val() == 0) {
+            $("#divErrSalesman").html("Select Salesman Name");
+            showErrorSnackbar("Select Salesman Name");
+            IsValid = false;
+        }
+        if (IsValid) {
+            $("#btnSave").prop("disabled", true);
+            GetData(3, $("#cmbBeat").val(), $("#cmbSalesman").val(), $("#cmbBrach").val());
+        }
+    }
+</script>

@@ -1,0 +1,1656 @@
+﻿@model ShineWebMobile.Models.SingleMasterModel
+@{
+    ViewBag.Title = "Customer OS";
+    Layout = "~/Views/Shared/_LayoutBT5.cshtml";
+}
+
+
+<link href="~/Content/navbar.css" rel="stylesheet" />
+<link href="~/Content/buttonTop.css" rel="stylesheet" />
+<link href="~/Content/dataTables.dataTables.2.2.2.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+<link rel="stylesheet" href="~/Content/jquery-ui.css">
+
+<script src="~/Scripts/jquery-3.7.1.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Scripts/dataTables.2.2.2.js"></script>
+
+<header>
+    <link rel="stylesheet" href="~/Content/index.css">
+</header>
+
+<style>
+    :root {
+        --primary-color: #3498db;
+        --secondary-color: #2ecc71;
+        --danger-color: #e74c3c;
+        --dark-color: #2c3e50;
+        --light-bg: #ecf0f1;
+        --shadow: 0 2px 10px rgba(0,0,0,0.1);
+        --shadow-lg: 0 4px 20px rgba(0,0,0,0.15);
+    }
+
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .container-fluid {
+        padding: 10px 5px;
+    }
+
+    .page-header {
+        background: white;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: var(--shadow-lg);
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+        .page-header h2 {
+            color: var(--dark-color);
+            margin: 0;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+            .page-header h2 i {
+                color: var(--primary-color);
+            }
+
+    .filter-card {
+        background: white;
+        border-radius: 15px;
+        padding: 10px;
+        box-shadow: var(--shadow-lg);
+        margin-bottom: 20px;
+        animation: slideDown 0.4s ease-out;
+    }
+
+    @@keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .filter-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--dark-color);
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+        .filter-title i {
+            color: var(--primary-color);
+        }
+
+    .form-group-modern {
+        margin-bottom: 10px;
+    }
+
+        .form-group-modern label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--dark-color);
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+            .form-group-modern label i {
+                margin-right: 5px;
+                color: var(--primary-color);
+            }
+
+    .input-with-icon {
+        position: relative;
+    }
+
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+            z-index: 1;
+        }
+
+    .form-control-modern {
+        width: 100%;
+        padding: 5px 5px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 12px;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+    }
+
+        .form-control-modern:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+    .btn-modern {
+        padding: 8px 10px;
+        border: none;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: var(--shadow);
+    }
+
+        .btn-modern:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-modern:active {
+            transform: translateY(0);
+        }
+
+    .btn-primary-modern {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .btn-success-modern {
+        background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        color: white;
+    }
+
+    .btn-danger-modern {
+        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        color: white;
+    }
+
+    .results-card {
+        background: white;
+        border-radius: 15px;
+        padding: 10px;
+        box-shadow: var(--shadow-lg);
+        margin-top: 20px;
+    }
+
+    .results-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .results-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--dark-color);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+        .results-title i {
+            color: var(--primary-color);
+        }
+
+    .table-responsive {
+        overflow-x: auto;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.05);
+    }
+
+    .modern-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: 14px;
+    }
+
+        .modern-table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+            .modern-table thead th {
+                padding: 5px 5px;
+                font-weight: 600;
+                text-align: left;
+                border: none;
+                white-space: nowrap;
+            }
+
+                .modern-table thead th:first-child {
+                    border-top-left-radius: 10px;
+                }
+
+                .modern-table thead th:last-child {
+                    border-top-right-radius: 10px;
+                }
+
+        .modern-table tbody tr {
+            background: white;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+            .modern-table tbody tr:hover {
+                background: #f8f9fa;
+                transform: scale(1.01);
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            }
+
+        .modern-table tbody td {
+            padding: 7px 7px;
+            border: none;
+        }
+
+        .modern-table thead tr.totals-row {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-top: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+            .modern-table thead tr.totals-row th {
+                padding: 10px 7px;
+                font-weight: 700;
+                color: var(--dark-color);
+                border: none;
+                position: sticky !important;
+                top: 0;
+                z-index: 99;
+            }
+
+                .modern-table thead tr.totals-row th:first-child {
+                    font-size: 13px;
+                }
+
+    .expandable-row {
+        background: #f8f9fa !important;
+        display: none;
+    }
+
+        .expandable-row.visible {
+            display: table-row;
+            animation: expandRow 0.3s ease-out;
+        }
+
+    @@keyframes expandRow {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    .expandable-content {
+        padding: 20px;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 10px;
+    }
+
+    .detail-table {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+        .detail-table th {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            padding: 10px;
+            font-weight: 600;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        .detail-table td {
+            padding: 10px;
+            background: white;
+            border-bottom: 1px solid #ecf0f1;
+            font-size: 13px;
+        }
+
+    .badge-modern {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .badge-success {
+        background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        color: white;
+    }
+
+    .badge-warning {
+        background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+        color: white;
+    }
+
+    .badge-danger {
+        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        color: white;
+    }
+
+    .badge-info {
+        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        color: white;
+    }
+
+    .text-right {
+        text-align: right;
+    }
+
+    .expand-icon {
+        transition: transform 0.3s ease;
+        display: inline-block;
+        color: var(--primary-color);
+    }
+
+        .expand-icon.rotated {
+            transform: rotate(90deg);
+        }
+
+    /* Mobile Responsive */
+    @@media (max-width: 768px) {
+        .container-fluid {
+            padding: 8px;
+        }
+
+        .filter-card {
+            padding: 12px;
+            margin-bottom: 15px;
+        }
+
+        .page-header {
+            padding: 12px;
+            margin-bottom: 15px;
+        }
+
+            .page-header h2 {
+                font-size: 15px;
+            }
+
+        .results-card {
+            padding: 12px;
+            margin-top: 15px;
+        }
+
+        .filter-title {
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+
+        .form-group-modern {
+            margin-bottom: 12px;
+        }
+
+            .form-group-modern label {
+                margin-bottom: 5px;
+                font-size: 13px;
+            }
+
+        .form-control-modern {
+            font-size: 13px;
+            padding: 8px 10px;
+        }
+
+        .input-with-icon input,
+        .input-with-icon select {
+            padding-left: 15px;
+        }
+
+        .input-with-icon i {
+            left: 10px;
+            font-size: 14px;
+        }
+
+        .btn-modern {
+            width: 100%;
+            justify-content: center;
+            margin-bottom: 8px;
+            padding: 10px 20px;
+            font-size: 13px;
+        }
+        /* .action-buttons {
+            gap: 8px;
+            margin-top: 15px;
+        }*/
+
+        .modern-table {
+            font-size: 11px;
+        }
+
+            .modern-table thead th,
+            .modern-table tbody td {
+                padding: 8px 6px;
+            }
+
+        .detail-table {
+            font-size: 10px;
+        }
+
+            .detail-table th,
+            .detail-table td {
+                padding: 8px;
+            }
+
+        .expandable-content {
+            padding: 12px;
+        }
+
+        .results-header {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .results-title {
+            font-size: 16px;
+        }
+
+        .badge-modern {
+            padding: 4px 10px;
+            font-size: 11px;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .container-fluid {
+            padding: 5px;
+        }
+
+        .filter-card,
+        .page-header,
+        .results-card {
+            padding: 10px;
+        }
+
+            .page-header h2 {
+                font-size: 15px;
+            }
+
+        .filter-title,
+        .results-title {
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .form-group-modern {
+            margin-bottom: 10px;
+        }
+
+            .form-group-modern label {
+                margin-bottom: 4px;
+                font-size: 12px;
+            }
+
+        .form-control-modern {
+            font-size: 12px;
+            padding: 7px 8px;
+        }
+        /*.input-with-icon input,
+        .input-with-icon select {
+            padding-left: 32px;
+        }*/
+
+        .input-with-icon i {
+            left: 8px;
+            font-size: 12px;
+        }
+
+        .btn-modern {
+            padding: 8px 16px;
+            font-size: 12px;
+            margin-bottom: 6px;
+        }
+        /*.action-buttons {
+            gap: 6px;
+            margin-top: 12px;
+        }*/
+
+        .modern-table {
+            font-size: 10px;
+        }
+
+            .modern-table thead th,
+            .modern-table tbody td {
+                padding: 6px 4px;
+                font-size: 10px;
+            }
+
+        .detail-table {
+            font-size: 9px;
+        }
+
+            .detail-table th,
+            .detail-table td {
+                padding: 6px;
+            }
+
+        .expandable-content {
+            padding: 10px;
+        }
+
+            .expandable-content h5 {
+                font-size: 13px;
+                margin-bottom: 10px;
+            }
+
+        .badge-modern {
+            padding: 3px 8px;
+            font-size: 10px;
+        }
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 3px;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    /* Loading Animation */
+    .loading {
+        display: none;
+        text-align: center;
+        padding: 20px;
+    }
+
+        .loading.show {
+            display: block;
+        }
+
+    .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid var(--primary-color);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto;
+    }
+
+    @@keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+    /* Scrollable Table Styles */
+    .table-scrollable-container {
+        max-height: 450px;
+        overflow-y: auto;
+        overflow-x: auto;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.05);
+        border: 1px solid #eee;
+        position: relative; /* Context for sticky */
+    }
+
+        .table-scrollable-container thead th {
+            position: sticky !important;
+            top: 0;
+            z-index: 100;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            color: white; /* Ensure text is white */
+        }
+
+    .detail-table-scrollable {
+        max-height: 300px;
+        overflow-y: auto;
+        overflow-x: auto;
+        border-radius: 6px;
+        margin-top: 10px;
+        border: 1px solid #eee;
+        position: relative;
+    }
+
+        .detail-table-scrollable thead th {
+            position: sticky !important;
+            top: 0;
+            z-index: 50;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%) !important;
+            color: white;
+        }
+
+    /* Sorting and Pagination Styles */
+    .sortable-header {
+        cursor: pointer;
+        user-select: none;
+        position: relative;
+        padding-right: 20px !important;
+    }
+
+        .sortable-header:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sortable-header .sort-icon {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.5;
+            font-size: 12px;
+        }
+
+        .sortable-header.sorted-asc .sort-icon,
+        .sortable-header.sorted-desc .sort-icon {
+            opacity: 1;
+        }
+
+    .pagination-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 15px;
+        padding: 15px 0;
+        border-top: 2px solid #ecf0f1;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .pagination-info {
+        color: var(--dark-color);
+        font-weight: 500;
+        font-size: 14px;
+    }
+
+    .pagination-controls {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .page-size-selector {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .page-size-selector label {
+            font-size: 14px;
+            color: var(--dark-color);
+            font-weight: 500;
+        }
+
+        .page-size-selector select {
+            padding: 6px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .page-size-selector select:focus {
+                outline: none;
+                border-color: var(--primary-color);
+            }
+
+    .pagination-buttons {
+        display: flex;
+        gap: 5px;
+    }
+
+    .page-btn {
+        padding: 8px 15px;
+        border: none;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+        .page-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+    @@media (max-width: 768px) {
+        .pagination-container {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .pagination-info {
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .pagination-controls {
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .page-size-selector,
+        .pagination-buttons {
+            justify-content: center;
+        }
+    }
+</style>
+<style>
+    .each {
+        border-bottom: 1px solid #555;
+        padding: 3px 0;
+    }
+
+    .acItem .name {
+        font-size: 14px;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .acItem .desc {
+        font-size: 10px;
+        font-family: Arial, Helvetica, sans-serif;
+        color: #555;
+    }
+
+    .ui-autocomplete {
+        max-height: 245px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .trclrforcolheader {
+        background-color: #f8f9fa !important;
+        color: #495057 !important;
+        border-bottom: 2px solid #dee2e6 !important;
+    }
+
+    .page-header {
+        padding-bottom: 2px !important;
+        margin: 0px 0 10px !important;
+        border-bottom: 1px solid #eee !important;
+    }
+
+
+    /* Stock Tooltip */
+    .stock-tooltip {
+        display: none;
+        position: absolute;
+        background: #fff;
+        border: 1px solid #ccc;
+        padding: 10px;
+        z-index: 1000;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        border-radius: 6px;
+        font-size: 11px;
+        min-width: 300px;
+        top: -5px;
+        left: 100%;
+        margin-left: 15px;
+    }
+
+        .stock-tooltip table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .stock-tooltip th, .stock-tooltip td {
+            padding: 6px 8px;
+            border-bottom: 1px solid #eee;
+            font-size: 8px;
+            text-align: left;
+        }
+
+        .stock-tooltip th {
+            background-color: #f8f9fa;
+            font-weight: 800;
+            font-size: 9px;
+            color: #5e6c84;
+        }
+
+            .stock-tooltip td:last-child, .stock-tooltip th:last-child {
+                text-align: right;
+            }
+
+    .col-md-2, .col-sm-12, .col-md-1, .col-md-3 {
+        padding-right: 15px;
+        padding-left: 15px;
+    }
+</style>
+<body>
+    <div class="toastBox"></div>
+    <div class="container-fluid">
+        <!-- Filter Card -->
+        <div class="filter-card">
+            <form id="filterForm">
+                <h4>
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    Customer OS
+                </h4>
+                <hr />
+                <div class="row">
+                    <!-- Beat Name -->
+                    <div class="col-md-2 col-sm-12">
+                        <div class="form-group-modern">
+                            <label>
+                                <i class="fas fa-map-marker-alt"></i>
+                                Beat Name
+                            </label>
+                            <div class="input-with-icon">
+                                <select class="form-control-modern" id="cmbBeatName">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Salesman Name -->
+                    <div class="col-md-2 col-sm-12">
+                        <div class="form-group-modern">
+                            <label>
+                                <i class="fas fa-user-tie"></i>
+                                Salesman Name
+                            </label>
+                            <div class="input-with-icon">
+                                <select class="form-control-modern" id="cmbSalesmanName">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Customer Type -->
+                    <div class="col-md-2 col-sm-12">
+                        <div class="form-group-modern">
+                            <label>
+                                <i class="fas fa-user-tag"></i>
+                                Customer Type
+                            </label>
+                            <div class="input-with-icon">
+                                <select class="form-control-modern" id="cmbCustomerType">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Customer Type -->
+                    <div class="col-md-2 col-sm-12">
+                        <div class="form-group-modern">
+                            <label>
+                                <i class="fas fa-star"></i>
+                                Rating
+                            </label>
+                            <div class="input-with-icon">
+                                <select class="form-control-modern" id="cmbRatings">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Customer Name -->
+                    <div class="col-md-3 col-sm-12">
+                        <div class="form-group-modern">
+                            <input hidden id="txtCustomerID" />
+                            <label>
+                                <i class="fas fa-user-circle"></i>
+                                Customer Name
+                            </label>
+                            <div class="input-with-icon">
+                                <input type="text" class="form-control-modern" id="txtCustomerName" placeholder="Enter customer name...">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+
+                    <!-- Period -->
+                    <div class="col-md-2 col-sm-12">
+                        <div class="form-group-modern">
+                            <label>
+                                <i class="fas fa-calendar-alt"></i>
+                                Period (Aging Days)
+                            </label>
+                            <div class="input-with-icon">
+                                <input type="text" class="form-control-modern" id="txtPeriod" placeholder="e.g., 15,30,50 or 45,90" value="0">
+                            </div>
+                            <small style="color: #7f8c8d; font-size: 11px; margin-top: 4px; display: block;">Enter comma values for aging</small>
+                        </div>
+                    </div>
+                    <!-- Period -->
+                    <div class="col-md-2 col-sm-12">
+                        <div class="action-buttons">
+                            <div class="input-with-icon">
+                                <label for="chkNetAmtColumn">
+                                    <input type="checkbox" id="chkNetAmtColumn">
+                                    With Net Amt
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Action Buttons -->
+                    <div class="col-md-3 col-sm-12">
+                        <div class="action-buttons">
+                            <button type="button" class="btn-modern btn-primary-modern" id="btnSearch">
+                                <i class="fas fa-search"></i>
+                                Search
+                            </button>
+                            <button type="button" class="btn-modern btn-danger-modern" id="btnClear">
+                                <i class="fas fa-redo"></i>
+                                Clear
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Loading -->
+        <div class="loading" id="loadingDiv">
+            <div class="spinner"></div>
+            <p style="margin-top: 10px; color: var(--dark-color); font-weight: 600;">Loading data...</p>
+        </div>
+
+        <!-- Results Card -->
+        <div class="results-card" id="resultsCard" style="display: none;">
+            <div class="results-header">
+                <div class="results-title">
+                    <i class="fas fa-table"></i>
+                    OS Details - <span class="badge-modern badge-info" id="recordCount">0 Records</span>
+                </div>
+            </div>
+
+            <div class="table-scrollable-container">
+                <table class="modern-table" id="tblMainHeader" style="width:100%">
+                    <!-- Dynamic columns will be inserted here -->
+                </table>
+            </div>
+
+            <!-- Pagination Controls -->
+            <div class="pagination-container" id="paginationContainer" style="display: none;">
+                <div class="pagination-info" id="paginationInfo">
+                    Showing 0 to 0 of 0 entries
+                </div>
+                <div class="pagination-controls">
+                    <div class="page-size-selector">
+                        <label>Show:</label>
+                        <select id="pageSizeSelector">
+                            <option value="10">10</option>
+                            <option value="25" selected>25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="-1">All</option>
+                        </select>
+                    </div>
+                    <div class="pagination-buttons">
+                        <button class="page-btn" id="btnPrevPage">
+                            <i class="fas fa-chevron-left"></i> Previous
+                        </button>
+                        <button class="page-btn" id="btnNextPage">
+                            Next <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+                    var UID = '@Session["LoginUserID"]';
+var Aurl = '@Session["APIurl"]';
+    var DecVal = '@Session["DecimalValues"]';
+            var strCompanyCode = '@Session["CompanyCode"]';
+            var customerChequeDetails = [];
+            // Global variables for pagination and sorting
+            var currentTableData = [];
+            var currentBuckets = [];
+            var currentPage = 1;
+            var pageSize = 25;
+            var sortColumn = null;
+            var sortDirection = 'asc';
+
+            // Custom table renderer is used instead of DataTables
+            // var TableMainHeader = ...
+            InitiageData();
+            var arrParty = [];
+            function InitiageData() {
+                $.ajax({
+                    url: Aurl + "customeros/initiatedata",
+                    type: 'get',
+                    contentType: 'json',
+                    data: {
+                        CompanyCode: strCompanyCode
+                    },
+                    success: function (data) {
+                        console.log("data ", JSON.parse(data));
+                        var MainData = JSON.parse(data)
+                        var Beats = MainData.Table;
+                        var Salesmans = MainData.Table1;
+                        var Customers = MainData.Table2;
+                        var CustomerTypes = MainData.Table3;
+                        var Ratings = MainData.Table4;
+                        arrParty = [];
+                        //cmbCustomerType,cmbRatings
+                        $('#cmbBeatName,#cmbSalesmanName,#cmbCustomerType,#cmbRatings').find("option").remove();
+                        $('#cmbBeatName,#cmbSalesmanName,#cmbCustomerType,#cmbRatings').append($('<option/>', {
+                            value: 0,
+                            text: "-- Select --",
+                        }));
+                        $.each(Beats, function (i, items) {
+                            $('#cmbBeatName').append($('<option/>', {
+                                value: items.ID,
+                                text: items.Name,
+                            }));
+                        });
+                        $.each(Salesmans, function (i, items) {
+                            $('#cmbSalesmanName').append($('<option/>', {
+                                value: items.ID,
+                                text: items.Name,
+                            }));
+                        });
+                        $.each(CustomerTypes, function (i, items) {
+                            $('#cmbCustomerType').append($('<option/>', {
+                                value: items.ID,
+                                text: items.Name,
+                            }));
+                        });
+                        $.each(Ratings, function (i, items) {
+                            $('#cmbRatings').append($('<option/>', {
+                                value: items.ID,
+                                text: items.Name,
+                            }));
+                        });
+                        $.each(Customers, function (i, items) {
+                            var Prod = {
+                                "label": items.Name,
+                                "id": items.ID,
+                            }
+                            arrParty.push(Prod);
+                        });
+                        SetAutlistforFields("txtCustomerName", arrParty);
+                    }
+
+                });
+            }
+            function SetAutlistforFields(FieldID, arryvalue) {
+                if (arryvalue.length == 0) {
+                    showErrorSnackbar("No customer found");
+                }
+                $("#" + FieldID).autocomplete({
+                    minLength: 0,
+                    source: arryvalue,
+                    select: function (event, ui) {
+                        $("#" + FieldID).val(ui.item.label);
+                        if (FieldID == "txtCustomerName") {
+                            //customer info function
+                            $("#txtCustomerID").val(ui.item.id);
+                        }
+                        return false;
+                    },
+                }).autocomplete("instance")._renderItem = function (ul, item) {
+                    return $("<li class='each'>")
+                        .append("<div class='acItem'><span class='name'>" +
+                            item.label + "</span></div>")
+                        .appendTo(ul);
+                };
+            }
+            // Search button click
+            $('#btnSearch').click(function () {
+                loadData();
+            });
+
+            // Clear button click
+            $('#btnClear').click(function () {
+                $('#filterForm')[0].reset();
+                $('#txtPeriod').val('0'); // Reset to default
+                $('#resultsCard').hide();
+            });
+
+            // Restrict Period input to numbers and commas only
+            $('#txtPeriod').on('input', function() {
+                this.value = this.value.replace(/[^0-9,]/g, '');
+            });
+
+            // Parse period values from input
+            function parsePeriods() {
+                var periodInput = $('#txtPeriod').val().trim();
+                if (!periodInput) {
+                    return [15, 30, 50]; // Default periods
+                }
+
+                var periods = periodInput.split(',').map(function(p) {
+                    return parseInt(p.trim());
+                }).filter(function(p) {
+                    return !isNaN(p) && p >= 0;
+                }).sort(function(a, b) {
+                    return a - b;
+                });
+
+                return periods.length > 0 ? periods : [15, 30, 50];
+            }
+
+            // Generate aging buckets based on periods
+            function generateAgingBuckets(periods) {
+                var buckets = [];
+                var previousPeriod = 0;
+
+                for (var i = 0; i < periods.length; i++) {
+                    buckets.push({
+                        label: previousPeriod + '-' + periods[i] + ' Days',
+                        min: previousPeriod,
+                        max: periods[i],
+                        key: 'Bucket' + i
+                    });
+                    previousPeriod = periods[i] + 1;
+                }
+
+                // Add last bucket for >max days
+                buckets.push({
+                    label: '>' + periods[periods.length - 1] + ' Days',
+                    min: periods[periods.length - 1] + 1,
+                    max: 999999,
+                    key: 'Bucket' + periods.length
+                });
+
+                return buckets;
+            }
+
+            // Update table headers dynamically
+            function updateTableHeaders(buckets) {
+                var headerRow = $('#tableHeader tr');
+
+                // Remove existing aging column headers
+                headerRow.find('th:gt(4)').remove();
+
+                // Add new aging column headers
+                $.each(buckets, function(index, bucket) {
+                    var badgeClass = '';
+                    if (index === 0) badgeClass = 'badge-success';
+                    else if (index === 1) badgeClass = 'badge-info';
+                    else if (index === 2) badgeClass = 'badge-warning';
+                    else badgeClass = 'badge-danger';
+
+                    headerRow.append($('<th class="text-right"></th>').text(bucket.label));
+                });
+            }
+
+            // Helper function to sort table data
+            function sortTableData(data, column, direction) {
+                return data.sort(function(a, b) {
+                    var aVal = a[column];
+                    var bVal = b[column];
+
+                    // Handle numeric values
+                    if (!isNaN(parseFloat(aVal)) && !isNaN(parseFloat(bVal))) {
+                        aVal = parseFloat(aVal);
+                        bVal = parseFloat(bVal);
+                    }
+
+                    if (aVal < bVal) return direction === 'asc' ? -1 : 1;
+                    if (aVal > bVal) return direction === 'asc' ? 1 : -1;
+                    return 0;
+                });
+            }
+
+            // Helper function to get paginated data
+            function getPaginatedData(data, page, size) {
+                if (size === -1) return data; // Show all
+                var start = (page - 1) * size;
+                var end = start + size;
+                return data.slice(start, end);
+            }
+
+            // Update pagination info
+            function updatePaginationInfo(totalRecords) {
+                var start = totalRecords === 0 ? 0 : ((currentPage - 1) * pageSize) + 1;
+                var end = pageSize === -1 ? totalRecords : Math.min(currentPage * pageSize, totalRecords);
+
+                $('#paginationInfo').text('Showing ' + start + ' to ' + end + ' of ' + totalRecords + ' entries');
+
+                // Update button states
+                $('#btnPrevPage').prop('disabled', currentPage === 1);
+                $('#btnNextPage').prop('disabled', pageSize === -1 || end >= totalRecords);
+
+                // Show/hide pagination container
+                if (totalRecords > 0) {
+                    $('#paginationContainer').show();
+                } else {
+                    $('#paginationContainer').hide();
+                }
+            }
+
+            // Render current page
+            function renderCurrentPage() {
+                var sortedData = currentTableData;
+
+                // Apply sorting if a column is selected
+                if (sortColumn !== null) {
+                    sortedData = sortTableData([...currentTableData], sortColumn, sortDirection);
+                }
+
+                // Get paginated data
+                var paginatedData = getPaginatedData(sortedData, currentPage, pageSize);
+
+                // Render table
+                renderTable(paginatedData, currentBuckets);
+
+                // Update pagination info
+                updatePaginationInfo(currentTableData.length);
+            }
+
+            // Pagination event handlers
+            $('#pageSizeSelector').on('change', function() {
+                pageSize = parseInt($(this).val());
+                currentPage = 1; // Reset to first page
+                renderCurrentPage();
+            });
+
+            $('#btnPrevPage').on('click', function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderCurrentPage();
+                }
+            });
+
+            $('#btnNextPage').on('click', function() {
+                var totalPages = pageSize === -1 ? 1 : Math.ceil(currentTableData.length / pageSize);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderCurrentPage();
+                }
+            });
+
+            // Load data function
+            function loadData() {
+                var strBeatID = $('#cmbBeatName').val(), strSalesmanID = $('#cmbSalesmanName').val(), strParty = $('#txtCustomerName').val(),
+                    strPeriod = $('#txtPeriod').val(), strCustomerType = $('#cmbCustomerType').val(), strRatings = $('#cmbRatings').val();
+
+                // Validation: Period is mandatory
+                if (!strPeriod || strPeriod.trim() === "") {
+                    showErrorSnackbar("Please enter a valid Period (e.g., 15,30,50)");
+                    $('#txtPeriod').focus();
+                    return;
+                }
+
+                $('#loadingDiv').addClass('show');
+                $('#resultsCard').hide();
+
+                var periods = parsePeriods();
+                var buckets = generateAgingBuckets(periods);
+
+                $.ajax({
+                    url: Aurl + "customeros/generatedata",
+                    type: 'get',
+                    contentType: 'json',
+                    data: {
+                        CompanyCode: strCompanyCode, Mode: 2, BeatID: strBeatID, SalesmanID: strSalesmanID,
+                        Party: strParty, Period: strPeriod, CustomerType: strCustomerType, Rating: strRatings
+                    },
+                    success: function (data) {
+                        // TableMainHeader.destroy(); // Not using DataTables anymore
+                        $('#tblMainHeader').empty();
+
+                        var GridData = JSON.parse(data);
+
+                        // Store data globally for sorting and pagination
+                        currentTableData = GridData;
+                        currentBuckets = buckets;
+                        currentPage = 1; // Reset to first page
+                        sortColumn = null; // Reset sorting
+                        sortDirection = 'asc';
+
+                        // Render first page
+                        renderCurrentPage();
+
+                        $('#loadingDiv').removeClass('show');
+                        $('#resultsCard').show();
+                        $('#recordCount').text(GridData.length + ' Record' + (GridData.length !== 1 ? 's' : ''));
+                        //,,
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error loading data:", error);
+                        $('#loadingDiv').removeClass('show');
+                        alert("Error loading data. Please try again.");
+                    }
+                });
+            }
+
+            // Render table with dynamic columns from API data (renamed from populateModernTable)
+            function renderTable(gridData, buckets) {
+                var table = $('#tblMainHeader');
+                table.empty();
+
+                if (!gridData || gridData.length === 0) {
+                    table.html('<tbody><tr><td colspan="100%" style="text-align: center; padding: 20px;">No data found</td></tr></tbody>');
+                    $('#paginationContainer').hide();
+                    return;
+                }
+
+                // Get column names from first row
+                var columnKeys = Object.keys(gridData[0]);
+                var customerIDKey = columnKeys[0]; // First column is ID (hidden)
+                var chkwithNetamt = $("#chkNetAmtColumn").is(":checked");
+                if (!chkwithNetamt) {
+                    let index = columnKeys.indexOf("Net Amt");
+                    if (index !== -1) {
+                        columnKeys.splice(index, 1);
+                    }
+                }
+                // Build table header with sortable headers
+                var thead = $('<thead></thead>');
+                var headerRow = $('<tr></tr>');
+
+                $.each(columnKeys, function(index, key) {
+                    var th = $('<th></th>');
+
+                    if (index === 0) {
+                        // Hidden ID column
+                        th.css('display', 'none').text(key);
+                    } else {
+                        // Sortable header
+                        th.addClass('sortable-header').text(key);
+
+                        // Add sort icon
+                        var sortIcon = $('<i class="fas fa-sort sort-icon"></i>');
+                        th.append(sortIcon);
+
+                        // Apply current sort state
+                        if (sortColumn === key) {
+                            th.addClass(sortDirection === 'asc' ? 'sorted-asc' : 'sorted-desc');
+                            sortIcon.removeClass('fa-sort').addClass(sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down');
+                        }
+
+                        // Add click handler for sorting
+                        th.on('click', function() {
+                            if (sortColumn === key) {
+                                // Toggle direction if same column
+                                sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+                            } else {
+                                // New column, start with ascending
+                                sortColumn = key;
+                                sortDirection = 'asc';
+                            }
+                            renderCurrentPage();
+                        });
+
+                        // Right align numeric columns
+                        if (index > 3) {
+                            th.addClass('text-right');
+                        }
+                    }
+
+                    headerRow.append(th);
+                });
+
+                thead.append(headerRow);
+
+                // Build totals row as second header row (calculate from full dataset)
+                var totalsRow = $('<tr class="totals-row"></tr>');
+
+                // Calculate totals for all numeric columns from the FULL dataset (currentTableData)
+                var columnTotals = {};
+
+                $.each(columnKeys, function(index, key) {
+                    if (index === 0 || index === 1) {
+                        // Skip ID and Customer Name columns
+                        columnTotals[key] = null;
+                    } else {
+                        // Calculate sum for numeric columns
+                        var total = 0;
+                        $.each(currentTableData, function(i, row) {
+                            var value = parseFloat(row[key]) || 0;
+                            total += value;
+                        });
+                        columnTotals[key] = total;
+                    }
+                });
+
+                // Build totals cells
+                $.each(columnKeys, function(index, key) {
+                    var th = $('<th></th>');
+
+                    if (index === 0) {
+                        // Hidden ID column
+                        th.css('display', 'none');
+                    } else if (index === 1) {
+                        // First visible column - show "Total" label
+                        th.html('<strong style="color:white">TOTAL</strong>');
+                    } else {
+                        // Numeric columns - show totals
+                        var total = columnTotals[key];
+                        th.addClass('text-right');
+
+                        if (key === "Net Amt" || key === "Balance" || key === "Payable" || key === "Net Balance") {
+                            // Main amount columns - bold formatting
+                            th.html('<strong style="color:white">' + total.toFixed(2) + '</strong>');
+                        } else {
+                            // Aging bucket columns - show total with badge styling
+                            var bucketIndex = index - 2;
+                            var badgeClass = '';
+                            if (bucketIndex === 0) badgeClass = 'badge-success';
+                            else if (bucketIndex === 1) badgeClass = 'badge-info';
+                            else if (bucketIndex === 2) badgeClass = 'badge-warning';
+                            else badgeClass = 'badge-danger';
+
+                            th.html('<span class="badge-modern ' + badgeClass + '">' + total.toFixed(2) + '</span>');
+                        }
+                    }
+
+                    totalsRow.append(th);
+                });
+
+                thead.append(totalsRow);
+                table.append(thead);
+
+                // Build table body
+                var tbody = $('<tbody></tbody>');
+
+                $.each(gridData, function(index, rowData) {
+                    var customerID = rowData[customerIDKey];
+
+                    // Create main data row
+                    var mainRow = $('<tr></tr>')
+                        .attr('data-id', customerID)
+                        .attr('data-expanded', 'false');
+
+                    $.each(columnKeys, function(colIndex, key) {
+                        var value = rowData[key];
+                        var td = $('<td></td>');
+
+                        if (colIndex === 0) {
+                            // Hidden ID column
+                            td.css('display', 'none').text(value);
+                        }
+                        else if (colIndex === 1) {
+                            // Customer name column
+                            td.html(value);
+                        }
+                        else if (key === "Net Amt") {
+                            // OS Amount column (bold)
+                            td.addClass('text-right').html('<strong>' + parseFloat(value).toFixed(2) + '</strong>');
+                        } else if (key === "Balance") {
+                            // SR OS Amount column
+                            td.addClass('text-right').text(parseFloat(value).toFixed(2));
+                        } else if (key === "Payable" || key === "Net Balance") {
+                            // SR OS Amount column
+                            td.addClass('text-right').text(parseFloat(value).toFixed(2));
+                        }
+                        else {
+                            // Aging bucket columns
+                            var bucketIndex = colIndex - 2;
+                            var badgeClass = '';
+                            if (bucketIndex === 0) badgeClass = 'badge-success';
+                            else if (bucketIndex === 1) badgeClass = 'badge-info';
+                            else if (bucketIndex === 2) badgeClass = 'badge-warning';
+                            else badgeClass = 'badge-danger';
+
+                            td.addClass('text-right').html('<span class="badge-modern ' + badgeClass + '">' + parseFloat(value).toFixed(2) + '</span>');
+                        }
+
+                        mainRow.append(td);
+                    });
+
+                    tbody.append(mainRow);
+
+                    // Click event for accordion expansion with AJAX
+                    mainRow.click(function() {
+                        var tr = $(this);
+                        var isExpanded = tr.attr('data-expanded') === 'true';
+                        var id = tr.attr('data-id');
+
+                        // Check if detail row already exists (for collapsing)
+                        var existingExpandRow = $('tr[data-parent-id="' + id + '"]');
+
+                        if (isExpanded) {
+                            // Collapse current row
+                            existingExpandRow.removeClass('visible');
+                            // Delay removal to allow animation to finish (optional, but cleaner)
+                            setTimeout(function() { existingExpandRow.remove(); }, 300);
+                            tr.attr('data-expanded', 'false');
+                            return;
+                        }
+
+                        // Expand: Collapse all other expanded rows first
+                        $('.expandable-row.visible').removeClass('visible');
+                        $('.expandable-row.visible').each(function() {
+                             $(this).remove(); // Remove old rows from DOM cleanup
+                        });
+                        $('tr[data-expanded="true"]').attr('data-expanded', 'false');
+
+                        // Mark as expanded pending load (or can wait until success)
+                        tr.attr('data-expanded', 'true');
+
+                        // Fetch detail data
+                        $.ajax({
+                            url: Aurl + "customeros/generatedata",
+                            type: 'get',
+                            contentType: 'json',
+                            data: {
+                                CompanyCode: strCompanyCode, Mode: 3, BeatID: id, SalesmanID: "", Party: "", Period: "",
+                                 CustomerType: "0", Rating: "0"
+                            },
+                            success: function (data) {
+                                var customerInvoiceDetails = JSON.parse(data).Table || [];
+                                customerChequeDetails = JSON.parse(data).Table1 || [];
+                                // Create expandable detail row (spanning all columns)
+                                var expandRow = $('<tr class="expandable-row" data-parent-id="' + id + '"></tr>');
+                                var expandCell = $('<td></td>').attr('colspan', columnKeys.length);
+                                var expandContent = $('<div class="expandable-content"></div>');
+
+                                var customerName = rowData[columnKeys[1]];
+                                var detailTitle = $('<h5 style="margin-bottom: 15px; color: var(--dark-color); font-weight: 600;"><i class="fas fa-user"></i> <span style="color: var(--primary-color);">' + customerName + '</span></h5>&ensp;<label style="cursor: pointer; margin-left: 5px; color: red;font-weight:700" id="spChequeCount"></label><div id="cashBalTooltip"></div>');
+                                expandContent.append(detailTitle);
+
+                                if (customerInvoiceDetails.length > 0) {
+                                    var setchildwidth = columnKeys.length == 7 ? "80%" : columnKeys.length == 8 ? "70%" : columnKeys.length == 9 ? "60%" : "50%";
+                                    var detailTableHtml = '<div class="detail-table-scrollable" style="width:330px"><table class="detail-table">';
+                                    detailTableHtml += '<thead><tr>';
+                                    detailTableHtml += '<th>Inv Info</th>';
+                                    detailTableHtml += '<th class="text-right">Net Amt</th>';
+                                    detailTableHtml += '<th class="text-right">OS</th>';
+                                    detailTableHtml += '<th class="text-right">Ageing</th>';
+                                    detailTableHtml += '</tr></thead><tbody>';
+
+                                    $.each(customerInvoiceDetails, function(i, detail) {
+                                        var bucketIndex = -1;
+
+                                        // Find which bucket this ageing falls into
+                                        for (var b = 0; b < buckets.length; b++) {
+                                            if (detail.Ageing >= buckets[b].min && detail.Ageing <= buckets[b].max) {
+                                                bucketIndex = b;
+                                                break;
+                                            }
+                                        }
+
+                                        var badgeClass = '';
+                                        if (bucketIndex === 0) badgeClass = 'badge-success';
+                                        else if (bucketIndex === 1) badgeClass = 'badge-info';
+                                        else if (bucketIndex === 2) badgeClass = 'badge-warning';
+                                        else badgeClass = 'badge-danger';
+
+                                        var ageingBadge = '<span class="badge-modern ' + badgeClass + '">' + detail.Ageing + '</span>';
+
+                                        detailTableHtml += '<tr>';
+                                        detailTableHtml += '<td><strong>' + detail.DocID + '</strong><br/>' + detail.DocDate + '</td>';
+                                        detailTableHtml += '<td class="text-right">' + detail.NetAmt.toFixed(2) + '</td>';
+                                        detailTableHtml += '<td class="text-right">' + detail.OSAmt.toFixed(2) + '</td>';
+                                        detailTableHtml += '<td class="text-right">' + ageingBadge + '</td>';
+                                        detailTableHtml += '</tr>';
+                                    });
+
+                                    detailTableHtml += '</tbody></table></div>';
+                                    expandContent.append($(detailTableHtml));
+                                } else {
+                                    expandContent.append('<p style="color: #7f8c8d; font-style: italic;">No invoice details available.</p>');
+                                }
+
+                                expandCell.append(expandContent);
+                                expandRow.append(expandCell);
+
+                                // Insert AFTER the main row (not append to tbody)
+                                tr.after(expandRow);
+
+                                // Trigger animation
+                                requestAnimationFrame(function() {
+                                    expandRow.addClass('visible');
+                                });
+                                if (customerChequeDetails.length > 0) {
+                                    $("#spChequeCount").text("(" + customerChequeDetails.length + ")");
+                                    $("#spChequeCount").addClass("cashbal-info-icon");
+                                    $("#cashBalTooltip").addClass("stock-tooltip");
+                                    //<div id="" class="stock-tooltip"></div>
+                                }
+                            },
+                            error: function() {
+                                showErrorSnackbar("Failed to load details");
+                                tr.attr('data-expanded', 'false'); // Reset on error
+                            }
+                        });
+                    });
+                });
+
+                table.append(tbody);
+            }
+
+            // Optional: Load data on page load with default periods
+            // loadData();
+            $(document).on("click", ".cashbal-info-icon", function () {
+                var tooltipContent = '<table class="table"><thead><tr><th>Doc ID</th><th>Doc Date</th><th>Value</th></tr></thead><tbody>';
+                $.each(customerChequeDetails, function (index, item) {
+                    var rowColor = 'Black';// item.CrDr === 'Cr' ? 'green' : (item.OSType === 'Dr' ? 'red' : '');
+                    tooltipContent += '<tr style="color: ' + rowColor + ';"><td>' + item["Doc ID"] + '</td><td>' + item["Cheque Date"] + '</td><td align="right">' + formatIndianCurrency(item.Value) + '</td></tr>';
+                });
+                tooltipContent += '</tbody></table>';
+                //$('#cashBalTooltip').html(tooltipContent).show();
+                InfoDialogMsg(tooltipContent, "Cheque Details");
+            });
+        });
+    </script>
+</body>
