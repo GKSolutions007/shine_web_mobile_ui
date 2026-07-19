@@ -148,6 +148,270 @@
         color: white;
         text-align: center;
     }
+    /* Image Show/Hide toggle - when hidden, only the image column disappears,
+    name / price-desc / inputs remain visible */
+    #tblProductInfo.hide-prod-image .prod-img-col {
+        display: none;
+    }
+
+
+    .img-toggle-bar label {
+        font-size: 12px;
+        font-weight: 600;
+        margin: 0;
+        cursor: pointer;
+    }
+
+    .img-toggle-bar {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
+        white-space: nowrap;
+    }
+
+    /* ===== Product Details table (2 visible columns: Product / Qty) ===== */
+    #tblProductInfo th {
+        white-space: nowrap;
+    }
+
+    #tblProductInfo td.prod-details-col {
+        vertical-align: top;
+    }
+
+    .prod-cell {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        text-align: left;
+    }
+
+    .prod-img-col {
+        flex: 0 0 auto;
+        width: 56px;
+    }
+
+    .prod-thumb {
+        width: 56px;
+        height: 56px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+        background: #f8f9fa;
+        display: block;
+    }
+
+        .prod-thumb.no-img {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #adb5bd;
+            font-size: 22px;
+        }
+
+    .prod-serial {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #0dcaf0;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 14px;
+        margin: 0 auto;
+    }
+
+    .prod-info {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .prod-name {
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: #212529;
+        word-break: break-word;
+    }
+
+    .prod-meta {
+        font-size: 0.8rem;
+        color: #6c757d;
+        margin-top: 2px;
+        word-break: break-word;
+    }
+
+    .prod-avl {
+        margin-top: 4px;
+        font-size: 0.8rem;
+        color: #495057;
+    }
+
+    .avl-highlight {
+        background: #fff3cd;
+        color: #856404;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 6px;
+        border: 1px solid #ffe08a;
+        display: inline-block;
+    }
+
+    #tblProductInfo td.qty-col {
+        vertical-align: middle;
+        min-width: 150px;
+        text-align: center;
+    }
+
+    /* ===== Modern Qty Stepper ===== */
+    .qty-stepper {
+        display: inline-flex;
+        align-items: stretch;
+        width: 132px;
+        max-width: 100%;
+        margin: 0 auto;
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        overflow: hidden;
+        background: #f8f9fa;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+        .qty-stepper:focus-within {
+            border-color: #0dcaf0;
+            box-shadow: 0 0 0 3px rgba(13,202,240,0.15);
+        }
+
+    .qty-btn {
+        flex: 0 0 32px;
+        border: none;
+        background: #fff;
+        color: #0056b3;
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.15s;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        user-select: none;
+    }
+
+        .qty-btn:active {
+            background: #e9ecef;
+        }
+
+        .qty-btn:disabled {
+            color: #adb5bd;
+            cursor: not-allowed;
+        }
+
+    .qty-input {
+        flex: 1 1 auto;
+        width: 100%;
+        min-width: 0;
+        border: none;
+        background: #fff;
+        text-align: center;
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: #212529;
+        padding: 6px 2px;
+        -moz-appearance: textfield;
+    }
+
+        .qty-input:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
+        .qty-input.is-invalid {
+            color: #dc3545 !important;
+            background-color: #fff5f5;
+        }
+
+    .qty-error {
+        min-height: 16px;
+        font-size: 0.72rem;
+        line-height: 1.1;
+        margin-top: 4px;
+        word-break: break-word;
+        text-align: center;
+    }
+
+    /* ===== Product grid search box ===== */
+    .product-search-wrap {
+        min-width: 180px;
+    }
+
+    .modern-search {
+        border-radius: 999px !important;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+        .modern-search .input-group-text {
+            border-radius: 999px 0 0 999px !important;
+            color: #6c757d;
+        }
+
+        .modern-search input.form-control {
+            border-radius: 0 999px 999px 0 !important;
+            box-shadow: none !important;
+        }
+
+            .modern-search input.form-control:focus {
+                box-shadow: none !important;
+            }
+
+    .dataTables_empty {
+        color: #6c757d;
+        padding: 20px 0 !important;
+    }
+
+    @@media (max-width: 576px) {
+        .prod-thumb, .prod-thumb.no-img, .prod-serial {
+            width: 40px;
+            height: 40px;
+        }
+
+        .prod-name {
+            font-size: 0.85rem;
+        }
+
+        .prod-meta, .prod-avl {
+            font-size: 0.72rem;
+        }
+
+        .qty-stepper {
+            width: 112px;
+        }
+
+        .qty-btn {
+            flex-basis: 28px;
+            font-size: 14px;
+        }
+
+        .qty-input {
+            font-size: 0.85rem;
+        }
+
+        #tblProductInfo td, #tblProductInfo th {
+            padding: 6px 4px;
+        }
+
+        .product-search-wrap {
+            width: 100%;
+            flex-basis: 100%;
+            order: 3;
+        }
+    }
 </style>
 
 <body>
@@ -180,9 +444,9 @@
             <div class="col-12 col-lg-4">
                 <div class="modern-card card p-3">
                     <div class="mb-3">
-                        <label class="form-label fw-bold"><i class="bi bi-building me-2 text-primary"></i>Branch</label>
-                        <select id="cmbBranch" class="form-select shadow-sm border-1 bg-light"><option value="0">Select Branch</option></select>
-                        <div class="text-danger small mt-1 clrdivserror" id="divErrorOnBranch"></div>
+                        <label class="form-label fw-bold"><i class="bi bi-building me-2 text-primary"></i>Salesman</label>
+                        <select id="cmbSalesman" class="form-select shadow-sm border-1 bg-light"><option value="0">Select Salesman</option></select>
+                        <div class="text-danger small mt-1 clrdivserror" id="divErrorOnSalesman"></div>
 
                     </div>
 
@@ -190,10 +454,10 @@
                     <input type="text" id="txtLongtitude" hidden />
 
                     <div class="mb-3">
-                        <input hidden id="txtInvoiceID" />
-                        <label class="form-label fw-bold"><i class="bi bi-receipt me-2 text-primary"></i>Invoice No</label>
+                        <input hidden id="txtVLSID" />
+                        <label class="form-label fw-bold"><i class="bi bi-receipt me-2 text-primary"></i>VLS No</label>
                         <div class="d-flex gap-2">
-                            <input type="number" id="txtInvNo" placeholder="Enter Invoice No" class="form-control shadow-sm border-1 bg-light w-100" min="1" />
+                            <input type="number" id="txtVLSNo" placeholder="Enter VLS No" class="form-control shadow-sm border-1 bg-light w-100" min="1" />
                             <button id="btnLoadInvoice" type="button" class="btn btn-primary deliveryaction-btn flex-shrink-0">
                                 <i class="bi bi-cloud-download"></i> Load
                             </button>
@@ -217,60 +481,32 @@
                     <div class="col-12 col-md-6">
                         <div class="modern-card card h-100" id="dvInvoicesummary">
                             <div class="card-header-custom card-header-orange">
-                                <i class="bi bi-receipt-cutoff"></i> Invoice Summary
+                                <i class="bi bi-receipt-cutoff"></i> VLS Summary
                             </div>
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-6">
-                                        <div class="form-label fw-bold text-primary">Invoice No</div>
-                                        <div class="info-value" id="lblInvNo">--</div>
+                                    <div class="col-4">
+                                        <div class="form-label fw-bold text-primary">VLS No</div>
+                                        <div class="info-value" id="lblVLSNo">--</div>
                                     </div>
-                                    <div class="col-6">
-                                        <div class="form-label fw-bold text-primary">Value</div>
-                                        <div class="info-value text-success" id="lblValue">--</div>
+                                    <div class="col-4">
+                                        <div class="form-label fw-bold text-primary">VLS Date</div>
+                                        <div class="info-value" id="lblVLSDate">--</div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="form-label fw-bold text-primary">Branch</div>
+                                        <div class="info-value text-success" id="lblBranch">--</div>
                                     </div>
                                 </div>
                                 <div class="row mb-2">
-                                    <div class="col-6">
-                                        <div class="form-label fw-bold text-primary">Customer</div>
-                                        <div class="info-value" id="lblCustName">--</div>
-
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="form-label fw-bold text-primary">Mob No</div>
-                                        <div class="info-value" id="lblMobNo">--</div>
-                                    </div>
-                                </div>
-                                <div class="mt-2">
-                                    <div class="info-label fw-bold text-primary">Address</div>
-                                    <div class="info-value" id="lblAddress">--</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Delivery Status Card -->
-                    <div class="col-12 col-md-6">
-                        <div class="modern-card card h-100" id="dvDelivery">
-                            <div class="card-header-custom card-header-brown">
-                                <i class="bi bi-box-seam"></i> Delivery Status
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div class="info-label text-primary">Delivered By</div>
-                                        <div class="info-value" id="lblDBy">--</div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="info-label text-primary">Delivered Date</div>
-                                        <div class="info-value" id="lblDDate">--</div>
+                                    <div class="col-12">
+                                        <label class="form-label fw-bold"><i class="bi bi-person me-2 text-primary"></i>Customer</label>
+                                        <input class="form-select shadow-sm border-1 bg-light" id="txtCustomerName" />
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-
                 </div>
             </div>
         </div>
@@ -279,17 +515,33 @@
 
         <!-- Product Details -->
         <div class="modern-card card p-3" id="dvProductdetails">
-            <h5 class="fw-bold mb-3"><i class="bi bi-cart4 me-2 text-info"></i>Product Details</h5>
+            <div class="d-flex align-items-center flex-wrap gap-2 mb-3">
+                <h5 class="fw-bold m-0 flex-grow-1"><i class="bi bi-cart4 me-2 text-info"></i>Product Details</h5>
+                <div class="product-search-wrap">
+                    <div class="input-group input-group-sm modern-search">
+                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+                        <input type="text" id="txtProductSearch" class="form-control border-start-0" placeholder="Search products..." autocomplete="off" />
+                    </div>
+                </div>
+                <button id="btnLoad" type="button" class="btn btn-sm btn-info text-white deliveryaction-btn">
+                    <i class="bi bi-cloud-download"></i> Load Sample Data
+                </button>
+                <div class="img-toggle-bar flex-grow-0">
+                    <label for="chkShowImage">
+                        <i class="bi bi-image"></i> Show Image
+                    </label>
+
+                    <div class="form-check form-switch m-0">
+                        <input class="form-check-input" type="checkbox" id="chkShowImage" checked>
+                    </div>
+                </div>
+            </div>
             <div class="table-responsive">
                 <table id="tblProductInfo" class="table table-hover table-bordered align-middle w-100" cellspacing="0">
                     <thead>
                         <tr>
-                            <th>InvID</th>
-                            <th>Docvalue</th>
-                            <th>Product Name</th>
-                            <th>UOM</th>
+                            <th>Product Details</th>
                             <th>Qty</th>
-                            <th>MRP</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -300,17 +552,13 @@
         <!-- Receiver Info & Actions -->
         <div class="col-12 col-md-12" id="dvReceiverInfo">
             <div class="modern-card card h-100 p-3 d-flex flex-column justify-content-center">
-                <div class="mb-3">
-                    <label class="form-label fw-bold"><i class="bi bi-person-check me-2 text-success"></i>Receiver Name</label>
-                    <input type="text" id="txtReciever" placeholder="Enter Receiver Name" class="form-control shadow-sm border-1 bg-light" />
-                    <div class="text-danger small mt-1 clrdivserror" id="divErrorOnRecName"></div>
-                </div>
+
                 <div class="d-flex gap-2 mt-auto">
                     <button id="btnSubmitDelivery" type="button" class="btn btn-success deliveryaction-btn flex-grow-1">
-                        <i class="bi bi-check-circle"></i> Delivery
+                        <i class="bi bi-check-circle"></i> Save
                     </button>
                     <button id="btnCancelDelivery" type="button" class="btn btn-danger deliveryaction-btn flex-grow-1 text-white">
-                        <i class="bi bi-arrow-counterclockwise"></i> Cancel
+                        <i class="bi bi-arrow-counterclockwise"></i> Clear
                     </button>
                 </div>
             </div>
@@ -359,20 +607,186 @@ var Aurl = '@Session["APIurl"]';
    var DecVal = '@Session["DecimalValues"]';
     var strCompanyCode = '@Session["CompanyCode"]';
 
-        var Table = $('#tblProductInfo').DataTable({
-            "bFilter": false,
-            "bSearchable": false,
-            "bInfo": false,
-            "bPaginate": false,
-            "columnDefs": [
-                {
-                "targets": [0,1], // ID column
-                "visible": false,
-                "searchable": false
+    // Builds the columns definition used by #tblProductInfo.
+    // Column 1: combined Image/Serial + Product details (name, uom/mrp, highlighted AvlVLS)
+    // Column 2: Qty number input, capped to AvlVLS when that field is present in the row
+    function buildProductColumns() {
+        return [
+            {
+                data: null,
+                className: "dt-body-left prod-details-col",
+                orderable: false,
+                render: function (data, type, row, meta) {
+                    if (type !== 'display') return '';
+                    var showImage = $('#chkShowImage').is(':checked');
+                    var imgVal = row["Imagedata"] !== undefined ? row["Imagedata"] : row["Imagedata "];
+                    var serialNo = meta.row + 1;
+                    var mediaHtml;
+
+                    if (showImage) {
+                        var hasImg = imgVal && imgVal.toString().trim() !== "" && imgVal.toString().trim().toUpperCase() !== "NULL";
+                        if (hasImg) {
+                            var src = imgVal.toString().indexOf('data:image') === 0 ? imgVal : ('data:image/jpeg;base64,' + imgVal);
+                            mediaHtml = '<img src="' + src + '" class="prod-thumb" alt="product" '
+                                + 'onerror="this.classList.add(\'no-img\');this.removeAttribute(\'src\');this.innerHTML=\'<i class=\\\'bi bi-card-image\\\'></i>\';" />';
+                        } else {
+                            mediaHtml = '<div class="prod-thumb no-img"><i class="bi bi-card-image"></i></div>';
+                        }
+                    } else {
+                        mediaHtml = '<div class="prod-serial">' + serialNo + '</div>';
+                    }
+
+                    var uomQty = row.UomQty !== undefined ? row.UomQty : row.UOMName;
+                    var mrp = row.MRP !== undefined ? row.MRP : null;
+                    var avlVls = row.AvlVLS !== undefined ? parseFloat(row.AvlVLS) : null;
+
+                    var metaParts = [];
+                    if (uomQty !== undefined && uomQty !== null && uomQty !== '') metaParts.push('UOM Qty: ' + uomQty);
+                    if (mrp !== undefined && mrp !== null && mrp !== '') metaParts.push('MRP: ' + mrp);
+                    var metaLine = metaParts.length ? '<div class="prod-meta">' + metaParts.join(' &nbsp;|&nbsp; ') + '</div>' : '';
+
+                    var avlHtml = (avlVls !== null && !isNaN(avlVls))
+                        ? '<div class="prod-avl">Available VLS: <span class="avl-highlight">' + avlVls + '</span></div>'
+                        : '';
+
+                    return '<div class="prod-cell">'
+                        + '<div class="prod-img-col">' + mediaHtml + '</div>'
+                        + '<div class="prod-info">'
+                        + '<div class="prod-name">' + (row.ProductName || '') + '</div>'
+                        + metaLine
+                        + avlHtml
+                        + '</div></div>';
+                }
+            },
+            {
+                data: null,
+                className: "dt-body-center qty-col",
+                orderable: false,
+                render: function (data, type, row, meta) {
+                    if (type !== 'display') return '';
+                    var avlVls = row.AvlVLS !== undefined ? parseFloat(row.AvlVLS) : null;
+                    var currentQty = row.Qty !== undefined && row.Qty !== null ? row.Qty : '';
+                    var maxAttr = (avlVls !== null && !isNaN(avlVls)) ? (' max="' + avlVls + '"') : '';
+                    var rowIdx = meta.row;
+                    return '<div class="qty-stepper">'
+                        + '<button type="button" class="qty-btn qty-btn-minus" data-row="' + rowIdx + '" tabindex="-1"><i class="bi bi-dash-lg"></i></button>'
+                        + '<input type="text" inputmode="decimal" class="qty-input" '
+                        + 'data-row="' + rowIdx + '" min="0"' + maxAttr + ' step="0.01" placeholder="0.00" value="' + currentQty + '" />'
+                        + '<button type="button" class="qty-btn qty-btn-plus" data-row="' + rowIdx + '" tabindex="-1"><i class="bi bi-plus-lg"></i></button>'
+                        + '</div>'
+                        + '<div class="text-danger small qty-error" id="qtyError_' + rowIdx + '"></div>';
+                }
             }
-            ]
-        });
-     
+        ];
+    }
+
+    var Table = $('#tblProductInfo').DataTable({
+        "dom": "rt",
+        "bFilter": true,
+        "bSearchable": true,
+        "bInfo": false,
+        "bPaginate": false,
+        "scrollY": "300px",
+        "scrollX": true,
+        "scrollCollapse": true,
+        "data": [],
+        "columns": buildProductColumns()
+    });
+
+    // ----- Grid search box wired to DataTables global search -----
+    $('#txtProductSearch').on('keyup search input', function () {
+        Table.search(this.value).draw();
+    });
+
+    // ----- Load sample data into the table -----
+    $('#btnLoad').click(function () {
+        Table.clear();
+        Table.rows.add(Productsampdata).draw(false);
+    });
+
+    // ----- Show/Hide image column: re-render rows using current row data -----
+    $('#chkShowImage').on('change', function () {
+        Table.rows().invalidate('data').draw(false);
+    });
+
+    // ----- Qty input validation: decimal numbers only + cannot exceed AvlVLS -----
+    $('#tblProductInfo tbody').on('input', '.qty-input', function () {
+        var $input = $(this);
+        var val = $input.val();
+        // Allow digits and a single decimal point
+        var cleaned = val.replace(/[^0-9.]/g, '');
+        var firstDot = cleaned.indexOf('.');
+        if (firstDot !== -1) {
+            cleaned = cleaned.substring(0, firstDot + 1) + cleaned.substring(firstDot + 1).replace(/\./g, '');
+        }
+        if (cleaned !== val) {
+            $input.val(cleaned);
+            val = cleaned;
+        }
+
+        var $error = $input.closest('.qty-col').find('.qty-error');
+        var maxAttr = $input.attr('max');
+        var max = (maxAttr !== undefined && maxAttr !== '') ? parseFloat(maxAttr) : null;
+
+        if (val === '' || val === '.') {
+            $error.text('');
+            $input.removeClass('is-invalid');
+            return;
+        }
+
+        var numVal = parseFloat(val);
+        if (max !== null && !isNaN(max) && numVal > max) {
+            $error.text('Qty cannot exceed available VLS (' + max + ')');
+            $input.addClass('is-invalid');
+            $input.val(max);
+        } else {
+            $error.text('');
+            $input.removeClass('is-invalid');
+        }
+    });
+
+    // Block keystrokes that aren't digits or a single decimal point
+    $('#tblProductInfo tbody').on('keypress', '.qty-input', function (e) {
+        var charCode = e.which ? e.which : e.keyCode;
+        var char = String.fromCharCode(charCode);
+        if (char === '.' && $(this).val().indexOf('.') === -1) {
+            return true;
+        }
+        if (charCode < 48 || charCode > 57) {
+            e.preventDefault();
+            return false;
+        }
+    });
+
+    // Block pasting non-numeric / multi-decimal text
+    $('#tblProductInfo tbody').on('paste', '.qty-input', function (e) {
+        var clipboard = e.originalEvent.clipboardData || window.clipboardData;
+        var pasted = clipboard ? clipboard.getData('text') : '';
+        if (/[^0-9.]/.test(pasted) || (pasted.match(/\./g) || []).length > 1) {
+            e.preventDefault();
+        }
+    });
+
+    // ----- Qty stepper +/- buttons -----
+    $('#tblProductInfo tbody').on('click', '.qty-btn-plus', function () {
+        var $input = $(this).closest('.qty-stepper').find('.qty-input');
+        var max = $input.attr('max') !== undefined && $input.attr('max') !== '' ? parseFloat($input.attr('max')) : null;
+        var current = parseFloat($input.val()) || 0;
+        var next = Math.round((current + 1) * 100) / 100;
+        if (max !== null && !isNaN(max) && next > max) {
+            next = max;
+        }
+        $input.val(next).trigger('input');
+    });
+
+    $('#tblProductInfo tbody').on('click', '.qty-btn-minus', function () {
+        var $input = $(this).closest('.qty-stepper').find('.qty-input');
+        var current = parseFloat($input.val()) || 0;
+        var next = Math.round((current - 1) * 100) / 100;
+        if (next < 0) next = 0;
+        $input.val(next).trigger('input');
+    });
+
         // Initialize Similar Invoices DataTable
         var similarInvoicesTable = $('#tblSimilarInvoices').DataTable({
             "bFilter": true,
@@ -424,7 +838,7 @@ var Aurl = '@Session["APIurl"]';
         $("#btnSubmitDelivery").show();
         $("#dvDelivery,#dvInvoicesummary,#dvProductdetails,#dvReceiverInfo").hide();
     }
-    
+
     GetData(1, UID);
     function GetData(nMode, strID = null) {
         $.ajax({
@@ -552,6 +966,41 @@ var Aurl = '@Session["APIurl"]';
         FillInvoicedata(Invs, InvProds)
 
     });
+    var Productsampdata = [
+        {
+            "ProdID": "12",
+            "ProductName": "PARACHUTE HAIR OIL BOTTLE 50ML",
+            "UomQty": "1.0000",
+            "UomPrice": "0.0000",
+            "InclPrice": "0.0000",
+            "MRP": "0.0000",
+            "AdjustQty": "0.0000",
+            "AvlVLS": "1.0000",
+            "Imagedata ": "NULL "
+        },
+        {
+            "ProdID": "316",
+            "ProductName": "GO STRONG LIQUID 45ML",
+            "UomQty": "1.0000",
+            "UomPrice": "23.7300",
+            "InclPrice": "28.0014",
+            "MRP": "62.0000",
+            "AdjustQty": "0.0000",
+            "AvlVLS": "1.0000",
+            "Imagedata ": "data:image/png;base64,0xFFD8FFE000104A46494600010100000100010000FFDB008400080606070605080707070909080A0C140D0C0B0B0C1912130F141D1A1F1E1D1A1C1C20242E2720222C231C1C2837292C30313434341F27393D38323C2E333432010909090C0B0C180D0D1832211C213232323232323232323232323232323232323232323232323232323232323232323232323232323232323232323232323232FFC0001108012C012C03012200021101031101FFC401A20000010501010101010100000000000000000102030405060708090A0B100002010303020403050504040000017D01020300041105122131410613516107227114328191A1082342B1C11552D1F02433627282090A161718191A25262728292A3435363738393A434445464748494A535455565758595A636465666768696A737475767778797A838485868788898A92939495969798999AA2A3A4A5A6A7A8A9AAB2B3B4B5B6B7B8B9BAC2C3C4C5C6C7C8C9CAD2D3D4D5D6D7D8D9DAE1E2E3E4E5E6E7E8E9EAF1F2F3F4F5F6F7F8F9FA0100030101010101010101010000000000000102030405060708090A0B1100020102040403040705040400010277000102031104052131061241510761711322328108144291A1B1C109233352F0156272D10A162434E125F11718191A262728292A35363738393A434445464748494A535455565758595A636465666768696A737475767778797A82838485868788898A92939495969798999AA2A3A4A5A6A7A8A9AAB2B3B4B5B6B7B8B9BAC2C3C4C5C6C7C8C9CAD2D3D4D5D6D7D8D9DAE2E3E4E5E6E7E8E9EAF2F3F4F5F6F7F8F9FAFFDA000C03010002110311003F00F7FA28A2800A28A2800A28A2800A28A2800A28A2800A28A2800A28A2800A28A2800A28A2800A28A2800A28A2800A28A2800A28A2800A28A2800A28A2800A28A2800A28A2800A28A2800A28A2800A28A2800A28A2800A28A2800A3341AA3AA6A76DA55AFDA2E9CAA6768C0C927D3F4A9949455DB02F515CD278DF4766DBE6CA06FDBB8C671FEF7D2A73E2ED2044929B83B1D4B03B0F6EDF5F6AC162E83DA687CACDECD19AC11E2ED18E7FD307407EE9EFFE1DFD2A51E26D1CBEC17F164BEC193DFF00C3DE9FD668FF0032FBC395F63668AC85F12692E0117D0E0827AF61D6A41AFE94413F6F830006FBFD8F4AA588A4FED2FBC2CCD3CD19ACF1ACE9A5B1F6EB7CEEDBFEB075A51ACE9ED8C5F5B9CE71FBC1DBAD3F6F4FF997DE1665FCD19AA3FDAFA7EDDDF6EB7C6D0DFEB0743D29DFDA7624E3ED9064305FF583A9ED47B68774162E668CD531A95913C5E5BF39FF009683B75A3FB4EC82926F2DF1B7767CC1D3D69FB58774162E668CD543A9598247DAE0C8207FAC1D4F4147F6959640FB5C1C9207EF076EB4BDAC3BA0B16F34553FED4B1EBF6C8301777FAC1D3D683AA58838379067207FAC1D4F4A3DAC3BA0B1733466A8FF006B58640FB6DBE49207EF0751D690EB3A6E33F6FB7C6DDDFEB074A3DB53FE65F785997F3466B3CEB5A6A920DF419181F7C77E94D3AF697B82FDBA0C962BF7BB8A5EDE9FF32FBC2CCD2CD1598DAEE98B6C2E1AF2211904824F271E829D6DADE9D74E521BB8DD86DE33FDEE94D57A6DDB990599A34520A5AD4414514500145145001451450014514500145145001451450015CB78F6179F418D1002DF6853CF41C1AEA6B9CF1A5B4D71A03B4086430B895D17EF3280738F7E73F857362E2E5424A2AEEC38EE797DDC56B1DC958763280012518F3DE9F64B0E7CA97608266DAC7CB6F95BB1FF003DB3497970968EB88A69227FF57282C037F9CD4FA55F4373762D1EDE7D9700A93F31C1EA0F4AF8F8C27CD66AC761564B710C8F14A230E8C558796FD4533CB8BFE99FFDFB7AD0D56F55268A492DE5F31E2024CEE1F3292A7B7FB354E2BD59E648A3B7919DCE02EF61533A5514B96C171BB22FFA65FF007EDEA68EC4CC331DBEF1EAB6F21ADB92EB47D07CB5C0D43536FF009649292919F7CD53D43C553EE092CB1A13C98E19FEE7D48FF1AD5D0E45795FD1093467BD9AC581242A87FDA81C537C987FBB1E7FEB8BFF008D5887C53E502248FCF8DBEF472CD907FC29D7F77631C505D5AA16B69F23699CEE8D87553CFE47B8ACA54A4D7342E172B886DC70522C7BC2F4A20B63FC110FFB6327F8D41FDAD6C3FE5D89FF00B6E68FED7B7FF9F53FF7FCD65C953B31960DBDBFF762FF00BF127F8D2FD9AD8FF0C5FF007E64AAE75683FE7D0FFDFF00347F6AC07FE5D0FF00DFF6A5C953CC0B5F67B7E3E58F8FFA6127F8D37C8B7EC917FDF893FC6AB9D52023FE3D0FFDFF006A6FF6941D7EC87FEFF351C953CC0B460B623EEC7C75FDC3FF008D02DADF19110FC207FF001AB925D5A693144D359096FDD43889A5252153D377AB1F4ED500F155D2BEE10201E809C56DEC5AF89B0D083C9B6F44FF00BF2FFE341B7B7FEE27FDF97FF1AD71AAD85DAC7FDB1A57951C9FEAEEEDDCE3F1C553D634F6D2B64D1C0971652FFAA9E394907D8FA1A73C3CD2BC5DC2E8A7F67B7FEEA7FDFA7FF1A9ADECAD9C492C88BE4C4016C46E3273C01CF7AA06E949CFD907FDFC6AD94444D2A367B6FDCC69F6A986F3F33B12117F25CFE34A9529CAE05298A4F26F755F45511B6147A0F6AD1D16D521D6B4A9484FDE4E36E158743EF5CF3DE879199ED972C727E735D5782ECEEB50D4E29841E5D940DE617249058740335B61A8CE5597A8A5F09EA43A52D3474A5CD7DA9C62D1499A33400B452668CD002D1499A33400B45145001451450014514500069ACB9183C8A751401E51E23D3469F2DEE9A8BF22BFDB2DB3D90F0CA3E87FA562E8BA8AC7A8DBB0524AB03C7A77AEFF00C7D6E89A745A91E1A0DF19F70E3007E78AF38D1A07B7F3EF25528912EC52C31C9FFEB57CDE32828D75F79D54DDD1D6EB17B64FA804720B658F1EEE6AFD87D96D9C476ECBF6D9172CC0FF00AB5F5F6AE0E36964BE173B375C4C76DAC47B7604D4F7BA88D3E09F4B810CB70C4ADDDCC9FC4D9E428F415C928FBEEAB656C8EC65934CB7DD1DBCF963F7E60796FA1F4ACF6874C00E1863B735C309A5FEF1FCE8F3643D58FE75CB3E694AED8EC770BA7DA4F0C92C518748FEF118A67936034A9176A61E652BC0E48073FCC572505E4F046D1AC8DB1BEF292706925BA9E420B39C0185038007A015AC6518AD3725A3A036761D36A7E54D363627A2A7E55CF89E4C7DE3F9D28B897FBC7F3A5CE876374E9F63FDC4FC85034EB103EE27E42B0FED12FF0079BF3A05C4BFDE3F9D2E78858DE1A7587748FF00EF914F8B4FD344D19758F68604E40E99AE78DC4BFDE6FCE9BF6893FBC7F3A1495EE0CEBAE34CB3B8D4E75F251A57918ED0A3D6A06D3F4B8D8ABC31AB29C105464560C3AB5CC2EAEA7F78A36870486C7A1C1E47D6AB4B712CF2B492392CC724D1369EA9EA08EA61FECCB5276C70946E19194106AE46FA6DAD948C90472E9D37CB223282633FD2B86667C7DE3F9D59D36FBEC373BA55692DD86D963CE030F7F5ABA351C746C1A34F508ECAD25DA228DD58651828E455FD525B38FC351B24116E95D173B06788D4FF008D65DC41034223865F32C2663F6699BAC4FDE36F4A75B97BBD21ECA45FDF44AC0291C82071FA7F2AE9A6B93992EA82C52D36D21D43508A268A311E72E768E1475AF64F0E58C767A5A34712C7E79F348518E0F4FD315E63E1AB4323BC2B82F3EC887FBA5806FD2BD92350AA1474038AF43298F327331AAFA0EC514B41AF68C44A0514B400945145002F6A4A5A4A005A28A2800A28A2800A28A2800A28A280307C609BBC317442A12A51807048C861E95E57A85C3B88D6E255C2FDD53F2A0E739C756FD2BD63C598FF008466F738C6D1D7FDE15E6B368D3C56A752D30813A70D16D07231FC39EFED5E466116E49A3A2899314B71BC9B08269AE24E3CF29F31F651DAA8CB04F04C45CC724723724480824FE35662D77518250E928574391F20E0D596D7AE6F8ECD4425C447AFCA032FBA9F5AF1AA72B56BEA6A6674A3FA568699A35E6AB72D0DAA6E553F34ADC2A8F53FE15D07D9F41F0B5B16D5123BCBEC9D899DC08ED85EC3EB58C294A6EC8B8539D4972C15D9CC5AD85E5E9C5ADACD37BA2123F3AD68BC21AAB8CCC20B75EBFBD9067F219ABC758F166B56125D68DA62C36299DAC9B77301D700F5FC0570B77A85FDDBB7DAAEE79181E43B9E0FD2BB5602495E67AB85C9E75E4D39A4D6EB768EB5FC3D656FFF001F7AE5AC67D1707F991509B6F0CC7C49AEB93FECA75FC81AE33029C0D68B094D6E7AB1E1DA4BE2937F71D7ECF0AE31FDAF71FF007CFF00F614A21F0C3F0BADC8A7FDA4FF00EB0AE3E8A6F0B4BB1A7F6061FA37F81DA268FA4DC9C5BEBD0127A07001FE74F6F08DEB0CDB4F6D703FD97C7F3AE2551A460A885D8F400649AB725BEA7A5796F2477567BFEE33068F77D2A5E0A2D5D5CE5A990D3BF2C6A59F9D8D9BAD1752B205A7B299547F105CAFE62A88AB5A7F8D35BB0C7FA4FDA107F0CC33C7D7AD767A6A5B78B2D77DF78767B5765C8B88D3686F70DC67F115CF2C1CF78EA78F8CCB6B615734ED6383E29A4735D6EABA1DCE97A64F14568668039C4A71BC2FAB0FCC7EB5CEDB1B6850CF70BE690711C20F04FA9F6AC250E5766702625AEA3E55A3D94E9E659C8FBCAF756F51FE7B55FD3F77DAA39A197CCD9D2503B7A38EA3EB4E97C5323D97D8FF00B3ED510367299069DA3B7F695D7956BA7A0B827225472A53F2E315D09AB593B868755A34504BE27B0F2ED8C0C81DFF0077828DF2FA8F735E843A579FE831BC1E2EB786499A57114993DBA57A00AF7B2F8B8D2D56A7355F885A434668AEF330A5A293340077A5A28A00292969280168A28A0028A28A0028A28A0028A28A00CED75164D0EED1802AC9820F7AF267D4AFF48DF6D1C8AF103C2BAE78EDCD7A778C091E12D48A92088B2083EE2BC9AE2496E2DA3F34EE2ABC3639FC6BC8CCA76692DCD69B33EF6F05D9DC6DE3493392EB904FD474A65A42D713C70A7DE91C28FA9E2A1906D635634FB8FB2DEC13E3223903E3E86BC29B6DDD9D0B53BAD5EF63F0BF87C4768A038211091F79CF563FA9AF309EE259E569E791E491B96763924D7A2F8CED64D43C3CB736C3CC585C4DF2F39420827F5CD72BE0ED0DB5CF10DB44F1335AC67CC99B1F2ED1C819F73815E960E3CD056DD9F5795CE861B0B3AEF75FD25F33D47C2B3DBE8BA368DA35DCCA97D710B48919EA79DC47EBFCEB8AF899E1E163A9A6AF6C80417476CA00FBB263AFE23F956EEB7AE7839BC48B3DF8B9FED0B2611891048021539E8383CFE75D56B5A741E25F0DCB6E30C97110785FD0F556FE55ED4A2A7071EC78143133C262A18969AE6BDEEB4777D3F03C3B45D0EF75EBDFB2D8C6ACCA373B39C2A2FA935D3DB7C376BE867363AED9DCCD036C911633857FEEEECFF4A8FC0BE1BBEBFD42F81BEB9B08EDFF007570B09DAEE73F779E8383CFE55DCF832D34CD3AF358B0D36DEEA336F32A4CF3B643B63AAD6146845A5CC8F5F33CD6AD3A925427F0DBA2EBDDBFD0F1F1A3DF9D64E92B6EC6F449E5F9639E7EBE9DF35D847F0A751783326A56B1CE46445B491F9FFF005ABA0D1E0107C57D68DC26C79600F6E587DE1F2EEC7AF6AADE2ED3B5FB4F185A6BBA4DBC9748B188FCB5E769E7208F439A6B0F08A6DAB935737C455A90A709A85E29DDF576B999E0AB5BEF0F78E1F47BCB78B7CD1125B19380320AB7A75ADDF1FF0087F50F10EA3A4DAD927C8AB21799BEE274EBEE7D2B2B40B8D5352F8A6B2EAB6E20B986D5BF72BC845C71CFBEEABBF102F2F2DBC51E1E4B79A54532676A31009DEA3F1E2AE292A6D35A1C75655A58F8548B4A7CB76F757B3671FE22F066A1E198E1BA6923BA80B850E8A461BB020F635E916F378B2EF4B0C6D2C74F6F2F2374A5C8E3D00E3F3A8BE26FFC89B20CE079F18CFE357FC2ED2B7806C1A42CD21B20496E4F43550A6A136A3D8CB158BA989C2D3AB56CDF335FAFA1E73E11F13DD45AA8D3EF6532C371210A5BF85C9E9F426A5F15E931D85E89ED942C3719F907011875C7F3AE6BC3F672DFF886CE2883644C2473FDD0A724FE9FAD769E35B8422DADB237EE321F618C0FCEBE771D14A57EA75E7146942A2E4D34D4E2C6CF357CC2C13BED193F866BB1F0EEB16B60A52D6CDC93D4B1009FAD71C796ADCD1D46E191C77AC294E50D62786773E13592E75EB8BC98007CB22351D813C9FF003E95DBD70DE09BA92E75AD4576AAC314481540F527FC2BB9AFA8C1BBD18B3967F10514B4575122514B46280128A5C514009452E28C5001451450014514500145145001451450061F8C067C25A9FF00D713FCC57952A6EB2427D2BD5FC5DFF229EA7FF5C0D795DA8DDA7A13E98AF1F31F8D1AD3312E530DF8D166B1BDD4693388E266019FD07AD4D7AB826AA2F5AF12A68CDD1DAE9BAAC3A2D85BB197ED16534B244D18E4C2571CA9FE2520E71EF56E24D46D6CE69FC1777035A193749692463EF1193B09C1FC0FE15C4C454EC8E5775803866DA3247B8FC2B562BAB95492FED2536D72EE024708C0209C007D58F3F8026B7A15E5097353FB8B85470D1EABB3D5181AB6A7AA5CEB7F6BD4B297F195C06882EDDBD3E5EF5BF1FC4DF1122E19AD5B1C67C9C7F5AD193C44F75B2CB5ED220BD3D885018E7A63AFE98ACE9348F0A5EE4DBDE5DE9D21FF0096728DCA3F3E7F5AEC863B7BBB33DEA798606BC230C4524ADB5B628C1E39D761D625D484F119665092218C6C20671C0F4C9E7DEAE0F893E2217BE7F99018F183079784FAFAE7F1A824F05CAFF3596AD61723B06628C7F9D576F05EBCAB91691B8F58E743FD456D1C4B7B48F414728A9ADA3F9152FF00C49AA6A1ABA6A92DCB25D47FEA8C7C08C7A01FE3D6B7D7E276BC2D0C5E5DA99718F3B61CFD719C562FFC225AF671FD9B27FDF69FE34ABE11D7D9B1FD9CE3DDA4403F9D52AD35D4DAA52CAEA4631972D96DA93695E32D5B49BFBABD5315C4F744195A65E4E3A608E83DAA6D4BC73AA6A97F63772C36A1ACDCC91A6CC82718E6A35F04EB6DF7E2B6887AC970BC7E59AB31F83ED20C1D475EB48C774806F3F99C7F2A978971567231AAF2A8CB9DA4DF96A3B54F887ABEABA7BD9CB6F66B1BF53E5EEFE7C56DE89E31F166B204163A75A328F94CECA5634FE9F80ACE822F09E9A4BC16577AA4C833BA5FB831DF038FCC558BAF126B1770325B442CACE340FB614C36CCE383FE45652CC24BE1773C4C562703C9C94292F57FE45E8A4D33C3C65F2658EFB57BC93F7AC836AEF2DD31FC2A09E9FE473FAE5ACA973713CF76971389DA26298009039DA33900702A3B9921B547853719E39C4A8ECB9DEBD8E7FA566B12ECCCC773312493D4935E6D5A9CCDB9EAD9E5CEA4A6EED8D8E3692644404BB30551EA738AEC34FF000DEAF0AE5EC641F8AFF8D739A3A6FD6AC57AE6E23FFD08577576BAEBF8BCF97E7887CC53195C88FCBFE5EB5E8E03090AB06E670E2ABCA93B2572D7812DE4B7D535A4950A3A346A41EDC13FD6BB815CB785B0FAD788A403ADDA27E483FC6BA915ED5082841463B05DBD58B451456C0145145001451450014514500145145001451450014514500145145006278BFF00E451D53FEBDDABCBB4DC369E3DABD4FC5A33E12D57FEBD9CFE95E57A31DDA75791987C7135A650BE5E4D668E0D6C5FAE2B36DADA5BBBC8ADA05DD2CAE1107A935E3558DE5646C988338A92295E19524462195830FAD743369FE1BD2AE1ACAFAE2FAEAE93895EDB6AA237A0CF5C561DD4309D4248B4F6967877622257E6618F4A89D1953D6E0A571D6D78D05FADDB0DF221DCA49EFD8FE1571B51B4B89419A3DB14718548F191C925B1EE7239359860944863313890754DA723F0A3CA90EC1E5B9DDCAE14FCDEE3D6946534AD615917E2FECF2816454FF52A3723107760B31FAF1B7F1A431C3142856EE50DE479AE5180049C6147E2483F4AA051F246D6E3EF0C1E3EB4850F0369CB72BC1E7E94F99BFB255FCCD1B7374F612DC35ECEBB33B70DC0200EBCF7CE054CE64975692D84F70638D48D9E690CECABD3F135900B46E0E30E87238E86B76DBC3ADA9786E7D56D1E596E2190ACB010391D4907BF507F3AAA71753DD8C7540E6D75294D66AD15C4934C5191CA050FB9548DBC127939DC7FEF9352ADAE9F6D72FBE41844276C8E0F3961C607271B4E3FDAF6A8F41D0E6D7B544B58B2B1E374B281F717FC6A1D46D63B3D4AE6CEDDDE5481CA0665E491D4E07BD572B51E7E5D05CD77B90DBDC18ED6E61667C4C8A0283C02181C9FC3352CFA849348AEAA22210AFCBCF5EBD7A753F415500271819F614019CE01E3AF1D2B1E696C8340C71495A634A4FF00846FFB5CCE73F68F23CA0BED9CE6B358118E08C8E323AD2953946D71AB162C9DE3B8496362AE8C19587504575F06B7AABAFCD7F2FE9FE15C959AE5FDB35BF0F087E95DB46A4E30D199CE09EE755F0F5DE683569A472EEF79F331EE768AED05715F0DC7FC4AF516F5BD6FFD016BB6AFA1C2B6E945B3092B3B0514515D020A28A2800A28A2800A28A2800A28A2800A28A2800A28A2800A28A28031FC55CF84B56FFAF593FF004135E4FE1EE74D3DF9AF59F148CF853561FF004EB27FE826BC8FC3249D3987BD79198FC5135A62EA00FA547E18BA86CFC5361713B058965C163DB208CFEA2AC5F8E0D60B70D5E54E5C9252EC6B6BA35B5CB0B9B0D7AEE39E29096999C7CA7E75273907BD6D6A1A43E99E24BA8F4895ECE2B6B55965B86258C6ADD48EF9ACBB3F16EB7690AC31DE6E8D46144881CAFD09E6991F88F554D464D43ED3BEE254F2E42E80AB2F60474E28F69415DEBAB26D23B685964F13E8172B3F9ED369D26F98A6D32E07048AE4AD751D66F659EF85F8B78ECE3DAF725062142DD0003D7D2A0FF849F561776F75E7A19ADD1A38D8C4BC2B7518C557D3B5ABCD29E66B668F130C488E8195BF035A4F134E5256765708C19DE9641AF1B846599A7D0CCAF214C0948FE22BEFE9588FADDFB782EC7532F19BC8EF1A2498C4B945DBD071C7F85637FC253A999C4E6485A416E6DB262006C3DB8AA7FDA7727494D2CECFB324BE681B39DDF5AA9E2E0EFCBE7FA07248D6F1BAA8F123B850A6482376C0C658AF26AE693A8DC697E0896F2D5B1226A49F461B4641F635CEEA7A9DCEAD762E6E42990204CA26D181D295757BB5D19F49023FB2BC9E6B653E62DC77FC2B155D2AB2A8BADEC37176499D7596BB652EB9A6D9E8D6E6DE2BAB859EEF0392E7F83E82A85ABEA167AE6A57705D45676CD7CD1493CA9BB2DB89D838279AE6AC2FA5D36FA2BC83679D11CA6F1900FD2B461F145FC2B749B6DA45B998CECB2421D55FFBCA0F4AB8E294ADCFA59F4F41385B63AB26083C4DAD69D6724765A8DCB235A4E63046EDA0B20CF4CFF5AA1E1B3AA5AEA90A5E5C5BDAC37776EAF1491E4DC303860300E0678EC2B1D7C5DA92DD4B73E559BCD24824DEF002518285CAF3C700536DFC55A9DB431A0304A6294CB1C93421D9589C9C1ED935A7D668B926DF5FD45CACD6BCB666F0D35ADA4459DB5B748A303AF5C0A76B2F2DD782A492F2F20BBBAB7BD11878931E571CAE7033F8715843C45A82C6A88D1A6DBA376A563E44873EFD39E946A1E22BED4ADA5B6996D52192412B2C5105CB0EF9150F1149A7DED6051641623E615B83889BE95896192456D13FBA3F4A98FC05B3A9F86873A1DF1FFA7E7FFD052BB515C47C3239D0AFFF00EBFDFF00F404AEDC57D0E13F831F439E5B8B4514574921451450014514500145145001451450014514500145145001451450064F89FF00E456D57FEBD64FFD04D78FF86326C88009AF63F10A86F0E6A40F436D27FE826BCF3C13146B6D2058D460F5C579F8CA2EA491AD32ACDA4DFDDAE61B494AFF00788DA3F5AA4BE11BF76CCB24308FA963FA57A5CAE91DB1677541DCB3003F5AE62F75DD32066CDE46E4768F2C6B82B61E9C57BCCD61B985FF0008BC717FACBA66FF007405A91742B21D43B7D5A9D2F88629DF6DADACF31EDC633FCEA96A3AC6A3A7DA8B9974F78A1271BCC6CD8FAE3A7E35C8A14DBB455CDEF1468AE9360A302DD4FB924D4AB61689F76DA3FF00BE457053F8F2472C239246DAC41D8AAA3F3359B7BE32BEC36DC938C8DD29E47B015D10C2D57B409F6B147A998EDD072912FF00C040A8CDC5927DE9615FF810AF1EBAF126A12A0789D23524E3700491F8D32DEF35BD42516D6F25C4B732F0891A7419C6781C0F7E95AAC0D5B5E5644FB74F647B559EABA64528325D4007E75BE3C57E1A8E10B25CC45BDA127FA578D1F05DE3471ADE6BCF1C8532E06E6507D37647B76AB3E1CF05EB48F7328B7FB45E42F1F93E71DD0F979F9983E73BFB6314A11514ED25F7054527BA3D4A6F13F869813B55B03926D7FF00AD549B57F0DDC2E45A2C80F42B67907F2159674441A9BC5F6C92DE150C1A08A2DE1A31C024E49CFF004AA09E1DD7159A59AE63B5B6E446914AFF0030EC4C617E52460E335CFED1C937A7DC6B1853B6B236256F0DC9CFD80AFF00BB6EEBFCAA9496DE1A762AAEF1B7F772D91F98AA63C2DAA5C3242FAFF96A79020042A8F663C96EA31EF59573A00B7B59984D2CD96313107E74901C639EA40CF6EB529296F61350E8CD76D3347719875303D371155DF436627C8BB8251FEF62B32EB425B644617E444D1978C48009190649DC9D4727815D269F14573A6C10B281342A11F74650B7BE0F349D185F429422D156D74BBC80FCF0311EABCFF2AB92711B03C103A1A658CF2C24448D209012548240E3F849FCEB45EFE5748E29C4536E560CD2272A7B12460FB715D31A09C6C9994A9B4CD7F85AD9D06FFF00EBFDFF00F404AEE8579EFC26BB8EE745D50471ECF2F5064601B70CEC5E9ED5E842BD9C3C5C69462CE397C42D14515B92145145001451450014514500145145001451450014514500145145006578958A78635365EA2D6423FEF935E47E1ABCBB368E164F2F279C718AF57F1764F83F58C3EC26D241BBD3E53CD78CF8660B7482433CD2CC71C73B4570E2E3769DCE8A1152BDCD5D51D0A6FB8B9DDF8E4D635ADF599BA089119037DE72B90BEF5A173042599F622C4091F3727F5AE17C45ADCAB3358D9E11320363EF7D3F1AE2FABC66EC76A70A71BB46DEA3F12352D3EF4DA697F657822C06668B249EE3AE2A9C9F11BC49750C8A66821DC194EC8464023F9D2DB781B57D42C21B2B1D2DA6D52493CEB89FEE8B78C8F96367271B8E7240E40C77AEC745F81328224D635A2A48E63B54048FF81B7F857A14A85351B58E0A952F2B9E44CCAF2B2820F23A7183DCF1C52DC08D6652184B21C0DB1659B15F4AE99F0BFC1FA42129A524EF8F9A4BA63213F5CF1FA55BB9B8D374B8BC9D2ADADA039DB982354FD40A3115E187873489846537647CFDE19F02DFEB17ACF73E759D81FBF24D115763E8A0FF003E95E8FA7E8FA6E896C21D3ED56362B892767CC9201D416FC8E0715B5717BC48CCC597277331E49278C562DCB6C85D4C991F3648196039C0E7A743C57815B195712FB47B1E951A1182F3295E5CAABA206CEE51F7F3B48FEF1E7F01C55CD375292DD6036EE54B676A938DC71CF5F51F4ACC78D40659A350BC13C0C29FE4781FAE2A457956485B964DE5886619391C608E0E07F3A39128D91D2D5F73BBB1D558A324BFEACAE0228C6063D7B9EC3A75A90E9E74FD3E4B6B576DCF13984C8773492E0FCD21FCBF2AE42D6E9CC92C488EAD1601563CE3B73D3F3FE95D7691ADB5A88A19B2D110386EABC7D7B7A54D29454B92A3D0E3AB45A57819A65D520B9124F09BC916451288E408546CCFCA84E300E7273CD5354B3BD37370514DC473732C2A42BB11D1B23AE30335E84D6761A8AA4AF1452EDE55B1C8FC6A94FE1BB22B27D9A3481DCE480B9527B923D48E33D6BD1781925CD0699C7ED35D4F39923B5865B895984371164BB9F9B395DB807B281D077AE70F88634D56192CE32CC90F961CB972F18F53C7D738AEF758F0F6A3A7D8CF2C4B1CC9147BA348D38523A2E3AE00F639F6AF1ED5BC39A8D96AAD6FA7DB3334815BCB79919D3201E7070327381F4A8A545C5B53D0DA1512D4EBA0D5AE26D49A7648648C800425880A7AF6EB4DD4357204C5B2B27242152067AF03EB8AE3B4F6BBB3558D84A2E73F383CF7C8ADBD424BBF2D64784C6E8B872FC1C57A11A692B0E555367A0FC11591344D5C4872CD7DBC9F728B9FE55EA62BC9FE07DC9B8D375AC9276DCA7FE83FFD6AF5915D90D8E39EB26145145512145145001451450014514500145145001451450014514500145145006178CA448BC19AC3C9F716D5CB7D315E29A06A910B6D88154374C724E2BD87E2236DF87DAD93FF003EC47E640AF11D0F4D59ACE05B7B80F71290163298049ED91DFEB5CF5A29B573B70B6B3B9B4D7C6EEE16D2D6DA6B99E538545E33FE7D6BB8F0DFC3FD3EDAED755D4ED609B50382147CCA98E873DCD5AF0E78720D0ED72CAAD7D20FDF4A3B7FB23DBF9D74F13AC51191D80551924D118462AECCAB54E676897142A2615428F403150DC5F5BDB03E64AA180CEDCF27F0AE7EEFC4334ECB169CB8C93995C718ACC1215F9DD96597237381CB7A91EDED5E662B378D3F728EACBA78494B591A3A8EB525C0554CA236404CF27DEB026994DBF9933052E42FA63BFF00853DFE72CD2B7CA8010C78EFDBF4ACBBF9926B8F284A982BB8E1FA7391DBD315E1B94EBCF9AA3D4EFA708C15903DC09705B6811303B4E4963FE49AA97C09464656C3A9120EC31DBEA47E94E0E12D44D18281BE525BE50BE9CFE5F8543206946E6552494DEDBF03F5E4F15D318D99B245524CB1056192E707CB51D07D7F5F5E285478BCEDA1C120F9487E551C82477FA7E34FB845925854CA164947CFF3163B7D171F41D3BD3E55914943192D18C6707383DFEB818EF5B831D14A07EEA489F6E55959B80491F74F7E3D7F0ABC976BF697889652A81BE51C3E491F9E4D666F51F2796CAE47CA55F1B7FF00AF8C022AC413154937B7EF19582F4048CF439F718A89C53DC474969AA4B69209216202E00C9C8391DFD473D6BAEB2D7ED2EFE5663136768DE386FA1AF39B79C3A2A05237463E523EE9ECD8EBD314F8AEE474382A06401B8E067BE28C3E26AE1DFBBAAEC61570F1A87ABE010083581AD785F4CD5A3666844370595FCF8800C48E849EFD2B1B48F123586CB7B83E6DB6EDBB89F9A31EBEE2BB05992788491B064619520E4115EFD1AF4B150FD0F32AD29D29599E717BA20B1BD81E7B433CAD2E01524A0039049E067EBD2A0BF8671A74F69650DBCB71C925882880FA9F5E4577F776F15D218A55186EFE95CACB0416B73E548B08B86C845326D0303A73D8835855A5EC9DD6C28C9B29FC1DD31F4A1ADC32CC2495A48D9828E070C383DEBD48579DFC3BF3135CD71594AC7888A0231D37035E8B5DB45B714D912DC28A28AD4414514500145145001451450014514500145145001451450014514500727F12D80F879AC066DBBA3519FABAD79FFC36D215EE4DE3A868ADD72871C173D3F2E6BBCF89A9E6F80EFA2270247894FF00DFC5AE6FE1C34A906A36F231DB118C4608038F9B2703F0ACA7AC923AA94F969492DCEDC60919FA5616B77DE74C2D159BCA8C8DE14E379F7F6ADE41938AE1CC87ED8DB768F2DC8763DDABCBCDEACA10508F52F05052936FA17A394A464ED63B8E1500E7A53243B2362AA7E5C0C64F4C8F5AAD1B18D1487FA91C93CF1D38CD31C0F2BAED5CE5FE6CFD3F9D7CDA8AB9E9341A84AB1C2CAA7272304761EA07BD65443CD8E57946D058855CE7767A0E3F0FA55F9D85D1C02AA11CA9C7B0FE7DAABC52152B870884ED24E78E831F5E3AD75535CB1B750435EDC4403B0DF2B48090CDC06C63923D0638F6AAAC0B21DA0A42232D2498DA0F3CF5EDEC3D7DE9F753A88DE4139F2D061D957393F5F53C1FCE984836DE62CCB94193B5720AE33EFE98ADA37B5D8D14CB6D0C609A36DC7207F11073920E3BFA1F4A9250F8EA8A132E8E4F283AF5E9CF4EB4D0CF1DC34A184A8D1EF55562ACFC0C91D31D0F151B6C9E19502BF9231B5776EDB93D1BF9D6E8A24DDBCC6D1B192366DBB1B05971FC79EE3A0E4FA52C9E52AB2A4A40DC0E09DD9048CF0471D3FAD2C8B19D8BB82320C8E4807F03D79CFBF1526555D965623380A4724018EFF8D0C964EB3AC37119C20555F997B2FB03DA9ED298C91BBCC0B80A06320F5FC7B55224ACBE5C8FB1F1B49232AC49C05E9CF4E7269A4A195A40AA58BED560C4E08EA33CE38A8704345B322472EC38E172508E4E33D3D4E6BABF07EAE10B69B2B8C062D1316FBD9E718ED5C1CB3B24E36AC8D824EE3EDEFF00AFFF00AEB67C3E04FAE594C50895096C81D720751DBB56F866E9D4525D4C713152A6EE7A5CC7926B1755B785665BF6405D1768023DDC8E87F004FE75AC678A579638E5477888DEAAC095EE323B526FD9B57A1624D7BB38A9C2C78BAA7B1CE780D1D3C43AA6E565578D5806183F78D7A08AE3340253C6176849F9E0279FA8AED055C63CAAC0DDD8514515420A28A2800A28A2800A28A2800A28A2800A28A2800A28A2800A28A280385F8B371E47821F9C799750AFFE3D9FE95C4F83B59161ACC4B33622B95F29893C293F74FE7C7E35D37C6790FF00C22F6307FCF4BD5FD15ABCB13CCB8305B46332B30451EB9200AE6AD3E57CCFA19B4DC925D4F739EFDE09CDADAC625B91F7F71C247E9B8F5CFB75FA565AF87E179649AE2E27692439611B796A3E817FC4D605A6A3A8693E36B7D1679E292C0E9F2DE3B843E6BB0239762793D7A62B3F48F1EDD13A4EA37EFBACB5682F26584201E4792495008E4E554E739E6BE4F1F531B8C95E8B4A36BAB6EF7FD133D2A738D256475173E19C4456C6FA68CF044731F310F7FA8AC69669A0320BA6F2E784FEF226EC39C60F707AE7F9547E18F16DFDDEA5A347A84AAD1EB3A7C9788A10288195BEE82392BB7D7B8CD6A7899ED2EED62BDB3BA85E5B691165F2DC126276008FCF691F43EB5C74DE228D654311ADF67DB75F9AB1BD3AD7310C8AA77331718DFB480A0F6C01DAA291DE468F0516C99417278209E9CE7DF1566386326491BF78E57927032739DA07F5EFCD67CF3BCEA56DD43ABCB862DC2E3A01EE2BD382BBD0EC455790C864B73223BA6242AACC171B7803D79033FF00D6AB51976B558C06DF2A6721B81EA3351416EB0C8F233F9CCAE790B80001D39CE00CFE14F9E7F2E42A88C4853CC8C5563F43EFFCEB67AE8864178AC8163F3D59DF95083EEA77E3A773C7B52BC8A551A5F2D22909E081B917D7E838A492259AE066CDD639017539DA1B903247E7C7BD3258A3842B4FB995CE15F705663D0E31DB9181D8568AC26C5BA97C8631B2A02195838C0E71C01FCC8FF1A92E249400117604F9F684C90464607A723F2A8CA31915D8B129270C58153D8F3C0CE38C03DAA2B8594B34D8758E38806EA4707F3C8F6F4029EE4DCB1F6947118DACEF2383C0CF6E7BFD08FAD430CF98418A4F34BE5980C8EF81D718FA66A0865694899999668E50DBB6F0781D7DF19FA50F079136E887C8C092831F30C9C1233D3FC28E55D42E5D8216D567582D1A20CFBB71958AE08233CF5CE07E95B9168F369CCB226A6AD3E3CA5FB3A962B9C8C6E3D3EE9E78E95CFD8EDB3D5ADDD1B2ACFB95739C70777D3A74FAD765772C97D691AA5CB47180D195519C993E4C919ED9CFEB53CC94D476155728C54A270D1DEDD586B0EF6124F05CA93BD88639F5DD9186FD6BA2D2BC7773777919BE8E3DC176E53280FBE0E6A8EADA6426DA4297D70FE4279B2B08C83E592406396E412081DFE5ED540699246373317DE77AE7B03CE2BB554F66AD739D355BE2573D2F429C4FE2882E429413DBBE01F4E3FC2BB715C1F862559A7D1E55FE189A161E8C1718FD335DE0AF569BBC6E799523CB3685A28A2AC80A28A2800A28A2800A28A2800A28A2800A28A2800A28A2800A28A2803C97E32DD486E344B186D64B862659C846236E36A83E9DCF5AE2348B6920F13E98D380545C2172BC81CFF8D741F11F5C07E252580963DB059046476C2B1625B07DF047E55C2BDA3437B15C896DE4DAF8088C43024F5191DBD6B8317EF271F23D0C2508554B99D9DF43D2EFEDAEEE7E255BDD7F66DF1B05D3A5B292E522CA8673D7AF231DEB0F48F05DFCF1689A4DDC12C29A45B5F452CECB847694B2A6C3FC590D93E95B7178DB5086355974C3303C6F85C36EFD6A4FF858A88487D1EF43021480B9E7F0FA8AF944F1F4E2A9D2A6B4564EFDAEAFF7366D3C0CD4B530F4FF000D5F0834D37B6532268BA2DC5A4CACAC04D2364054239618C9C8F5156ACCB41A65DA5EDA8B49EED2D60172D749244420C051B40DA42A93CE4FE9579FE234A54F93A2CFF28C92C4743C83D7BD72DE26D42FFC5EF6F60F0C51BEE2234126429C02491EB8E33CF7AECA1F5AAD3E5AF0497AF9DFF31D3C14D7BDD11B1218DFE5334338C9D9E5A96DA7D78FC3F2AA0B0379F2F9C986EA1D0E029FE9F856CFC3BD3A4F0DEA12AEA36B032CE9B52E472D191FC3F435E852E9FA3DE9DCD6D6CE7D500FE95EA2C149ABC18EAE2A14E7CAB5479300D34A4A42615036091CE41EF95F439A884C33204B779AE19700A92063D79E6BD365F0869136EF95D036720608EB9E84544DE0BB06E3ED0FEA4B2826A5E0EB2E84AC6523CD9A4710794AD87D9C61779739EC7A90054B64AF3DBB5BCA4617321E73918E41E4E09E381E95E883C1560ADBC5C3EEC1F9B60CF231D69A3C1568A8516F1C2B7DE3E5824F1EA693C257E91078BA5DCE096D54C3182573C2AA377E78033F8FB52C76ED0CACBB98AB12137119E3D4F618FE75E850F83F4B8DB73C93B9E9C10BFC866AFC1A168B66414B28B72F4693E63FAD5C70359EF644BC6D3E879859695773AA25ADA5C4C4162C8010A491D41191CD755A77C3FB89CF997CFF006642436C46DCE3F1E83F5AEC5B52B2B5508248D40FE15C7F215CB78A3E2541A1C421B2B71757D21C246C70ABEED8E7FAD75430508EB37739E58B9CF48AB1178C3C2D0D868F6F3E9919416E583F727774624F53903F035C34177ACA092DA68A36FEE8751B49E0FCDCF4073EFC0A35BF11EA7AC69B23EAD7FB23C6F114436A647418EFF8E69FA3EA29AC592A5C652E907C921E8FE9CFAFF3AE4C4B8DF9A11D0EDA1194A1CB37AA372196F1F2A968A61E36F990C59F7E9EE071EDDAA59B4AD61E25952DD45BF655F2C15193D31C118C63A73FA70B736DAA6B3AAC6ED25D69E907FAB2C700FAE4673CFA7715E84FE258349D3E0B113AFDA245DA818E768EED8F6EC2A24F48C746DFE062A9C93728EC59F0EA1B278AE1F2A5AE578CF0300293F9935E9C2BCC5EE6DE7D3025B305D8B84C1F4FEB5E83A3DE8D4349B6BA0465E31BBD9BA1FD6BD9A2B962A270569F3CDC8BD451456A66145145001451450014514500145145001451450014514500151CB22C51B48EC15141666278005495CEF8E2668BC237EA84879D3C85C36325C85C67D79A4DD95C6B5763E6CF105C9F11789F53D6A4FF00577170C63DDD9070BFA014B6B1793891651E6118605030C7B83C1AAFAE58CD6061824B77B49B73860CE5810318E3B639ACEB5B3BE9AD25B94F376AFDCC0FBC4727F4C7E75C72F7B56CF669CE10B72C6F63AF83CD9572638C63A142C87F4344D61778CAC4FB81040FB548071D3BD73F23DF5A5B98657792671F740FBA3D3DEA68B5BD52CAD924BD864F2C9C2997218FD0562A9ADD1D2F1319692D0BAF16A9F7DB4E5CFF0011795DBF2F9AB3AEBFB5B72F94E2119047909B0E474C9EA7F135B167E225B8000758D8F66ED53CF34F363F73BC1E430E7F9552718BD5133A55271B45DCE93C39ACDFCD6712EA283CC23EF80467EB5D545FBC1953F9579826AFAAC656386D3CDC701021271563FE131BEB70375B2860482AAC55948EC41ADF9E2FA9E54F0D513B58F50492EA31F24F20FF00811A9D6F6F4759C9FA8AF36B2F1ACF2FCACDB18FF0C8A47EB5AC9AF6A4EA0880907BAA135575DCC5D294774766750BC5FF0096DFA542DAADD8EB7047E02B917D5F517FF97697FEFD3540FA86A4FF00F2ED273EB19A5CEBB8B91BD91D5CBAADD16C0B863F43552E2EDD14C97373B54724BB9AE5CDF6A43811B27D10E698905E49996582491CFF007909A8788847A9A2C2CDF425D4B5ED4AF82DAE850B132121AE0FF00F5F6AA765E14B989DAE6EA4677EEEC49CFAD5EFED0B9B350B059E187DE5484E08FC2B2758F165FDB168595D3D8A1071584EA3ABA44E985354B564179A65CEB1AA4565126214E48F6EF9FAD75B1F8564B5D28445809279141F651C9FE43F3AC6F094DA95CFFA52C255E7390CD1938515B57BAD5EF99737CDC5A5946483E5900E3F1EE78A96BECA2D4A56E639DD5F5616BAC4B621D5ADE255067272E1B1CE3D47F8572689F68D45A5BBBC949273E61C8257DBFC2B3EE6E6F2EAE1A778DBCE918B9C03CE6ACC969A9CBB629A058A4230BBC90715D30A30A6B4DCE69D79D4D247D05F63B1D4B4D8AD94180C48045242794FE87F1AD1F042EA564B7BA75FBC32C51C824B69A238DCA7A82BD41047EB5E53A57896F749BC8B4ED41C2BF96A525DBB848A7A1041F6FD2BBFF0E6AD23EBB664C9BD262D190130395247F2AD29BB18CA1A5CF46A29072052D74188514514005145140051451400514514005145140051451400572DF102149FC292A4B37931F9B1E65C91B3E6183C7BE2BA9AC8F13406E3C3D7B10B7FB4131F117F7CE47151515E0D01E1B71A859D808302DE4BA64C799216C95C9E01E49CE39C7AD66DBC761B2E0C528814CDBD62321D8A4FDE0BC74385FC8574DA9F87B52BD8E116BA1EA16EE93EC30EEDEB903BB1E7681EF8AE77FE111F13DFDCEFFEC7D423B73133C65D4039040271D8F5C0FCABCC8D393DAE7A38794546EF733AE52E60477B60A672DF386674627D064007E80D645A5D437BAA245AADC7971E48669C31DA7D08ED5D74FE0BF1CADE3882C2EDEDD4215DEEA701BB004F38EE3B53EEBE15788F52325C3D9CCB7A64D8CD24AA51C81D73D87BD6D0838EAD0EA578DED73075EF0F698918BBB1D46C4C6C8B848262C5DB80703191EA7358F8BFD12768166008C12158953DEBB6D33E1A78B114C171A50F2250CFBBCE5DD195E011EE7B0E87DABA0B5F863ABEA570906AB17956F10DE67598167C8C0403B63A9CFE66B5716FA1BD3A94E2BE2398F0C78A2DAD2DAE25B87852FC9C2B3B30F97FD9E38EFC75A9EFECF4FF001249F68B5D42D62BF3C3C6F330F34FAE4F7ADCB6F8317DF6B6177763ECEAF84F2882CC3D4E46056F58FC3A4D3DC3C1A68DE15B0F24CAEC08F4046067D8571CA8352E68A7714AB4554E68CCF3197C337EB7020FB21460396F30953EFBBA569DA787AE6CB066D656253C98E0918FEA463F4AF4897C27ABB0772D70CC40385B951F874EDF95313C19AA976DC3A363749725B23D40007EB52E35DAD8B962A9CFE268E3E3BD8A050B1C85FB1679DD89FE43F4A8DA6BBB9FBAFB47FB5338AED93C15AA28F9AE6739DC4859C2018E9D077A70F086AB18DD112A76E4AFDA3924F6CE3FFAD59BA359EE851C4515B58E20DB4C88D3492ED890659BCC7FCF9AA32F886C6266114AD71276DB3B9FFEB57A51F08EAC43235C3323E633FBD1F758609E47E95CADB7C2CD5ED3FD598F7B33E5BCF030074EDDFF004AA5879DBDE88BEB306F738EBFD66FE542448B0263A79CC4FF002AC1B34B8D73568E1790BA81F33BB9F9545779A9FC2CF175E44444D063CBDF86BAC9273F73A75EF9E953E9BF0BBC4FA445FE8E96CF2B48AAEC2E7682BEA32BD077CF3E95D54E8CA11BDB539E75E3295AFA172D8369DA508A0923F3E7022855666046783DB8C0AC3F1CDDAE9BA241A389D44B70C1E6D9212762F6C1F7FE55D9DAF84BC40B7F0493C0085529B85D0C26DEFD3A376C7B6715CC6B7F0DFC55AC6BD3EA371691CB1B45B9237B91950380838FBDDFD39EB452A324EF243AB5E2D5A2CE2F4FB98AEA48ED8DFC69B4E086DCA71DF18C8A76A96AD6B7E221A84263702488966219727827B1E08FFF005D74D69F0BBC576172CC9A740C55C2AC91DD00D861D41C741DFF004CD4E3E1EF8AEFA6B77D534C9249226648E517A9918E72D9E0A93D3BFD2B77193673A945238CD6E0BD30DB5D5C002DCA08E1704951824E377AF24D765F0CBCCD435DD31543036D26E66F39B2CA14F51D0F6A7DDF833C633E9060B8B37B88C30B858015E8A7001E7EF60F4EF5D4FC30F096ABA0EAF7F2EA364F6B1851E5E640C18B73818F41C53845F514E4ACDA67AA0E94B48296BA4E60A28A2800A28A2800A28A2800A28A2800A28A2800A28A2800A434B486801303D28DA01A5A5A006E3B629768F414B45003768F4A303D29D45003768F4A314EA2801B8F6A5031DA968A006E3DA8DBED4EA2801BB7DA8DBED4EA2801BB47A52ED1E94B45003768CF4A5C0A5A2801368F4A368F4A5A2801368EC0518C52D140094B451400514514005145140051451400514514005145140051451400521A5A4340051DE8A3BD002D145140051451400514514005145140051451400514514005145140051451400514514005145140051451400514514005145140051451401FFFD9"
+        },
+        {
+            "ProdID": "524",
+            "ProductName": "T TOILET CLEANER 200ML",
+            "UomQty": "1.0000",
+            "UomPrice": "26.5300",
+            "InclPrice": "31.3054",
+            "MRP": "36.0000",
+            "AdjustQty": "0.0000",
+            "AvlVLS": "1.0000",
+            "Imagedata ": "NULL"
+        }
+    ]
     function FillInvoicedata(Deliverydata, ItemData) {
         InvoicesModal.hide();
         $("#txtInvoiceID").val(Deliverydata.ID);
@@ -564,28 +1013,10 @@ var Aurl = '@Session["APIurl"]';
         $("#lblDBy").text(Deliverydata.DeliveryBy);
         $("#lblDDate").text(Deliverydata.DeliveryDate);
         $("#txtReciever").val(Deliverydata.ReceiverName);
-        // Items
-        $('#tblProductInfo').DataTable({
-            scrollY: "200px",
-            scrollX: true,
-            scrollCollapse: true,
-            paging: false,
-            destroy: true,
-            data: ItemData,
-            fixedColumns: false,
-            ordering: true,
-            searching: true,
-            sorting: false,
-            columns: [
-                { "data": "ID", "autoWidth": true, "visible": false, className: "dt-body-left" },
-                { "data": "DocValue", "autoWidth": true, "visible": false, className: "dt-body-left" },
-                { "data": "ProductName", "autoWidth": true, className: "dt-body-left" },
-                { "data": "UOMName", "autoWidth": true, className: "dt-body-left" },
-                { "data": "Qty", "autoWidth": true, className: "dt-body-right" },
-                { "data": "MRP", "autoWidth": true, className: "dt-body-right" }
-            ],
-        });
-        Table = $('#tblProductInfo').DataTable();
+        // Items - reuse the shared Table instance so it keeps the
+        // Product Details / Qty layout (image, name, AvlVLS highlight, capped qty input)
+        Table.clear();
+        Table.rows.add(ItemData).draw(false);
         var nDeliveryType = $('#rdoDelivery').is(":checked");
         $("#dvInvoicesummary,#dvProductdetails,#dvReceiverInfo").show();
         if (nDeliveryType)
