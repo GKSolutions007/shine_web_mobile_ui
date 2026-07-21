@@ -504,7 +504,7 @@
                         </div>
                         <div class="text-danger small mt-1 clrdivserror" id="divErrorOnInvNo"></div>
                     </div>
-
+                    <button id="btntestprint">Test Print</button>
                     <div hidden class="d-grid gap-2 mt-4">
                         <button hidden id="btnSimilarInvoices" type="button" class="btn btn-warning deliveryaction-btn text-white">
                             <i class="bi bi-files"></i> Similar Invoices
@@ -1010,7 +1010,7 @@ var Aurl = '@Session["APIurl"]';
                         VLSProductData = invoicedata[0].ItemData;
                         console.log("VLSData ", VLSData, "VLSProductData ", VLSProductData);
                         $("#txtVLSID").val(VLSData.ID);
-                        $("#txtVLSStatus").val(VLSData.Status);                        
+                        $("#txtVLSStatus").val(VLSData.Status);
                         $("#lblVLSNo").text(VLSData.DocID);
                         $("#lblVLSDate").text(VLSData.DocDate);
                         $("#lblBranch").text(VLSData.Branch);
@@ -1142,7 +1142,7 @@ var Aurl = '@Session["APIurl"]';
                     "ProdID": rowData.ProdID,
                     "ProductName": rowData.ProductName,
                     "MRP": rowData.MRP,
-                    "AvailableVLS": rowData.AvlVLS,                    
+                    "AvailableVLS": rowData.AvlVLS,
                     "AdjustQty": qty
                 });
             }
@@ -1232,4 +1232,35 @@ var Aurl = '@Session["APIurl"]';
             });
         }
     }
+    $("#btntestprint").click(function () {
+        PDFDocument(971, 4, 4);
+    });
+    function PDFDocument(ID, strTransID, nConfigID) {
+    if (nConfigID > 0) {
+       
+        $.ajax({
+            url: Aurl + "print/PDFGenerate",
+            type: 'GET',
+            datatype: 'json',
+            data: { Companycode: strCompanyCode,   DocID: ID, TransID: strTransID, ConfigID: nConfigID },  
+            
+            success: function (data) {
+                if (data.length > 0) {
+                    //location.href = 'Invoice/ExportData?Fname=' + data;
+                    location.href = Aurl + 'print/downloadprint?Companycode=' + strCompanyCode + '&Fname=' + data;
+                } else {
+                    showErrorSnackbar('PDF File not generate. Try Again');
+                }
+            }, error: function (data) {
+                if (data.status == "401") {
+                    var msg = data.responseJSON.Message;
+                    //showErrorSnackbar(msg + " Logout and Login again.");
+                }
+            }
+        });
+    }
+    else {
+        showErrorSnackbar("Select Print profile");
+    }
+}
 </script>
