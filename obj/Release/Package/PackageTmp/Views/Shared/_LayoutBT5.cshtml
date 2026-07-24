@@ -705,6 +705,80 @@
                     </div>
                     <ul></ul>
                 </div>
+                <script>
+                    var SendAutoMail = 0, Printcopies = 1;
+                    var TransactionPrintProfiles = [];
+                     var RID = '@Session["LoginRoleID"]';
+                    function GetPrintProfile(strcompcode, nTransID,setProfileID = 0,hiddenifDefset = false,hiddenfields = []) {
+                        var redurl = '@Session["APIurl"]';
+                        $.ajax({
+                            url: redurl + "print/getprofile",
+                            type: 'get',
+                            contentType: 'json',
+                            data: { Companycode: strcompcode, TransID: nTransID },
+                            success: function (data) {
+                                console.log("data ", data);
+                                $('#cmbPrintProfile').find("option").remove();
+                                $('#cmbPrintProfile').append($('<option/>', {
+                                    value: 0,
+                                    text: "-- Select --",
+                                }));
+                                TransactionPrintProfiles = eval(data)
+                                var getdef = TransactionPrintProfiles.filter(pr => pr.DefaultConfig == 1);
+                                var defid = getdef.length > 0 ? getdef[0].ConfigID : 0;
+                                var copies = getdef.length > 0 ? getdef[0].NoCopies : 1;
+                                $.each(TransactionPrintProfiles, function (i, items) {
+                                    $('#cmbPrintProfile').append($('<option/>', {
+                                        value: items.ConfigID,
+                                        text: items.ConfigName,
+                                        'data-automail': items.AutoMail,
+                                        'data-nocopies': items.NoCopies,
+                                    }));
+                                    $('#cmbPrintProfile').val(setProfileID);//defid
+                                    $("#txtNoofCopies").val(copies);
+                                    PrintConfigID = setProfileID;// defid;
+                                });
+                                if (hiddenifDefset && setProfileID > 0) {
+                                    console.log("hiddenfields", hiddenfields);
+                                    $.each(hiddenfields, function (i, a) {
+                                        $(a).hide();
+                                    });
+
+                                    //$('#cmbPrintProfile').hide();
+                                }
+                                else {
+                                    $('#cmbPrintProfile').show();
+                                }
+                            }
+                        });
+                    }
+                    function LoadBranchByRoles(strcompcode,FieldIDs) {
+                         var redurl = '@Session["APIurl"]';
+                        $.ajax({
+                            url: redurl + "BranchMapping/getByRole",
+                            type: 'GET',
+                            dataType: 'json',
+                            data: { Companycode: strcompcode, RoleID: RID },                            
+                            success: function (data) {
+                                $(FieldIDs).empty();
+                                $(FieldIDs).append($('<option/>', { value: 0, text: "-- Select --" }));
+                                var defaultBranch = 0;
+                                $.each(data, function (i, item) {
+                                    $(FieldIDs).append($('<option/>', {
+                                        value: item.BranchID,
+                                        text: item['Branch Name']
+                                    }));
+                                    if (item.SetAsDefault) {
+                                        defaultBranch = item.BranchID;
+                                    }
+                                });
+                                if (defaultBranch != 0) {
+                                    $(FieldIDs).val(defaultBranch);//.trigger("change");
+                                }
+                            }
+                        });
+                    }
+                </script>
                 @RenderBody()
 
             </div>
@@ -774,7 +848,21 @@
     //    GetSessionState()
     //}, 300000);
 
-
+    $('#cmbPrintProfile').change(function (e) {
+        var selval = e.target.value;
+        var $selected = $(this).find('option:selected');
+        SendAutoMail = 0, Printcopies = 1;
+        if ($selected) {
+            SendAutoMail = $selected.data('automail');
+            Printcopies = $selected.data('nocopies');
+        }
+        if (selval > 0) {
+            PrintConfigID = $('#cmbPrintProfile').val();
+            $("#txtNoofCopies").val(Printcopies);
+        } else {
+            $('#cmbPrintProfile').val(PrintConfigID);
+        }
+    });
     function GetSessionState() {
         $.ajax({
             url: '@Url.Action("checkSession", "Customer")',
@@ -1355,6 +1443,8 @@ function CloseConfirmDialogMsg(message) {
     function formatIndianCurrency(num) {
         return '₹ ' + parseFloat(num).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
+
+
     function GetDocumentID(dtpDate, nBranchID, nTransID, oldprefix, isModify, fieldid) {
         if (nBranchID > 0 && dtpDate != "") {
             $.ajax({
