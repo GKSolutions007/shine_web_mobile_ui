@@ -8,6 +8,7 @@
 <link href="~/Content/buttonTop.css" rel="stylesheet" />
 <link href="~/Content/dataTables.dataTables.2.2.2.css" rel="stylesheet" />
 <link rel="stylesheet" href="~/Content/jquery-ui.css">
+@*<link href="~/Content/surroundingcustomerstyle.css" rel="stylesheet" />*@
 
 <script src="~/Scripts/jquery-1.10.2.min.js"></script>
 <script src="~/Scripts/jquery-3.7.1.js"></script>
@@ -210,8 +211,8 @@
     }
 
     .prod-img-col {
-        flex: 0 0 auto;
-        width: 75px;
+        /* flex: 0 0 auto;
+        width: 75px;*/
     }
 
 
@@ -256,7 +257,7 @@
     .prod-name {
         font-weight: 600;
         font-size: 0.95rem;
-        color: #212529;
+        color: #1565c0;
         word-break: break-word;
     }
 
@@ -286,7 +287,7 @@
 
     #tblProductInfo td.qty-col {
         vertical-align: middle;
-        min-width: 100px;
+        min-width: 150px;
         text-align: center;
     }
 
@@ -328,7 +329,7 @@
         font-weight: 700;
         font-size: 16px;
         line-height: 1;
-        display: none; /* flex;*/
+        display: flex; /* flex;*/
         align-items: center;
         justify-content: center;
         cursor: pointer;
@@ -429,7 +430,14 @@
         padding: 3px 10px;
         font-weight: 700;
         font-size: 0.85rem;
+        cursor: pointer;
+        transition: transform 0.15s, box-shadow 0.15s;
     }
+
+        .qty-summary-badge:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+        }
 
         .qty-summary-badge.qty-summary-value {
             background: #eafaf0;
@@ -437,10 +445,28 @@
             border-color: #c3f0d6;
         }
 
+    /* ===== Qty Summary Popup (products with qty entered) ===== */
+    #modalQtySummaryPopup .modal-content {
+        border-radius: 12px;
+        overflow: hidden;
+        border: none;
+    }
+
+    #modalQtySummaryPopup .modal-body {
+        max-height: 60vh;
+        overflow-y: auto;
+    }
+
+    #modalQtySummaryPopup .qty-summary-empty {
+        text-align: center;
+        color: #6c757d;
+        padding: 30px 10px;
+    }
+
     @@media (max-width: 576px) {
         .prod-thumb, .prod-thumb.no-img, .prod-serial {
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
         }
 
         .prod-name {
@@ -452,7 +478,7 @@
         }
 
         .qty-stepper {
-            width: 60px;
+            width: 100px;
         }
 
         .qty-btn {
@@ -475,7 +501,350 @@
         }
     }
 </style>
+<style>
 
+    /* ===== Surrounding Customer Modal — Modern UI ===== */
+    @@keyframes scModal {
+        from {
+            opacity: 0;
+            transform: translateY(-28px) scale(0.97);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    #myModalfg .modal-dialog {
+        max-width: 460px;
+    }
+
+    #myModalfg .modal-content {
+        border: none;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(30, 90, 180, 0.22);
+        animation: scModal 0.35s cubic-bezier(.22,.68,0,1.2) both;
+    }
+
+    /* Gradient header */
+    #myModalfg .sc-modal-header {
+        background: linear-gradient(135deg, #1565c0 0%, #1e88e5 60%, #42a5f5 100%);
+        padding: 8px 10px 3px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        position: relative;
+    }
+
+    #myModalfg .sc-header-icon-wrap {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.18);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+
+        #myModalfg .sc-header-icon-wrap i {
+            font-size: 1.35rem;
+            color: #fff;
+        }
+
+    #myModalfg .sc-modal-title {
+        color: #fff;
+        font-size: 1rem;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        margin: 0;
+        flex: 1;
+        line-height: 1.2;
+    }
+
+    #myModalfg .sc-modal-subtitle {
+        font-size: 0.7rem;
+        color: rgba(255,255,255,0.78);
+        font-weight: 400;
+        display: block;
+    }
+
+    #myModalfg .sc-close-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.18);
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.2s;
+        flex-shrink: 0;
+    }
+
+        #myModalfg .sc-close-btn:hover {
+            background: rgba(255,255,255,0.32);
+            transform: rotate(90deg);
+        }
+
+    /* Pulse badge */
+    #myModalfg .sc-live-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: rgba(255,255,255,0.15);
+        color: #fff;
+        font-size: 0.65rem;
+        font-weight: 600;
+        border-radius: 20px;
+        padding: 2px 8px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
+
+    @@keyframes scPulse {
+        0%, 100% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0.3;
+        }
+    }
+
+    #myModalfg .sc-live-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #69f0ae;
+        display: inline-block;
+        animation: scPulse 1.4s ease-in-out infinite;
+    }
+
+    /* Modal body */
+    #myModalfg .modal-body {
+        padding: 1px;
+        background: #f4f7fb;
+    }
+
+    /* Error message */
+    #myModalfg .sc-error-box {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: #fff3f3;
+        border-left: 3px solid #e53935;
+        border-radius: 6px;
+        color: #c62828;
+        font-size: 0.78rem;
+        padding: 0;
+        margin-bottom: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease, padding 0.3s ease, margin-bottom 0.3s ease;
+    }
+
+        #myModalfg .sc-error-box:not(:empty) {
+            padding: 7px 10px;
+            margin-bottom: 10px;
+            max-height: 80px;
+        }
+
+            #myModalfg .sc-error-box:not(:empty)::before {
+                font-family: "bootstrap-icons";
+                content: "\F33A"; /* bi-exclamation-triangle-fill */
+                font-size: 0.9rem;
+                flex-shrink: 0;
+            }
+
+    /* Table */
+    #myModalfg #tblSurroundCustomers_wrapper .dt-search {
+        width: 100%;
+        margin-bottom: 8px;
+    }
+
+        #myModalfg #tblSurroundCustomers_wrapper .dt-search input {
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid #c8d8f0;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            background: #fff;
+        }
+
+    #myModalfg #tblSurroundCustomers thead th {
+        background: linear-gradient(135deg, #1565c0, #1e88e5);
+        color: #fff;
+        font-size: 11px;
+        font-weight: 700;
+        text-align: center;
+        border: none;
+        padding: 9px 10px;
+        letter-spacing: 0.04em;
+    }
+
+    #myModalfg #tblSurroundCustomers tbody tr {
+        transition: background 0.18s;
+    }
+
+        #myModalfg #tblSurroundCustomers tbody tr:hover {
+            background: #e3efff !important;
+            cursor: pointer;
+        }
+
+    #myModalfg #tblSurroundCustomers tbody td {
+        font-size: 12px;
+        padding: 8px 10px;
+        border-bottom: 1px solid #e8eef8;
+        vertical-align: middle;
+    }
+
+    /* Distance chip */
+    #myModalfg .sc-dist-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: #e3efff;
+        color: #1565c0;
+        border-radius: 12px;
+        padding: 2px 9px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    /* Footer */
+    #myModalfg .sc-modal-footer {
+        background: #eef3fb;
+        border-top: 1px solid #dce8f5;
+        padding: 12px 16px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+    }
+
+    #myModalfg .sc-btn-close {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: linear-gradient(135deg,#e53935,#ef5350);
+        color: #fff;
+        border: none;
+        border-radius: 20px;
+        padding: 7px 20px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.18s, box-shadow 0.18s;
+        box-shadow: 0 3px 10px rgba(229,57,53,0.28);
+    }
+
+        #myModalfg .sc-btn-close:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(229,57,53,0.38);
+        }
+    /* ===== End Surrounding Customer Modal ===== */
+    .input-with-icon {
+        position: relative;
+    }
+
+        .input-with-icon .mod-input {
+            padding-right: 40px; /* Space for the icon */
+        }
+
+    .info-icon {
+        position: absolute;
+        top: 50%;
+        right: 12px;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #0d6efd;
+        font-size: 18px;
+        transition: color .2s;
+    }
+
+        .info-icon:hover {
+            color: #084298;
+        }
+
+    .top-action-bar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        flex-wrap: nowrap;
+    }
+
+    .load-btn-wrap {
+        flex: 0 0 75%;
+    }
+
+        .load-btn-wrap button {
+            width: 100%;
+        }
+
+    .img-toggle-bar {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
+        white-space: nowrap;
+    }
+
+    /* Large Desktop */
+    @@media (max-width: 1400px) {
+        .load-btn-wrap {
+            flex-basis: 75%;
+        }
+    }
+
+    /* Laptop / Tablet */
+    @@media (max-width: 992px) {
+        .load-btn-wrap {
+            flex-basis: 50%;
+        }
+    }
+
+    /* Mobile */
+    @@media (max-width: 576px) {
+        .load-btn-wrap {
+            flex-basis: 60%;
+        }
+
+        .img-toggle-bar label {
+            font-size: 12px;
+        }
+    }
+
+    /* Load Selected Data button */
+    .customdabuttons {
+        border-radius: 22px;
+        font-weight: 700;
+        font-size: 12.5px;
+        background: linear-gradient(135deg, #00bcd4, #0097a7);
+        border: none;
+        color: #fff;
+        padding: 8px 16px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        transition: all 0.18s;
+        box-shadow: 0 2px 8px rgba(0,150,200,0.2);
+    }
+
+    #customdabuttons:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 14px rgba(0,150,200,0.35);
+    }
+</style>
 <body>
     <div class="mobile-delivery-container">
         @Html.HiddenFor(model => model.FormName, new { @autocomplete = "off", @class = "form-control", @id = "txtFormName" })
@@ -512,13 +881,34 @@
                         <div class="text-danger small mt-1 clrdivserror" id="divErrorOnSalesman"></div>
 
                     </div>
-                    <div class="row mb-2">
-                        <div class="col-12">
-                            <input hidden id="txtCustomerID" />
-                            <div class="form-label fw-bold text-primary"><i class="bi bi-person me-2 text-primary"></i>Customer</div>
+
+                    <div class="mb-3">
+                        <input hidden id="txtCustomerID" />
+                        <div class="form-label fw-bold text-primary"><i class="bi bi-person me-2 text-primary"></i>Customer</div>
+
+                        <div class="d-flex gap-2">
                             <input class="form-control shadow-sm border-1 bg-light" id="txtCustomerName" />
+                            <button id="btnGetSurrCustomers" type="button" class="btn btn-primary deliveryaction-btn flex-shrink-0 d-none">
+                                <i class="bi bi-geo-alt-fill"></i> Near Me
+                            </button>
                         </div>
-                        <div class="text-danger small mt-1 clrdivserror" id="divErrorOnCustName"></div>
+                        <div class="text-danger small mt-1 clrdivserror" id="divErrorOnSalesman"></div>
+                    </div>
+
+                    <div>
+                        @*<div class="col-12">
+
+                                <div class="form-label fw-bold text-primary"><i class="bi bi-person me-2 text-primary"></i>Customer</div>
+                                <input class="form-control shadow-sm border-1 bg-light" id="txtCustomerName" />
+                            </div>
+                            <div class="text-danger small mt-1 clrdivserror" id="divErrorOnCustName"></div>
+
+                            <div class="col-12">
+                                <div class="field-wrap">
+                                    <button class="customdabuttons hidewhenview" id="btnGetSurrCustomers" style="align-content:center"><span class="glyphicon glyphicon-map-marker"></span>&nbsp;Surrounding Customers</button>
+                                </div>
+                            </div>*@
+
                         @*<label id="lblMob1">9632514778</label>&emsp;<label id="lblMob2">8412345411</label>*@
                         <div class="mt-2">
                             <a href="javascript:void(0);" id="lnkMob1" class="text-success text-decoration-none me-3">
@@ -543,11 +933,11 @@
                             <div class="text-danger ps-1" id="divErrPrintProfile"></div>
                         </div>
                         @*<div class="col-4">
-                <div class="form-label fw-bold text-primary">Copies</div>
-                <span class="form-label">
-                    <input id="txtNoofCopies" class="form-control" value="1" type="number">
-                </span>
-            </div>*@
+                                <div class="form-label fw-bold text-primary">Copies</div>
+                                <span class="form-label">
+                                    <input id="txtNoofCopies" class="form-control" value="1" type="number">
+                                </span>
+                            </div>*@
                     </div>
                     <input type="text" id="txtLatitude" hidden />
                     <input type="text" id="txtLongtitude" hidden />
@@ -664,6 +1054,104 @@
         </div>
     </div>
 
+    <!-- Surrounding Customer Modal — Modernized UI -->
+    <div class="modal fade" id="myModalfg" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="toastBox"></div>
+
+                <!-- Modern Gradient Header -->
+                <div class="sc-modal-header">
+                    <div class="sc-header-icon-wrap">
+                        <i class="bi bi-geo-alt-fill"></i>
+                    </div>
+                    <div class="flex-fill">
+                        <div class="sc-modal-title" id="lblPopupheading">
+                            Surrounding Customers
+                            <span class="sc-live-badge ms-2">
+                                <span class="sc-live-dot"></span> Live
+                            </span>
+                        </div>
+                        <span class="sc-modal-subtitle">Customers near your current location</span>
+                    </div>
+                    <button type="button" class="sc-close-btn" id="modelcloseX" title="Close">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    <div id="dvCustLoc">
+                        <!-- Error box with icon -->
+                        <div class="sc-error-box" id="divErrorOnPopupSurrCust"></div>
+
+                        <div class="table-responsive">
+                            <table id="tblSurroundCustomers" class="table table-hover table-bordered w-100">
+                                <thead>
+                                    <tr>
+                                        <th>CustomerID</th>
+                                        <th>Customer Name</th>
+                                        <th style="width:100%">
+                                            <i class="bi bi-person-fill me-1"></i>Customer Info
+                                        </th>
+
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modern Footer -->
+                <div class="sc-modal-footer">
+                    <button type="button" class="sc-btn-close" id="btnSCClose">
+                        <i class="bi bi-x-circle"></i> Close
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Qty Summary Popup: shows only the products that currently have a Qty entered.
+         Qty can be edited here without touching the main table until Accept is pressed. -->
+    <div class="modal fade" id="modalQtySummaryPopup" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="card-header-custom">
+                    <i class="bi bi-cart-check"></i>
+                    <span class="flex-grow-1">Selected Products (Qty)</span>
+                    <button type="button" class="btn-close btn-close-white" id="btnQtySummaryCloseX" aria-label="Close" style="margin-left:auto;"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table id="tblQtySummaryPopup" class="table table-hover table-bordered align-middle w-100 mb-0">
+                            <thead>
+                                <tr class="theadstyle">
+                                    <th>Product Details</th>
+                                    <th>Qty</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tblQtySummaryPopupBody">
+                            </tbody>
+                        </table>
+                        <div class="qty-summary-empty d-none" id="dvQtySummaryEmpty">
+                            <i class="bi bi-cart-x" style="font-size:28px;"></i>
+                            <div class="mt-2">No products with Qty entered yet.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary deliveryaction-btn" id="btnQtySummaryCancel">
+                        <i class="bi bi-x-lg"></i> Cancel
+                    </button>
+                    <button type="button" class="btn btn-success deliveryaction-btn" id="btnQtySummaryAccept">
+                        <i class="bi bi-check-lg"></i> Accept
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <a href="javascript:" id="return-to-top" class="btn btn-primary shadow-lg d-none" style="position: fixed; bottom: 35px; right: 5px; border-radius: 50%; width: 45px; height: 45px; display: none; align-items: center; justify-content: center; z-index: 999; ">
         <i class="bi bi-chevron-up" style="top: 0px !important; left: 0px !important;"></i>
@@ -681,7 +1169,7 @@ var Aurl = '@Session["APIurl"]';
     LoadBranchByRoles(strCompanyCode,'#cmbBranch');
     //lblprintprof,cmbPrintProfile
     var printhdnfields = ["#lblprintprof", "#cmbPrintProfile"];
-    
+
     // Builds the columns definition used by #tblProductInfo.
     // Column 1: combined Image/Serial + Product details (name, uom/mrp, highlighted AvlVLS)
     // Column 2: Qty number input, capped to AvlVLS when that field is present in the row
@@ -732,8 +1220,8 @@ var Aurl = '@Session["APIurl"]';
                     //var metaLine = metaParts.length ? '<div class="prod-meta">' + metaParts.join(' &nbsp;|&nbsp; ') + '</div>' : '';
 
                     var metaParts = [];
-                    if (uomQty !== undefined && uomQty !== null && uomQty !== '') metaParts.push('Tot Qty: ' + parseFloat(uomQty).toFixed(DecVal));
-                    if (adjQty !== undefined && adjQty !== null && adjQty !== '') metaParts.push('Sold Qty: ' + parseFloat(adjQty).toFixed(DecVal));
+                    //if (uomQty !== undefined && uomQty !== null && uomQty !== '') metaParts.push('Tot Qty: ' + parseFloat(uomQty).toFixed(DecVal));
+                    //if (adjQty !== undefined && adjQty !== null && adjQty !== '') metaParts.push('Sold Qty: ' + parseFloat(adjQty).toFixed(DecVal));
                     var metaLine = metaParts.length ? '<div class="prod-meta">' + metaParts.join(' &nbsp;|&nbsp; ') + '</div>' : '';
 
                     metaParts = [];
@@ -768,10 +1256,10 @@ var Aurl = '@Session["APIurl"]';
                     var maxAttr = (avlVls !== null && !isNaN(avlVls)) ? (' max="' + avlVls + '"') : '';
                     var rowIdx = meta.row;
                     return '<div class="qty-stepper">'
-                        + '<button type="button" class="qty-btn qty-btn-minus" data-row="' + rowIdx + '" tabindex="-1"><i class="bi bi-dash-lg"></i></button>'
+                        + '<button type="button" class="qty-btn qty-btn-minus" data-row="' + rowIdx + '" tabindex="-1"><i class="bi bi-dash-lg" style="color:red"></i></button>'
                         + '<input type="text" inputmode="decimal" class="qty-input" '
                         + 'data-row="' + rowIdx + '" min="0"' + maxAttr + ' step="0.01" placeholder="0.00" value="' + currentQty + '" />'
-                        + '<button type="button" class="qty-btn qty-btn-plus" data-row="' + rowIdx + '" tabindex="-1"><i class="bi bi-plus-lg"></i></button>'
+                        + '<button type="button" class="qty-btn qty-btn-plus" data-row="' + rowIdx + '" tabindex="-1"><i class="bi bi-plus-lg" style="color:green"></i></button>'
                         + '</div>'
                         + '<div class="text-danger small qty-error" id="qtyError_' + rowIdx + '"></div>';
                 }
@@ -796,7 +1284,23 @@ var Aurl = '@Session["APIurl"]';
             $(row).toggleClass('row-qty-highlight', !isNaN(qty) && qty > 0);
         }
     });
+    var TableSurroundCustomers = $('#tblSurroundCustomers').DataTable({
+        "bFilter": true,
+        "bSearchable": true,
+        "bInfo": false,
+        "bPaginate": false,
+        "ordering": false,
+        scrollY: "500px",
+        scrollX: true,
+        scrollCollapse: true,
+        "columnDefs": [{ "targets": [0, 1], "visible": false, searchable: false, ordering: false }]
+        //"selected":true,
+    });
+    var modal = new bootstrap.Modal(document.getElementById('myModalfg'));// document.getElementById("myModalfg");
 
+    $('#btnSCClose,#modelcloseX').click(function (e) {
+        modal.hide();
+    });
     // Recalculate the "Items Selected" / "Total Value" summary bar whenever the
     // table is (re)drawn - e.g. after loading data or toggling Show Image. Qty
     // keystrokes update the summary directly (see the qty-input handler) since
@@ -954,6 +1458,216 @@ var Aurl = '@Session["APIurl"]';
         $input.val(next).trigger('input');
     });
 
+    // =====================================================================
+    // Qty Summary Popup
+    // Clicking either badge above the product table opens a popup listing
+    // only the products that currently have a Qty > 0. Qty can be edited
+    // inside the popup, but those edits are held in memory (pendingQty) and
+    // only pushed back into the main table's data when Accept is clicked.
+    // Cancel simply discards whatever was typed in the popup.
+    // =====================================================================
+    var modalQtySummary = new bootstrap.Modal(document.getElementById('modalQtySummaryPopup'));
+    // Each entry: { rowData: <reference to the main table's row data object>, pendingQty: number, avlVls: number|null }
+    var qtySummaryPendingItems = [];
+
+    function buildQtySummaryPopupRowHtml(item, idx) {
+        var d = item.rowData;
+        var showImage = $('#chkShowImage').is(':checked');
+        var imgVal = d["Imagedata"] !== undefined ? d["Imagedata"] : d["Imagedata "];
+        var mediaHtml = '';
+        var imgBlockHtml = '';
+
+        if (showImage) {
+            var hasImg = imgVal && imgVal.toString().trim() !== "" && imgVal.toString().trim().toUpperCase() !== "NULL";
+            if (hasImg) {
+                var src = imgVal.toString().indexOf('data:image') === 0 ? imgVal : ('data:image/jpeg;base64,' + imgVal);
+                mediaHtml = '<img src="' + src + '" class="prod-thumb" alt="product" '
+                    + 'onerror="this.classList.add(\'no-img\');this.removeAttribute(\'src\');this.innerHTML=\'<i class=\\\'bi bi-card-image\\\'></i>\';" />';
+            } else {
+                mediaHtml = '<div class="prod-thumb no-img"><i class="bi bi-card-image"></i></div>';
+            }
+            imgBlockHtml = '<div class="prod-img-col">' + mediaHtml + '</div>';
+        }
+
+        var uomPrice = d.InclPrice !== undefined ? d.InclPrice : "0.00";
+        var mrp = d.MRP !== undefined ? d.MRP : null;
+        var avlVls = d.AvlVLS !== undefined ? parseFloat(d.AvlVLS).toFixed(DecVal) : null;
+
+        var metaParts = [];
+        if (uomPrice !== undefined && uomPrice !== null && uomPrice !== '') metaParts.push('Price: ' + parseFloat(uomPrice).toFixed(DecVal));
+        if (mrp !== undefined && mrp !== null && mrp !== '') metaParts.push('MRP: ' + parseFloat(mrp).toFixed(DecVal));
+        var metaLine = metaParts.length ? '<div class="prod-meta">' + metaParts.join(' &nbsp;|&nbsp; ') + '</div>' : '';
+
+        var avlHtml = (avlVls !== null && !isNaN(avlVls))
+            ? '<div class="prod-avl">Available VLS: <span class="avl-highlight">' + avlVls + '</span></div>'
+            : '';
+
+        var detailsHtml = '<div class="prod-cell">'
+            + imgBlockHtml
+            + '<div class="prod-info">'
+            + '<div class="prod-name">' + (d.ProductName || '') + '</div>'
+            + metaLine
+            + avlHtml
+            + '</div></div>';
+
+        var maxAttr = (item.avlVls !== null && !isNaN(item.avlVls)) ? (' max="' + item.avlVls + '"') : '';
+        var qtyHtml = '<div class="qty-stepper">'
+            + '<button type="button" class="qty-btn qty-btn-minus-popup" data-idx="' + idx + '" tabindex="-1"><i class="bi bi-dash-lg" style="color:red"></i></button>'
+            + '<input type="text" inputmode="decimal" class="qty-input qty-input-popup" '
+            + 'data-idx="' + idx + '" min="0"' + maxAttr + ' step="0.01" placeholder="0.00" value="' + item.pendingQty + '" />'
+            + '<button type="button" class="qty-btn qty-btn-plus-popup" data-idx="' + idx + '" tabindex="-1"><i class="bi bi-plus-lg" style="color:green"></i></button>'
+            + '</div>'
+            + '<div class="text-danger small qty-error" id="qtyErrorPopup_' + idx + '"></div>';
+
+        return '<tr data-idx="' + idx + '"><td class="prod-details-col">' + detailsHtml + '</td><td class="qty-col">' + qtyHtml + '</td></tr>';
+    }
+
+    function renderQtySummaryPopup() {
+        var $body = $('#tblQtySummaryPopupBody');
+        $body.empty();
+
+        if (qtySummaryPendingItems.length === 0) {
+            $('#tblQtySummaryPopup').addClass('d-none');
+            $('#dvQtySummaryEmpty').removeClass('d-none');
+            return;
+        }
+        $('#tblQtySummaryPopup').removeClass('d-none');
+        $('#dvQtySummaryEmpty').addClass('d-none');
+
+        var rowsHtml = '';
+        qtySummaryPendingItems.forEach(function (item, idx) {
+            rowsHtml += buildQtySummaryPopupRowHtml(item, idx);
+        });
+        $body.html(rowsHtml);
+    }
+
+    // Opens the popup: gathers every main-table row whose Qty > 0, keeping a
+    // reference to each row's underlying data object (so Accept can mutate it
+    // directly) plus an in-memory pendingQty that the popup edits freely.
+    function openQtySummaryPopup() {
+        qtySummaryPendingItems = [];
+        Table.rows().every(function () {
+            var d = this.data();
+            var qty = parseFloat(d.Qty);
+            if (!isNaN(qty) && qty > 0) {
+                var avlVls = d.AvlVLS !== undefined && d.AvlVLS !== null && d.AvlVLS !== '' ? parseFloat(d.AvlVLS) : null;
+                qtySummaryPendingItems.push({
+                    rowData: d,
+                    pendingQty: qty,
+                    avlVls: (avlVls !== null && !isNaN(avlVls)) ? avlVls : null
+                });
+            }
+        });
+
+        renderQtySummaryPopup();
+        modalQtySummary.show();
+    }
+
+    $('.qty-summary-bar').on('click', '.qty-summary-badge', function () {
+        openQtySummaryPopup();
+    });
+
+    // ----- Popup qty input validation (mirrors main table's qty-input handler,
+    // but only updates the in-memory pendingQty - never the main table data) -----
+    $('#tblQtySummaryPopupBody').on('input', '.qty-input-popup', function () {
+        var $input = $(this);
+        var val = $input.val();
+        var cleaned = val.replace(/[^0-9.]/g, '');
+        var firstDot = cleaned.indexOf('.');
+        if (firstDot !== -1) {
+            cleaned = cleaned.substring(0, firstDot + 1) + cleaned.substring(firstDot + 1).replace(/\./g, '');
+        }
+        if (cleaned !== val) {
+            $input.val(cleaned);
+            val = cleaned;
+        }
+
+        var idx = parseInt($input.data('idx'), 10);
+        var item = qtySummaryPendingItems[idx];
+        if (!item) return;
+
+        var $error = $('#qtyErrorPopup_' + idx);
+        var max = item.avlVls;
+
+        if (val === '' || val === '.') {
+            $error.text('');
+            $input.removeClass('is-invalid');
+            item.pendingQty = 0;
+            return;
+        }
+
+        var numVal = parseFloat(val);
+        if (max !== null && !isNaN(max) && numVal > max) {
+            $error.text('Qty cannot exceed available VLS (' + max + ')');
+            $input.addClass('is-invalid');
+            $input.val(max);
+            numVal = max;
+        } else {
+            $error.text('');
+            $input.removeClass('is-invalid');
+        }
+
+        item.pendingQty = numVal;
+    });
+
+    $('#tblQtySummaryPopupBody').on('keypress', '.qty-input-popup', function (e) {
+        var charCode = e.which ? e.which : e.keyCode;
+        var char = String.fromCharCode(charCode);
+        if (char === '.' && $(this).val().indexOf('.') === -1) {
+            return true;
+        }
+        if (charCode < 48 || charCode > 57) {
+            e.preventDefault();
+            return false;
+        }
+    });
+
+    $('#tblQtySummaryPopupBody').on('paste', '.qty-input-popup', function (e) {
+        var clipboard = e.originalEvent.clipboardData || window.clipboardData;
+        var pasted = clipboard ? clipboard.getData('text') : '';
+        if (/[^0-9.]/.test(pasted) || (pasted.match(/\./g) || []).length > 1) {
+            e.preventDefault();
+        }
+    });
+
+    $('#tblQtySummaryPopupBody').on('click', '.qty-btn-plus-popup', function () {
+        var $input = $(this).closest('.qty-stepper').find('.qty-input-popup');
+        var max = $input.attr('max') !== undefined && $input.attr('max') !== '' ? parseFloat($input.attr('max')) : null;
+        var current = parseFloat($input.val()) || 0;
+        var next = Math.round((current + 1) * 100) / 100;
+        if (max !== null && !isNaN(max) && next > max) {
+            next = max;
+        }
+        $input.val(next).trigger('input');
+    });
+
+    $('#tblQtySummaryPopupBody').on('click', '.qty-btn-minus-popup', function () {
+        var $input = $(this).closest('.qty-stepper').find('.qty-input-popup');
+        var current = parseFloat($input.val()) || 0;
+        var next = Math.round((current - 1) * 100) / 100;
+        if (next < 0) next = 0;
+        $input.val(next).trigger('input');
+    });
+
+    // ----- Cancel: discard popup edits, close without touching the main table -----
+    $('#btnQtySummaryCancel, #btnQtySummaryCloseX').click(function () {
+        qtySummaryPendingItems = [];
+        modalQtySummary.hide();
+    });
+
+    // ----- Accept: push each pendingQty back into the main table's row data,
+    // re-render the affected rows and recalculate the summary totals -----
+    $('#btnQtySummaryAccept').click(function () {
+        qtySummaryPendingItems.forEach(function (item) {
+            item.rowData.Qty = item.pendingQty;
+        });
+        qtySummaryPendingItems = [];
+
+        Table.rows().invalidate('data').draw(false);
+        updateQtySummary();
+        modalQtySummary.hide();
+    });
+
         // Initialize Similar Invoices DataTable
         var similarInvoicesTable = $('#tblSimilarInvoices').DataTable({
             "bFilter": true,
@@ -997,6 +1711,7 @@ var Aurl = '@Session["APIurl"]';
         $("#lnkMob1,#lnkMob2").hide();
         Table.search("").draw();
         $("#cmbSalesman").val(DefSMID);
+        $("#cmbSalesman").prop("disabled", true);
         VLSData = [];
         VLSProductData = [];
         // Summary / Product Details / Save-Clear panels should only be visible
@@ -1060,6 +1775,7 @@ var Aurl = '@Session["APIurl"]';
                 if (Todayroute) {
                     DefSMID = Todayroute[0].SalesmanID;
                     $('#cmbSalesman').val(Todayroute[0].SalesmanID);
+                    $("#cmbSalesman").prop("disabled", true);
                     var profile = Todayroute[0].PrintProfileID;
                     GetPrintProfile(strCompanyCode, PrintTransID, profile, true, printhdnfields);
                 }
@@ -1081,7 +1797,7 @@ var Aurl = '@Session["APIurl"]';
             },
             success: function (data) {
                 Customerlist = [];
-                var Customers = data.Table;              
+                var Customers = data.Table;
                 Customerlist = Customers;
                 $("#txtCustomerName").autocomplete({
                     minLength: 0,
@@ -1107,7 +1823,7 @@ var Aurl = '@Session["APIurl"]';
                         .append("<div class='acItem'><span class='name'>" +
                             item.label + "</span></div>")
                         .appendTo(ul);
-                };                
+                };
             }, error: function (data) {
                 if (data.status == "401") {
                     var msg = data.responseJSON.Message;
@@ -1454,5 +2170,131 @@ var Aurl = '@Session["APIurl"]';
             // Open WhatsApp Web/Desktop
             window.open("https://wa.me/" + mobile, "_blank");
         }
+    });
+
+    $('#btnGetSurrCustomers').click(function () {
+        $('#divErrorOnCustName').html('');
+        var IsAllow = true;// $('#txtAllowTrackLocation').val() == "0" ? false : true;
+        if (IsAllow) {
+            //modal.show();
+            $('#dvCustLoc').show();
+            geolocate(2);
+        }
+        else {
+            $('#divErrorOnCustName').html('You dont have Location tracking Permission. Cannot load data');
+        }
+    });
+    function geolocate(nMode) {
+        var IsAllow = true;// $('#txtAllowTrackLocation').val() == "0" ? false : true;
+        if (IsAllow) {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    //var geolocation = new google.maps.LatLng(
+                    //position.coords.latitude, position.coords.longitude);
+                    var PinLat = position.coords.latitude;
+                    var PinLong = position.coords.longitude;
+
+                    $('#txtLatitude').val(PinLat);
+                    $('#txtLongtitude').val(PinLong);
+                    if (nMode == 2) {
+                        GetCustomerbyLocation();
+                    }
+                }, function (error) {
+                    showErrorSnackbar(error.message);
+                });
+            } else {
+                showErrorSnackbar("Geolocation is not supported by this browser.")
+            }
+        }
+    }
+
+
+    function GetCustomerbyLocation() {
+
+        //alert("Time :" + curtime);
+        $('#divErrorOnCustName').html('');
+        $('#divErrorOnPopupSurrCust').html('');
+        $('#lblCurrLocation').text("");
+        var lats = $('#txtLatitude').val();
+        var longs = $('#txtLongtitude').val();
+        if (lats != "" && longs != "") {
+            TableSurroundCustomers.clear().draw();
+            $.ajax({
+                url: Aurl + "surroundingcustomers",
+                type: "GET",
+                datatype: "JSON",
+                data: {
+                    CompanyCode: strCompanyCode, UserID: UID, Latitude: lats, Longitude: longs
+                },
+                success: function (data) {
+                    $('#lblCurrLocation').text(lats + "," + longs);
+                    if (data.length > 0) {
+                        if (data[0].Mode == 0) {
+                            modal.show();
+                            var customerdata = (data[0].Customerdata);
+                            console.log("customerdata", customerdata);
+                            $.each(customerdata, function (i, items) {
+                                TableSurroundCustomers.row.add([
+                                    items.ID,
+                                    items.Customername,
+                                    renderCustomerCell(items, i)
+                                ]).draw(false);
+                            });
+                        } else {
+                            modal.hide();
+                            showErrorSnackbar(data[0].Message);
+                        }
+                    } else {
+                        $('#divErrorOnCustName').html('No Customers surrounding you.');
+                        $('#divErrorOnPopupSurrCust').html('No Customers surrounding you.');
+                    }
+                }
+            });
+        } else {
+            modal.hide();
+            $('#divErrorOnCustName').html('Location Not Identified. Try again');
+        }
+    }
+    function initials(name) {
+        if (!name) return "?";
+        var parts = name.trim().split(/\s+/);
+        var chars = parts.length > 1 ? parts[0][0] + parts[1][0] : parts[0].slice(0, 2);
+        return chars.toUpperCase();
+    }
+
+    function renderCustomerCell(items, rowIndex) {
+        var avatar;
+        if (items.ImageData && items.ImageData.trim() !== "") {
+            var imgSrcdata = "data:image/jpeg;base64," + items.ImageData;
+            avatar = '<img class="cust-avatar" src="' + imgSrcdata + '" alt="' + items.Customername + '" />';
+        } else {
+            avatar = '<div class="cust-avatar-fallback">' + initials(items.Customername) + '</div>';
+        }
+
+        // Stagger the entrance animation per row, capped so long lists don't feel sluggish
+        var delay = Math.min(rowIndex * 60, 400);
+
+        return (
+            '<div class="cust-card" style="animation-delay:' + delay + 'ms">' +
+            avatar +
+            '<div class="cust-body">' +
+            '<div class="cust-name">' + items.Customername + '</div>' +
+            '<div class="cust-meta">' +
+            '<span><i class="bi bi-signpost-split-fill"></i>' + items.Radius + '</span>' +
+            '<span><i class="bi bi-geo-alt-fill"></i>' + items.Address + '</span>' +
+            '</div>' +
+            '</div>' +
+            '</div>'
+        );
+    }
+    $('#tblSurroundCustomers tbody').on('click', 'tr', function () {
+        $('#txtBeatName').val('');
+        $('#txtSalesManName').val('');
+        var CustID = TableSurroundCustomers.row(this).data()[0];
+        var Cust = TableSurroundCustomers.row(this).data()[1];
+        $('#txtCustomerName').val(Cust);
+        //GetData(5, CustID);
+        $("#txtCustomerID").val(CustID);
+        modal.hide();
     });
 </script>

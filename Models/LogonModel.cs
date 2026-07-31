@@ -73,6 +73,9 @@ namespace ShineWebMobile.Models
         public string Feedback { get; set; }
         public string NoOrder { get; set; }
         public string OrderTaken { get; set; }
+
+        public string AssignInvoicewise { get; set; }
+        public string Customerwise { get; set; }
     }
     public class clspermissions
     {

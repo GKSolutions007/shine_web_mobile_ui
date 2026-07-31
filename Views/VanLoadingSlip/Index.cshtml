@@ -211,8 +211,8 @@
     }
 
     .prod-img-col {
-        flex: 0 0 auto;
-        width: 75px;
+        /* flex: 0 0 auto;
+        width: 75px;*/
     }
 
 
@@ -257,7 +257,7 @@
     .prod-name {
         font-weight: 600;
         font-size: 0.95rem;
-        color: #212529;
+        color: #1565c0;
         word-break: break-word;
     }
 
@@ -287,7 +287,7 @@
 
     #tblProductInfo td.qty-col {
         vertical-align: middle;
-        min-width: 100px;
+        min-width: 150px;
         text-align: center;
     }
 
@@ -329,7 +329,7 @@
         font-weight: 700;
         font-size: 16px;
         line-height: 1;
-        display: none; /* flex;*/
+        display: flex; /* flex;*/
         align-items: center;
         justify-content: center;
         cursor: pointer;
@@ -430,7 +430,14 @@
         padding: 3px 10px;
         font-weight: 700;
         font-size: 0.85rem;
+        cursor: pointer;
+        transition: transform 0.15s, box-shadow 0.15s;
     }
+
+        .qty-summary-badge:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+        }
 
         .qty-summary-badge.qty-summary-value {
             background: #eafaf0;
@@ -438,10 +445,28 @@
             border-color: #c3f0d6;
         }
 
+    /* ===== Qty Summary Popup (products with qty entered) ===== */
+    #modalQtySummaryPopup .modal-content {
+        border-radius: 12px;
+        overflow: hidden;
+        border: none;
+    }
+
+    #modalQtySummaryPopup .modal-body {
+        max-height: 60vh;
+        overflow-y: auto;
+    }
+
+    #modalQtySummaryPopup .qty-summary-empty {
+        text-align: center;
+        color: #6c757d;
+        padding: 30px 10px;
+    }
+
     @@media (max-width: 576px) {
         .prod-thumb, .prod-thumb.no-img, .prod-serial {
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
         }
 
         .prod-name {
@@ -453,7 +478,7 @@
         }
 
         .qty-stepper {
-            width: 60px;
+            width: 100px;
         }
 
         .qty-btn {
@@ -860,8 +885,8 @@
                     <div class="mb-3">
                         <input hidden id="txtCustomerID" />
                         <div class="form-label fw-bold text-primary"><i class="bi bi-person me-2 text-primary"></i>Customer</div>
-                        
-                        <div class="d-flex gap-2">                            
+
+                        <div class="d-flex gap-2">
                             <input class="form-control shadow-sm border-1 bg-light" id="txtCustomerName" />
                             <button id="btnGetSurrCustomers" type="button" class="btn btn-primary deliveryaction-btn flex-shrink-0 d-none">
                                 <i class="bi bi-geo-alt-fill"></i> Near Me
@@ -872,17 +897,17 @@
 
                     <div>
                         @*<div class="col-12">
-                            
-                            <div class="form-label fw-bold text-primary"><i class="bi bi-person me-2 text-primary"></i>Customer</div>
-                            <input class="form-control shadow-sm border-1 bg-light" id="txtCustomerName" />
-                        </div>
-                        <div class="text-danger small mt-1 clrdivserror" id="divErrorOnCustName"></div>
 
-                        <div class="col-12">
-                            <div class="field-wrap">
-                                <button class="customdabuttons hidewhenview" id="btnGetSurrCustomers" style="align-content:center"><span class="glyphicon glyphicon-map-marker"></span>&nbsp;Surrounding Customers</button>
+                                <div class="form-label fw-bold text-primary"><i class="bi bi-person me-2 text-primary"></i>Customer</div>
+                                <input class="form-control shadow-sm border-1 bg-light" id="txtCustomerName" />
                             </div>
-                        </div>*@
+                            <div class="text-danger small mt-1 clrdivserror" id="divErrorOnCustName"></div>
+
+                            <div class="col-12">
+                                <div class="field-wrap">
+                                    <button class="customdabuttons hidewhenview" id="btnGetSurrCustomers" style="align-content:center"><span class="glyphicon glyphicon-map-marker"></span>&nbsp;Surrounding Customers</button>
+                                </div>
+                            </div>*@
 
                         @*<label id="lblMob1">9632514778</label>&emsp;<label id="lblMob2">8412345411</label>*@
                         <div class="mt-2">
@@ -908,11 +933,11 @@
                             <div class="text-danger ps-1" id="divErrPrintProfile"></div>
                         </div>
                         @*<div class="col-4">
-                <div class="form-label fw-bold text-primary">Copies</div>
-                <span class="form-label">
-                    <input id="txtNoofCopies" class="form-control" value="1" type="number">
-                </span>
-            </div>*@
+                                <div class="form-label fw-bold text-primary">Copies</div>
+                                <span class="form-label">
+                                    <input id="txtNoofCopies" class="form-control" value="1" type="number">
+                                </span>
+                            </div>*@
                     </div>
                     <input type="text" id="txtLatitude" hidden />
                     <input type="text" id="txtLongtitude" hidden />
@@ -1087,6 +1112,47 @@
             </div>
         </div>
     </div>
+
+    <!-- Qty Summary Popup: shows only the products that currently have a Qty entered.
+         Qty can be edited here without touching the main table until Accept is pressed. -->
+    <div class="modal fade" id="modalQtySummaryPopup" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="card-header-custom">
+                    <i class="bi bi-cart-check"></i>
+                    <span class="flex-grow-1">Selected Products (Qty)</span>
+                    <button type="button" class="btn-close btn-close-white" id="btnQtySummaryCloseX" aria-label="Close" style="margin-left:auto;"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table id="tblQtySummaryPopup" class="table table-hover table-bordered align-middle w-100 mb-0">
+                            <thead>
+                                <tr class="theadstyle">
+                                    <th>Product Details</th>
+                                    <th>Qty</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tblQtySummaryPopupBody">
+                            </tbody>
+                        </table>
+                        <div class="qty-summary-empty d-none" id="dvQtySummaryEmpty">
+                            <i class="bi bi-cart-x" style="font-size:28px;"></i>
+                            <div class="mt-2">No products with Qty entered yet.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary deliveryaction-btn" id="btnQtySummaryCancel">
+                        <i class="bi bi-x-lg"></i> Cancel
+                    </button>
+                    <button type="button" class="btn btn-success deliveryaction-btn" id="btnQtySummaryAccept">
+                        <i class="bi bi-check-lg"></i> Accept
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <a href="javascript:" id="return-to-top" class="btn btn-primary shadow-lg d-none" style="position: fixed; bottom: 35px; right: 5px; border-radius: 50%; width: 45px; height: 45px; display: none; align-items: center; justify-content: center; z-index: 999; ">
         <i class="bi bi-chevron-up" style="top: 0px !important; left: 0px !important;"></i>
     </a>
@@ -1103,7 +1169,7 @@ var Aurl = '@Session["APIurl"]';
     LoadBranchByRoles(strCompanyCode,'#cmbBranch');
     //lblprintprof,cmbPrintProfile
     var printhdnfields = ["#lblprintprof", "#cmbPrintProfile"];
-    
+
     // Builds the columns definition used by #tblProductInfo.
     // Column 1: combined Image/Serial + Product details (name, uom/mrp, highlighted AvlVLS)
     // Column 2: Qty number input, capped to AvlVLS when that field is present in the row
@@ -1154,8 +1220,8 @@ var Aurl = '@Session["APIurl"]';
                     //var metaLine = metaParts.length ? '<div class="prod-meta">' + metaParts.join(' &nbsp;|&nbsp; ') + '</div>' : '';
 
                     var metaParts = [];
-                    if (uomQty !== undefined && uomQty !== null && uomQty !== '') metaParts.push('Tot Qty: ' + parseFloat(uomQty).toFixed(DecVal));
-                    if (adjQty !== undefined && adjQty !== null && adjQty !== '') metaParts.push('Sold Qty: ' + parseFloat(adjQty).toFixed(DecVal));
+                    //if (uomQty !== undefined && uomQty !== null && uomQty !== '') metaParts.push('Tot Qty: ' + parseFloat(uomQty).toFixed(DecVal));
+                    //if (adjQty !== undefined && adjQty !== null && adjQty !== '') metaParts.push('Sold Qty: ' + parseFloat(adjQty).toFixed(DecVal));
                     var metaLine = metaParts.length ? '<div class="prod-meta">' + metaParts.join(' &nbsp;|&nbsp; ') + '</div>' : '';
 
                     metaParts = [];
@@ -1190,10 +1256,10 @@ var Aurl = '@Session["APIurl"]';
                     var maxAttr = (avlVls !== null && !isNaN(avlVls)) ? (' max="' + avlVls + '"') : '';
                     var rowIdx = meta.row;
                     return '<div class="qty-stepper">'
-                        + '<button type="button" class="qty-btn qty-btn-minus" data-row="' + rowIdx + '" tabindex="-1"><i class="bi bi-dash-lg"></i></button>'
+                        + '<button type="button" class="qty-btn qty-btn-minus" data-row="' + rowIdx + '" tabindex="-1"><i class="bi bi-dash-lg" style="color:red"></i></button>'
                         + '<input type="text" inputmode="decimal" class="qty-input" '
                         + 'data-row="' + rowIdx + '" min="0"' + maxAttr + ' step="0.01" placeholder="0.00" value="' + currentQty + '" />'
-                        + '<button type="button" class="qty-btn qty-btn-plus" data-row="' + rowIdx + '" tabindex="-1"><i class="bi bi-plus-lg"></i></button>'
+                        + '<button type="button" class="qty-btn qty-btn-plus" data-row="' + rowIdx + '" tabindex="-1"><i class="bi bi-plus-lg" style="color:green"></i></button>'
                         + '</div>'
                         + '<div class="text-danger small qty-error" id="qtyError_' + rowIdx + '"></div>';
                 }
@@ -1392,6 +1458,216 @@ var Aurl = '@Session["APIurl"]';
         $input.val(next).trigger('input');
     });
 
+    // =====================================================================
+    // Qty Summary Popup
+    // Clicking either badge above the product table opens a popup listing
+    // only the products that currently have a Qty > 0. Qty can be edited
+    // inside the popup, but those edits are held in memory (pendingQty) and
+    // only pushed back into the main table's data when Accept is clicked.
+    // Cancel simply discards whatever was typed in the popup.
+    // =====================================================================
+    var modalQtySummary = new bootstrap.Modal(document.getElementById('modalQtySummaryPopup'));
+    // Each entry: { rowData: <reference to the main table's row data object>, pendingQty: number, avlVls: number|null }
+    var qtySummaryPendingItems = [];
+
+    function buildQtySummaryPopupRowHtml(item, idx) {
+        var d = item.rowData;
+        var showImage = $('#chkShowImage').is(':checked');
+        var imgVal = d["Imagedata"] !== undefined ? d["Imagedata"] : d["Imagedata "];
+        var mediaHtml = '';
+        var imgBlockHtml = '';
+
+        if (showImage) {
+            var hasImg = imgVal && imgVal.toString().trim() !== "" && imgVal.toString().trim().toUpperCase() !== "NULL";
+            if (hasImg) {
+                var src = imgVal.toString().indexOf('data:image') === 0 ? imgVal : ('data:image/jpeg;base64,' + imgVal);
+                mediaHtml = '<img src="' + src + '" class="prod-thumb" alt="product" '
+                    + 'onerror="this.classList.add(\'no-img\');this.removeAttribute(\'src\');this.innerHTML=\'<i class=\\\'bi bi-card-image\\\'></i>\';" />';
+            } else {
+                mediaHtml = '<div class="prod-thumb no-img"><i class="bi bi-card-image"></i></div>';
+            }
+            imgBlockHtml = '<div class="prod-img-col">' + mediaHtml + '</div>';
+        }
+
+        var uomPrice = d.InclPrice !== undefined ? d.InclPrice : "0.00";
+        var mrp = d.MRP !== undefined ? d.MRP : null;
+        var avlVls = d.AvlVLS !== undefined ? parseFloat(d.AvlVLS).toFixed(DecVal) : null;
+
+        var metaParts = [];
+        if (uomPrice !== undefined && uomPrice !== null && uomPrice !== '') metaParts.push('Price: ' + parseFloat(uomPrice).toFixed(DecVal));
+        if (mrp !== undefined && mrp !== null && mrp !== '') metaParts.push('MRP: ' + parseFloat(mrp).toFixed(DecVal));
+        var metaLine = metaParts.length ? '<div class="prod-meta">' + metaParts.join(' &nbsp;|&nbsp; ') + '</div>' : '';
+
+        var avlHtml = (avlVls !== null && !isNaN(avlVls))
+            ? '<div class="prod-avl">Available VLS: <span class="avl-highlight">' + avlVls + '</span></div>'
+            : '';
+
+        var detailsHtml = '<div class="prod-cell">'
+            + imgBlockHtml
+            + '<div class="prod-info">'
+            + '<div class="prod-name">' + (d.ProductName || '') + '</div>'
+            + metaLine
+            + avlHtml
+            + '</div></div>';
+
+        var maxAttr = (item.avlVls !== null && !isNaN(item.avlVls)) ? (' max="' + item.avlVls + '"') : '';
+        var qtyHtml = '<div class="qty-stepper">'
+            + '<button type="button" class="qty-btn qty-btn-minus-popup" data-idx="' + idx + '" tabindex="-1"><i class="bi bi-dash-lg" style="color:red"></i></button>'
+            + '<input type="text" inputmode="decimal" class="qty-input qty-input-popup" '
+            + 'data-idx="' + idx + '" min="0"' + maxAttr + ' step="0.01" placeholder="0.00" value="' + item.pendingQty + '" />'
+            + '<button type="button" class="qty-btn qty-btn-plus-popup" data-idx="' + idx + '" tabindex="-1"><i class="bi bi-plus-lg" style="color:green"></i></button>'
+            + '</div>'
+            + '<div class="text-danger small qty-error" id="qtyErrorPopup_' + idx + '"></div>';
+
+        return '<tr data-idx="' + idx + '"><td class="prod-details-col">' + detailsHtml + '</td><td class="qty-col">' + qtyHtml + '</td></tr>';
+    }
+
+    function renderQtySummaryPopup() {
+        var $body = $('#tblQtySummaryPopupBody');
+        $body.empty();
+
+        if (qtySummaryPendingItems.length === 0) {
+            $('#tblQtySummaryPopup').addClass('d-none');
+            $('#dvQtySummaryEmpty').removeClass('d-none');
+            return;
+        }
+        $('#tblQtySummaryPopup').removeClass('d-none');
+        $('#dvQtySummaryEmpty').addClass('d-none');
+
+        var rowsHtml = '';
+        qtySummaryPendingItems.forEach(function (item, idx) {
+            rowsHtml += buildQtySummaryPopupRowHtml(item, idx);
+        });
+        $body.html(rowsHtml);
+    }
+
+    // Opens the popup: gathers every main-table row whose Qty > 0, keeping a
+    // reference to each row's underlying data object (so Accept can mutate it
+    // directly) plus an in-memory pendingQty that the popup edits freely.
+    function openQtySummaryPopup() {
+        qtySummaryPendingItems = [];
+        Table.rows().every(function () {
+            var d = this.data();
+            var qty = parseFloat(d.Qty);
+            if (!isNaN(qty) && qty > 0) {
+                var avlVls = d.AvlVLS !== undefined && d.AvlVLS !== null && d.AvlVLS !== '' ? parseFloat(d.AvlVLS) : null;
+                qtySummaryPendingItems.push({
+                    rowData: d,
+                    pendingQty: qty,
+                    avlVls: (avlVls !== null && !isNaN(avlVls)) ? avlVls : null
+                });
+            }
+        });
+
+        renderQtySummaryPopup();
+        modalQtySummary.show();
+    }
+
+    $('.qty-summary-bar').on('click', '.qty-summary-badge', function () {
+        openQtySummaryPopup();
+    });
+
+    // ----- Popup qty input validation (mirrors main table's qty-input handler,
+    // but only updates the in-memory pendingQty - never the main table data) -----
+    $('#tblQtySummaryPopupBody').on('input', '.qty-input-popup', function () {
+        var $input = $(this);
+        var val = $input.val();
+        var cleaned = val.replace(/[^0-9.]/g, '');
+        var firstDot = cleaned.indexOf('.');
+        if (firstDot !== -1) {
+            cleaned = cleaned.substring(0, firstDot + 1) + cleaned.substring(firstDot + 1).replace(/\./g, '');
+        }
+        if (cleaned !== val) {
+            $input.val(cleaned);
+            val = cleaned;
+        }
+
+        var idx = parseInt($input.data('idx'), 10);
+        var item = qtySummaryPendingItems[idx];
+        if (!item) return;
+
+        var $error = $('#qtyErrorPopup_' + idx);
+        var max = item.avlVls;
+
+        if (val === '' || val === '.') {
+            $error.text('');
+            $input.removeClass('is-invalid');
+            item.pendingQty = 0;
+            return;
+        }
+
+        var numVal = parseFloat(val);
+        if (max !== null && !isNaN(max) && numVal > max) {
+            $error.text('Qty cannot exceed available VLS (' + max + ')');
+            $input.addClass('is-invalid');
+            $input.val(max);
+            numVal = max;
+        } else {
+            $error.text('');
+            $input.removeClass('is-invalid');
+        }
+
+        item.pendingQty = numVal;
+    });
+
+    $('#tblQtySummaryPopupBody').on('keypress', '.qty-input-popup', function (e) {
+        var charCode = e.which ? e.which : e.keyCode;
+        var char = String.fromCharCode(charCode);
+        if (char === '.' && $(this).val().indexOf('.') === -1) {
+            return true;
+        }
+        if (charCode < 48 || charCode > 57) {
+            e.preventDefault();
+            return false;
+        }
+    });
+
+    $('#tblQtySummaryPopupBody').on('paste', '.qty-input-popup', function (e) {
+        var clipboard = e.originalEvent.clipboardData || window.clipboardData;
+        var pasted = clipboard ? clipboard.getData('text') : '';
+        if (/[^0-9.]/.test(pasted) || (pasted.match(/\./g) || []).length > 1) {
+            e.preventDefault();
+        }
+    });
+
+    $('#tblQtySummaryPopupBody').on('click', '.qty-btn-plus-popup', function () {
+        var $input = $(this).closest('.qty-stepper').find('.qty-input-popup');
+        var max = $input.attr('max') !== undefined && $input.attr('max') !== '' ? parseFloat($input.attr('max')) : null;
+        var current = parseFloat($input.val()) || 0;
+        var next = Math.round((current + 1) * 100) / 100;
+        if (max !== null && !isNaN(max) && next > max) {
+            next = max;
+        }
+        $input.val(next).trigger('input');
+    });
+
+    $('#tblQtySummaryPopupBody').on('click', '.qty-btn-minus-popup', function () {
+        var $input = $(this).closest('.qty-stepper').find('.qty-input-popup');
+        var current = parseFloat($input.val()) || 0;
+        var next = Math.round((current - 1) * 100) / 100;
+        if (next < 0) next = 0;
+        $input.val(next).trigger('input');
+    });
+
+    // ----- Cancel: discard popup edits, close without touching the main table -----
+    $('#btnQtySummaryCancel, #btnQtySummaryCloseX').click(function () {
+        qtySummaryPendingItems = [];
+        modalQtySummary.hide();
+    });
+
+    // ----- Accept: push each pendingQty back into the main table's row data,
+    // re-render the affected rows and recalculate the summary totals -----
+    $('#btnQtySummaryAccept').click(function () {
+        qtySummaryPendingItems.forEach(function (item) {
+            item.rowData.Qty = item.pendingQty;
+        });
+        qtySummaryPendingItems = [];
+
+        Table.rows().invalidate('data').draw(false);
+        updateQtySummary();
+        modalQtySummary.hide();
+    });
+
         // Initialize Similar Invoices DataTable
         var similarInvoicesTable = $('#tblSimilarInvoices').DataTable({
             "bFilter": true,
@@ -1521,7 +1797,7 @@ var Aurl = '@Session["APIurl"]';
             },
             success: function (data) {
                 Customerlist = [];
-                var Customers = data.Table;              
+                var Customers = data.Table;
                 Customerlist = Customers;
                 $("#txtCustomerName").autocomplete({
                     minLength: 0,
@@ -1547,7 +1823,7 @@ var Aurl = '@Session["APIurl"]';
                         .append("<div class='acItem'><span class='name'>" +
                             item.label + "</span></div>")
                         .appendTo(ul);
-                };                
+                };
             }, error: function (data) {
                 if (data.status == "401") {
                     var msg = data.responseJSON.Message;

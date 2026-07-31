@@ -1,0 +1,1529 @@
+﻿@model ShineWebMobile.Models.SingleMasterModel
+@{
+    ViewBag.Title = ViewData["FormName"];
+    Layout = "~/Views/Shared/_LayoutBT5.cshtml";
+}
+
+<link href="~/Content/navbar.css" rel="stylesheet" />
+<link href="~/Content/buttonTop.css" rel="stylesheet" />
+<link href="~/Content/dataTables.dataTables.2.2.2.css" rel="stylesheet" />
+<link rel="stylesheet" href="~/Content/jquery-ui.css">
+@*<link href="~/Content/surroundingcustomerstyle.css" rel="stylesheet" />*@
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery-3.7.1.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Scripts/dataTables.2.2.2.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<header>
+    <link rel="stylesheet" href="~/Content/index.css">
+</header>
+<style>
+
+    .each {
+        border-bottom: 1px solid #555;
+        padding: 3px 0;
+    }
+
+    .acItem .name {
+        font-size: 14px;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .acItem .desc {
+        font-size: 10px;
+        font-family: Arial, Helvetica, sans-serif;
+        color: #555;
+    }
+
+    .ui-autocomplete {
+        max-height: 245px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    input[type=number]::placeholder {
+        text-align: left;
+    }
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+
+    .mobile-delivery-container {
+        padding: 5px;
+        animation: fadeIn 0.4s ease-in-out;
+    }
+
+    .modern-card {
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        margin-bottom: 1rem;
+        background: #fff;
+    }
+
+        .modern-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+    .card-header-custom {
+        background: linear-gradient(135deg, #0056b3, #004085);
+        color: white;
+        border-radius: 12px 12px 0 0 !important;
+        padding: 10px 15px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .card-header-orange {
+        background: linear-gradient(135deg, #fd7e14, #e8590c);
+    }
+
+    .card-header-brown {
+        background: linear-gradient(135deg, #795548, #5d4037);
+    }
+
+    .card-header-red {
+        background: linear-gradient(135deg, #dc3545, #bd2130);
+    }
+
+    .info-label {
+        font-size: 1rem;
+        color: #6c757d;
+        margin-bottom: 2px;
+        font-weight: 500;
+    }
+
+    .info-value {
+        font-size: 1.05rem;
+        color: #212529;
+        font-weight: 600;
+        word-break: break-word;
+    }
+
+    .deliverydeliveryaction-btn {
+        border-radius: 8px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        padding: 10px 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.2s;
+    }
+
+    .deliveryaction-btn:hover {
+        transform: scale(1.02);
+    }
+
+    .radio-group-custom {
+        background: white;
+        padding: 10px 15px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .custom-radio {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 16px;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    #tblProductInfo th {
+        background: #0dcaf0;
+        color: white;
+        text-align: center;
+    }
+
+    .theadstyle {
+        background: #0dcaf0;
+        color: white;
+        text-align: center;
+    }
+    /* Image Show/Hide toggle - when hidden, only the image column disappears,
+    name / price-desc / inputs remain visible */
+    #tblProductInfo.hide-prod-image .prod-img-col {
+        display: none;
+    }
+
+
+    .img-toggle-bar label {
+        font-size: 12px;
+        font-weight: 600;
+        margin: 0;
+        cursor: pointer;
+    }
+
+    .img-toggle-bar {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
+        white-space: nowrap;
+    }
+
+    /* ===== Product Details table (2 visible columns: Product / Qty) ===== */
+    #tblProductInfo th {
+        white-space: nowrap;
+    }
+
+    #tblProductInfo td.prod-details-col {
+        vertical-align: top;
+    }
+
+    .prod-cell {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        text-align: left;
+    }
+
+    .prod-img-col {
+        flex: 0 0 auto;
+        width: 75px;
+    }
+
+
+
+    .prod-thumb {
+        width: 75px;
+        height: 75px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+        background: #f8f9fa;
+        display: block;
+    }
+
+        .prod-thumb.no-img {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #adb5bd;
+            font-size: 22px;
+        }
+
+    .prod-serial {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #0dcaf0;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 14px;
+        margin: 0 auto;
+    }
+
+    .prod-info {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .prod-name {
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: #212529;
+        word-break: break-word;
+    }
+
+    .prod-meta {
+        font-size: 1rem;
+        color: #43494e;
+        margin-top: 2px;
+        word-break: break-word;
+    }
+
+    .prod-avl {
+        margin-top: 4px;
+        font-size: 0.8rem;
+        color: #495057;
+    }
+
+    .avl-highlight {
+        background: #fff3cd;
+        color: #856404;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 6px;
+        border: 1px solid #ffe08a;
+        display: inline-block;
+        font-size: 12px
+    }
+
+    #tblProductInfo td.qty-col {
+        vertical-align: middle;
+        min-width: 100px;
+        text-align: center;
+    }
+
+    /* Row highlight when Qty entered is greater than 0 */
+    #tblProductInfo tbody tr.row-qty-highlight,
+    #tblProductInfo tbody tr.row-qty-highlight:hover {
+        background-color: #d1f2df;
+    }
+
+        #tblProductInfo tbody tr.row-qty-highlight td {
+            background-color: #d1f2df;
+        }
+
+    /* ===== Modern Qty Stepper ===== */
+    .qty-stepper {
+        display: inline-flex;
+        align-items: stretch;
+        width: 100px;
+        max-width: 100%;
+        margin: 0 auto;
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        overflow: hidden;
+        background: #f8f9fa;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+        .qty-stepper:focus-within {
+            border-color: #0dcaf0;
+            box-shadow: 0 0 0 3px rgba(13,202,240,0.15);
+        }
+
+    .qty-btn {
+        flex: 0 0 32px;
+        border: none;
+        background: #fff;
+        color: #0056b3;
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 1;
+        display: none; /* flex;*/
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.15s;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        user-select: none;
+    }
+
+        .qty-btn:active {
+            background: #e9ecef;
+        }
+
+        .qty-btn:disabled {
+            color: #adb5bd;
+            cursor: not-allowed;
+        }
+
+    .qty-input {
+        flex: 1 1 auto;
+        width: 100%;
+        min-width: 0;
+        border: none;
+        background: #fff;
+        text-align: center;
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: #212529;
+        padding: 6px 2px;
+        -moz-appearance: textfield;
+    }
+
+        .qty-input:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
+        .qty-input.is-invalid {
+            color: #dc3545 !important;
+            background-color: #fff5f5;
+        }
+
+    .qty-error {
+        min-height: 16px;
+        font-size: 0.72rem;
+        line-height: 1.1;
+        margin-top: 4px;
+        word-break: break-word;
+        text-align: center;
+    }
+
+    /* ===== Product grid search box ===== */
+    .product-search-wrap {
+        min-width: 180px;
+    }
+
+    .modern-search {
+        border-radius: 999px !important;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+        .modern-search .input-group-text {
+            border-radius: 999px 0 0 999px !important;
+            color: #6c757d;
+        }
+
+        .modern-search input.form-control {
+            border-radius: 0 999px 999px 0 !important;
+            box-shadow: none !important;
+        }
+
+            .modern-search input.form-control:focus {
+                box-shadow: none !important;
+            }
+
+    .dataTables_empty {
+        color: #6c757d;
+        padding: 20px 0 !important;
+    }
+
+    /* ===== Qty / Value summary bar (above the product table) ===== */
+    .qty-summary-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .qty-summary-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: #e7f7fb;
+        color: #0b5f70;
+        border: 1px solid #b6ebf5;
+        border-radius: 8px;
+        padding: 3px 10px;
+        font-weight: 700;
+        font-size: 0.85rem;
+    }
+
+        .qty-summary-badge.qty-summary-value {
+            background: #eafaf0;
+            color: #14532d;
+            border-color: #c3f0d6;
+        }
+
+    @@media (max-width: 576px) {
+        .prod-thumb, .prod-thumb.no-img, .prod-serial {
+            width: 40px;
+            height: 40px;
+        }
+
+        .prod-name {
+            font-size: 0.85rem;
+        }
+
+        .prod-meta, .prod-avl {
+            font-size: 0.72rem;
+        }
+
+        .qty-stepper {
+            width: 60px;
+        }
+
+        .qty-btn {
+            flex-basis: 28px;
+            font-size: 14px;
+        }
+
+        .qty-input {
+            font-size: 0.85rem;
+        }
+
+        #tblProductInfo td, #tblProductInfo th {
+            padding: 6px 4px;
+        }
+
+        .product-search-wrap {
+            width: 100%;
+            flex-basis: 100%;
+            order: 3;
+        }
+    }
+
+    /* ===== Spot Sales Report - Row View (2 columns per row) ===== */
+    #dvProductRows {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        /*max-height: 300px;
+        overflow-y: auto;*/
+    }
+
+    .ssr-row {
+        background: #fff;
+        border-radius: 12px;
+        border: 1px solid #e9ecef;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        display: flex;
+        align-items: stretch;
+        overflow: hidden;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .ssr-row:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+        }
+
+    /* Column 1: image, product name, MRP, previous sold qty, today vls, today sold qty */
+    .ssr-col-details {
+        flex: 1 1 auto;
+        min-width: 0;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 10px 12px;
+    }
+
+    .ssr-img-wrap {
+        flex: 0 0 auto;
+        text-align: center;
+    }
+
+    .ssr-thumb {
+        width: 75px;
+        height: 75px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+        background: #f8f9fa;
+        display: block;
+    }
+
+        .ssr-thumb.no-img {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #adb5bd;
+            font-size: 24px;
+        }
+
+    .ssr-body {
+        flex: 1 1 auto;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    .ssr-name-val {
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #0056b3;
+        word-break: break-word;
+    }
+
+    .ssr-field {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.8rem;
+    }
+
+    /* Used when "Show Image" is unchecked: MRP + Previous Sold Qty on one
+       row, Today VLS + Today Sold Qty on the next row (2 rows instead of 4) */
+    .ssr-field-row {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 6px 20px;
+    }
+
+        .ssr-field-row .ssr-field {
+            flex: 1 1 45%;
+            min-width: 100px;
+        }
+
+    .ssr-label {
+        color: #6c757d;
+        font-weight: 500;
+        flex-shrink: 0;
+    }
+
+    .ssr-value {
+        color: #212529;
+        font-weight: 600;
+        word-break: break-word;
+    }
+
+    /* Column 2: Avail VLS Qty, highlighted with a green theme */
+    .ssr-col-avail {
+        flex: 0 0 130px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        background: #eafaf0;
+        border-left: 1px solid #d7f0e2;
+        padding: 8px;
+    }
+
+    .ssr-avail-inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .ssr-avail-label {
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: #146c43;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+    }
+
+    .avail-green-badge {
+        background: #d1f2df;
+        color: #146c43;
+        font-weight: 700;
+        padding: 4px 12px;
+        border-radius: 20px;
+        border: 1px solid #a3e9c0;
+        display: inline-block;
+        font-size: 1.2rem;
+    }
+
+    @@media (max-width: 576px) {
+        .ssr-col-details {
+            gap: 8px;
+            padding: 8px 10px;
+        }
+
+        .ssr-thumb, .ssr-thumb.no-img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .ssr-name-val {
+            font-size: 0.85rem;
+        }
+
+        .ssr-field {
+            font-size: 0.72rem;
+        }
+
+        .ssr-col-avail {
+            flex-basis: 88px;
+            padding: 6px;
+        }
+
+        .ssr-avail-label {
+            font-size: 0.62rem;
+        }
+
+        .avail-green-badge {
+            font-size: 0.78rem;
+            padding: 3px 8px;
+        }
+    }
+    /* ===== End Spot Sales Report - Row View ===== */
+</style>
+<style>
+
+    /* ===== Surrounding Customer Modal — Modern UI ===== */
+    @@keyframes scModal {
+        from {
+            opacity: 0;
+            transform: translateY(-28px) scale(0.97);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    #myModalfg .modal-dialog {
+        max-width: 460px;
+    }
+
+    #myModalfg .modal-content {
+        border: none;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(30, 90, 180, 0.22);
+        animation: scModal 0.35s cubic-bezier(.22,.68,0,1.2) both;
+    }
+
+    /* Gradient header */
+    #myModalfg .sc-modal-header {
+        background: linear-gradient(135deg, #1565c0 0%, #1e88e5 60%, #42a5f5 100%);
+        padding: 8px 10px 3px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        position: relative;
+    }
+
+    #myModalfg .sc-header-icon-wrap {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.18);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+
+        #myModalfg .sc-header-icon-wrap i {
+            font-size: 1.35rem;
+            color: #fff;
+        }
+
+    #myModalfg .sc-modal-title {
+        color: #fff;
+        font-size: 1rem;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        margin: 0;
+        flex: 1;
+        line-height: 1.2;
+    }
+
+    #myModalfg .sc-modal-subtitle {
+        font-size: 0.7rem;
+        color: rgba(255,255,255,0.78);
+        font-weight: 400;
+        display: block;
+    }
+
+    #myModalfg .sc-close-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.18);
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.2s;
+        flex-shrink: 0;
+    }
+
+        #myModalfg .sc-close-btn:hover {
+            background: rgba(255,255,255,0.32);
+            transform: rotate(90deg);
+        }
+
+    /* Pulse badge */
+    #myModalfg .sc-live-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: rgba(255,255,255,0.15);
+        color: #fff;
+        font-size: 0.65rem;
+        font-weight: 600;
+        border-radius: 20px;
+        padding: 2px 8px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
+
+    @@keyframes scPulse {
+        0%, 100% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0.3;
+        }
+    }
+
+    #myModalfg .sc-live-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #69f0ae;
+        display: inline-block;
+        animation: scPulse 1.4s ease-in-out infinite;
+    }
+
+    /* Modal body */
+    #myModalfg .modal-body {
+        padding: 1px;
+        background: #f4f7fb;
+    }
+
+    /* Error message */
+    #myModalfg .sc-error-box {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: #fff3f3;
+        border-left: 3px solid #e53935;
+        border-radius: 6px;
+        color: #c62828;
+        font-size: 0.78rem;
+        padding: 0;
+        margin-bottom: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease, padding 0.3s ease, margin-bottom 0.3s ease;
+    }
+
+        #myModalfg .sc-error-box:not(:empty) {
+            padding: 7px 10px;
+            margin-bottom: 10px;
+            max-height: 80px;
+        }
+
+            #myModalfg .sc-error-box:not(:empty)::before {
+                font-family: "bootstrap-icons";
+                content: "\F33A"; /* bi-exclamation-triangle-fill */
+                font-size: 0.9rem;
+                flex-shrink: 0;
+            }
+
+    /* Table */
+    #myModalfg #tblSurroundCustomers_wrapper .dt-search {
+        width: 100%;
+        margin-bottom: 8px;
+    }
+
+        #myModalfg #tblSurroundCustomers_wrapper .dt-search input {
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid #c8d8f0;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            background: #fff;
+        }
+
+    #myModalfg #tblSurroundCustomers thead th {
+        background: linear-gradient(135deg, #1565c0, #1e88e5);
+        color: #fff;
+        font-size: 11px;
+        font-weight: 700;
+        text-align: center;
+        border: none;
+        padding: 9px 10px;
+        letter-spacing: 0.04em;
+    }
+
+    #myModalfg #tblSurroundCustomers tbody tr {
+        transition: background 0.18s;
+    }
+
+        #myModalfg #tblSurroundCustomers tbody tr:hover {
+            background: #e3efff !important;
+            cursor: pointer;
+        }
+
+    #myModalfg #tblSurroundCustomers tbody td {
+        font-size: 12px;
+        padding: 8px 10px;
+        border-bottom: 1px solid #e8eef8;
+        vertical-align: middle;
+    }
+
+    /* Distance chip */
+    #myModalfg .sc-dist-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: #e3efff;
+        color: #1565c0;
+        border-radius: 12px;
+        padding: 2px 9px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    /* Footer */
+    #myModalfg .sc-modal-footer {
+        background: #eef3fb;
+        border-top: 1px solid #dce8f5;
+        padding: 12px 16px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+    }
+
+    #myModalfg .sc-btn-close {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: linear-gradient(135deg,#e53935,#ef5350);
+        color: #fff;
+        border: none;
+        border-radius: 20px;
+        padding: 7px 20px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.18s, box-shadow 0.18s;
+        box-shadow: 0 3px 10px rgba(229,57,53,0.28);
+    }
+
+        #myModalfg .sc-btn-close:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(229,57,53,0.38);
+        }
+    /* ===== End Surrounding Customer Modal ===== */
+    .input-with-icon {
+        position: relative;
+    }
+
+        .input-with-icon .mod-input {
+            padding-right: 40px; /* Space for the icon */
+        }
+
+    .info-icon {
+        position: absolute;
+        top: 50%;
+        right: 12px;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #0d6efd;
+        font-size: 18px;
+        transition: color .2s;
+    }
+
+        .info-icon:hover {
+            color: #084298;
+        }
+
+    .top-action-bar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        flex-wrap: nowrap;
+    }
+
+    .load-btn-wrap {
+        flex: 0 0 75%;
+    }
+
+        .load-btn-wrap button {
+            width: 100%;
+        }
+
+    .img-toggle-bar {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
+        white-space: nowrap;
+    }
+
+    /* Large Desktop */
+    @@media (max-width: 1400px) {
+        .load-btn-wrap {
+            flex-basis: 75%;
+        }
+    }
+
+    /* Laptop / Tablet */
+    @@media (max-width: 992px) {
+        .load-btn-wrap {
+            flex-basis: 50%;
+        }
+    }
+
+    /* Mobile */
+    @@media (max-width: 576px) {
+        .load-btn-wrap {
+            flex-basis: 60%;
+        }
+
+        .img-toggle-bar label {
+            font-size: 12px;
+        }
+    }
+
+    /* Load Selected Data button */
+    .customdabuttons {
+        border-radius: 22px;
+        font-weight: 700;
+        font-size: 12.5px;
+        background: linear-gradient(135deg, #00bcd4, #0097a7);
+        border: none;
+        color: #fff;
+        padding: 8px 16px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        transition: all 0.18s;
+        box-shadow: 0 2px 8px rgba(0,150,200,0.2);
+    }
+
+    #customdabuttons:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 14px rgba(0,150,200,0.35);
+    }
+</style>
+<body>
+    <div class="mobile-delivery-container">
+        @Html.HiddenFor(model => model.FormName, new { @autocomplete = "off", @class = "form-control", @id = "txtFormName" })
+        @Html.HiddenFor(model => model.TransType, new { @autocomplete = "off", @class = "form-control", @id = "txtTransType" })
+        @Html.HiddenFor(model => model.TransID, new { @autocomplete = "off", @class = "form-control", @id = "txtTransID" })
+        @Html.HiddenFor(model => model.UserID, new { @autocomplete = "off", @class = "form-control", @id = "txtSwitchSMID" })
+
+        <div class="d-flex align-items-center mb-3">
+            <h4 id="MainHeading" class="m-0 fw-bold text-primary"><i class="bi bi-truck me-2"></i>@ViewData["FormName"]</h4>
+        </div>
+
+        <div class="toastBox"></div>
+        <hr class="text-muted" />
+
+        <div class="row g-3">
+            <!-- Left Column: Inputs & Actions -->
+            <div class="col-12 col-lg-4">
+                <div class="modern-card card p-3">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-primary"><i class="bi bi-building me-2 text-primary"></i>Branch</label>
+                        <select id="cmbBranch" class="form-select shadow-sm border-1 bg-light"><option value="0">Select Branch</option></select>
+                        <div class="text-danger small mt-1 clrdivserror" id="divErrorOnBranch"></div>
+
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-primary"><i class="bi bi-person-badge me-2 text-primary"></i>Salesman</label>
+                        @**@
+                        <div class="d-flex gap-2">
+                            <select id="cmbSalesman" class="form-select shadow-sm border-1 bg-light"><option value="0">Select Salesman</option></select>
+                            <button id="btnLoadVLSData" type="button" class="btn btn-primary deliveryaction-btn flex-shrink-0">
+                                <i class="bi bi-cloud-download"></i> Load
+                            </button>
+                        </div>
+                        <div class="text-danger small mt-1 clrdivserror" id="divErrorOnSalesman"></div>
+
+                    </div>
+                    <div class="d-flex gap-2 mt-auto">
+
+                        <button id="btnReset" type="button" class="btn btn-danger deliveryaction-btn flex-grow-1 text-white">
+                            <i class="bi bi-arrow-counterclockwise"></i> Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="text-muted my-4" />
+
+            <!-- Product Details -->
+            <div class="modern-card card p-3" id="dvProductdetails" style="display:none;">
+                <div class="d-flex align-items-center flex-wrap gap-2 mb-3">
+                    <h5 class="fw-bold m-0 flex-grow-1"><i class="bi bi-cart4 me-2 text-info"></i>Product Details</h5>
+                    <div class="product-search-wrap">
+                        <div class="input-group input-group-sm modern-search">
+                            <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+                            <input type="text" id="txtProductSearch" class="form-control border-start-0" placeholder="Search products..." autocomplete="off" />
+                        </div>
+                    </div>
+
+                    <div class="img-toggle-bar flex-grow-0">
+                        <label for="chkShowImage">
+                            <i class="bi bi-image"></i> Show Image
+                        </label>
+
+                        <div class="form-check form-switch m-0">
+                            <input class="form-check-input" type="checkbox" id="chkShowImage" checked>
+                        </div>
+                    </div>
+                    <div class="flex-grow-0">
+                        <button id="btnExportExcel" type="button" class="btn btn-success btn-sm">
+                            <i class="bi bi-file-earmark-excel"></i> Export Excel
+                        </button>
+                    </div>
+                </div>
+                <div class="qty-summary-bar">
+                    <span class="qty-summary-badge">
+                        <i class="bi bi-cart"></i> <span style="font-size:11px;font-weight:500" id="lblQtyItemCount">0</span> Items
+                    </span>
+
+                </div>
+                <div id="dvProductRows">
+                </div>
+            </div>            
+        </div>
+
+        <a href="javascript:" id="return-to-top" class="btn btn-primary shadow-lg" style="position: fixed; bottom: 35px; right: 5px; border-radius: 50%; width: 45px; height: 45px; display: none; align-items: center; justify-content: center; z-index: 999; ">
+            <i class="bi bi-chevron-up" style="top: 0px !important; left: 0px !important;"></i>
+        </a>
+    </div>
+</body>
+
+<script>
+        var UID = '@Session["LoginUserID"]';
+var Aurl = '@Session["APIurl"]';
+   var DecVal = '@Session["DecimalValues"]';
+    var strCompanyCode = '@Session["CompanyCode"]';
+    var DefSMID = 0;
+    var PrintTransID = 4, PrintConfigID = 0;
+    $("#lnkMob1,#lnkMob2").hide();
+    LoadBranchByRoles(strCompanyCode, '#cmbBranch');
+    var enabSm = UID == 1 || UID == 2 ? false : true;
+    // ===== Spot Sales Report - Row View (2 columns per row) =====
+    // Data currently bound to TableData (populated from the LoadVLSData ajax
+    // response) is rendered as one row per product, each row split into 2
+    // columns: column 1 has the image, product name, MRP, previous sold qty,
+    // today VLS and today sold qty; column 2 has only Avail VLS Qty,
+    // highlighted with a green theme. ProdID is kept only as a hidden field.
+
+    // Reads a field off a row, tolerating keys with a trailing space
+    // (e.g. "MRP " / "Imagedata ") as seen in the sample TableData shape.
+    function getFieldVal(row, key) {
+        if (!row) return '';
+        if (row[key] !== undefined && row[key] !== null) return row[key];
+        if (row[key + ' '] !== undefined && row[key + ' '] !== null) return row[key + ' '];
+        return '';
+    }
+
+    // Keeps track of whatever is currently on screen (post search-filter) so
+    // that toggling "Show Image" or exporting to Excel both act on the same
+    // visible set of rows.
+    var currentDisplayData = [];
+
+    function renderProductCards(data) {
+        currentDisplayData = data || [];
+        var $container = $('#dvProductRows');
+        $container.empty();
+        $('#lblQtyItemCount').text(currentDisplayData.length);
+
+        if (!currentDisplayData.length) {
+            $container.html('<div class="text-center text-muted py-4"><i class="bi bi-inbox fs-3 d-block mb-2"></i>No records found</div>');
+            return;
+        }
+
+        var showImage = $('#chkShowImage').is(':checked');
+        var html = '';
+        $.each(currentDisplayData, function (i, item) {
+            var prodId = getFieldVal(item, 'ProdID');
+            var name = getFieldVal(item, 'ProductName');
+            var prevSold = parseFloat(getFieldVal(item, 'PreviousSoldQty')) || 0;
+            var todayVls = parseFloat(getFieldVal(item, 'TodayVLS')) || 0;
+            var todaySold = parseFloat(getFieldVal(item, 'TodaySoldQty')) || 0;
+            var availQty = parseFloat(getFieldVal(item, 'AvailVLSQty')) || 0;
+            var mrp = parseFloat(getFieldVal(item, 'MRP')) || 0;
+            var imgVal = getFieldVal(item, 'Imagedata');
+
+            var imgHtml = '';
+            var fieldsHtml = '';
+            if (showImage) {
+                // ----- Show Image checked: existing design (image + 4 stacked rows) -----
+                var hasImg = imgVal && imgVal.toString().trim() !== '' && imgVal.toString().trim().toUpperCase() !== 'NULL';
+                if (hasImg) {
+                    var src = imgVal.toString().indexOf('data:image') === 0 ? imgVal : ('data:image/jpeg;base64,' + imgVal);
+                    imgHtml = '<div class="ssr-img-wrap"><img src="' + src + '" class="ssr-thumb" alt="' + name + '" '
+                        + 'onerror="this.classList.add(\'no-img\');this.removeAttribute(\'src\');this.innerHTML=\'<i class=\\\'bi bi-card-image\\\'></i>\';" /></div>';
+                } else {
+                    imgHtml = '<div class="ssr-img-wrap"><div class="ssr-thumb no-img"><i class="bi bi-card-image"></i></div></div>';
+                }
+
+                fieldsHtml = ''
+                    + '      <div class="ssr-field"><span class="ssr-label">MRP:</span><span class="ssr-value">' + mrp.toFixed(2) + '</span></div>'
+                    + '      <div class="ssr-field"><span class="ssr-label">Previous VLS Qty:</span><span class="ssr-value">' + prevSold.toFixed(2) + '</span></div>'
+                    + '      <div class="ssr-field"><span class="ssr-label">Today VLS:</span><span class="ssr-value">' + todayVls.toFixed(2) + '</span></div>'
+                    + '      <div class="ssr-field"><span class="ssr-label">Today Sold Qty:</span><span class="ssr-value">' + todaySold.toFixed(2) + '</span></div>';
+            } else {
+                // ----- Show Image unchecked: no image, MRP/Previous Sold Qty on
+                // row 1 and Today VLS/Today Sold Qty on row 2 (2 rows instead of 4) -----
+                fieldsHtml = ''
+                    + '      <div class="ssr-field-row">'
+                    + '        <div class="ssr-field"><span class="ssr-label">MRP:</span><span class="ssr-value">' + mrp.toFixed(2) + '</span></div>'
+                    + '        <div class="ssr-field"><span class="ssr-label">Previous VLS Qty:</span><span class="ssr-value">' + prevSold.toFixed(2) + '</span></div>'
+                    + '      </div>'
+                    + '      <div class="ssr-field-row">'
+                    + '        <div class="ssr-field"><span class="ssr-label">Today VLS:</span><span class="ssr-value">' + todayVls.toFixed(2) + '</span></div>'
+                    + '        <div class="ssr-field"><span class="ssr-label">Today Sold Qty:</span><span class="ssr-value">' + todaySold.toFixed(2) + '</span></div>'
+                    + '      </div>';
+            }
+
+            html += ''
+                + '<div class="ssr-row">'
+                // ProdID is retained only as a hidden field - never shown to the user
+                + '  <input type="hidden" class="ssr-prodid" value="' + prodId + '" />'
+                // ----- Column 1: image (if shown), name, MRP, previous sold, today VLS, today sold -----
+                + '  <div class="ssr-col-details">'
+                +      imgHtml
+                + '    <div class="ssr-body">'
+                + '      <div class="ssr-name-val">' + name + '</div>'
+                +      fieldsHtml
+                + '    </div>'
+                + '  </div>'
+                // ----- Column 2: Avail VLS Qty only, green highlighted -----
+                + '  <div class="ssr-col-avail">'
+                + '    <div class="ssr-avail-inner">'
+                //+ '      <span class="ssr-avail-label">Avail VLS Qty</span>'
+                + '      <span class="avail-green-badge">' + availQty.toFixed(2) + '</span>'
+                + '    </div>'
+                + '  </div>'
+                + '</div>';
+        });
+        $container.html(html);
+    }
+
+    // Initially hide VLS Summary / Product Details / Save-Clear panels until
+    // LoadVLSData() successfully loads a VLS document
+    $("#dvInvoicesummary,#dvProductdetails,#dvReceiverInfo,#btnReset").hide();
+
+    // ----- Grid search box: filters TableData by Name / ProdID -----
+    $('#txtProductSearch').on('keyup search input', function () {
+        var term = $.trim(this.value).toLowerCase();
+        if (!term) {
+            renderProductCards(TableData);
+            return;
+        }
+        var filtered = $.grep(TableData, function (item) {
+            var name = (getFieldVal(item, 'ProductName') || '').toString().toLowerCase();
+            var prodId = (getFieldVal(item, 'ProdID') || '').toString().toLowerCase();
+            return name.indexOf(term) !== -1 || prodId.indexOf(term) !== -1;
+        });
+        renderProductCards(filtered);
+    });
+
+    // ----- Show/Hide image: keep chkShowImage's original toggle behaviour -----
+    // Checked -> image is shown in every card; Unchecked -> image is hidden.
+    $('#chkShowImage').on('change', function () {
+        renderProductCards(currentDisplayData);
+    });
+
+    // ----- Export to Excel -----
+    // Row 1: Report Name, Row 2: Branch, Row 3: Salesman, then the report
+    // data (whatever is currently displayed / filtered) with only the
+    // relevant columns (ProdID and Imagedata are left out of the export).
+    function exportSpotSalesReport() {
+        if (!currentDisplayData || currentDisplayData.length === 0) {
+            showErrorSnackbar("No data to export");
+            return;
+        }
+        if (typeof XLSX === 'undefined') {
+            showErrorSnackbar("Excel export library failed to load");
+            return;
+        }
+
+        var branchText = $('#cmbBranch option:selected').text();
+        var salesmanText = $('#cmbSalesman option:selected').text();
+
+        var wsData = [];
+        wsData.push(['Report Name ', 'VLS Closing Report']);
+        wsData.push(['Branch ', branchText]);
+        wsData.push(['Salesman ', salesmanText]);
+        wsData.push([]);
+        wsData.push(['Product Name', 'Previous VLS Qty', 'Today VLS', 'Today Sold Qty', 'Avail VLS Qty', 'MRP']);
+
+        $.each(currentDisplayData, function (i, item) {
+            wsData.push([
+                getFieldVal(item, 'ProductName'),
+                (parseFloat(getFieldVal(item, 'PreviousSoldQty')) || 0).toFixed(2),
+                (parseFloat(getFieldVal(item, 'TodayVLS')) || 0).toFixed(2),
+                (parseFloat(getFieldVal(item, 'TodaySoldQty')) || 0).toFixed(2),
+                (parseFloat(getFieldVal(item, 'AvailVLSQty')) || 0).toFixed(2),
+                (parseFloat(getFieldVal(item, 'MRP')) || 0).toFixed(2)
+            ]);
+        });
+
+        var ws = XLSX.utils.aoa_to_sheet(wsData);
+        // Merge the value cell of the 3 header rows across the data columns
+        ws['!merges'] = [
+            { s: { r: 0, c: 1 }, e: { r: 0, c: 5 } },
+            { s: { r: 1, c: 1 }, e: { r: 1, c: 5 } },
+            { s: { r: 2, c: 1 }, e: { r: 2, c: 5 } }
+        ];
+        ws['!cols'] = [{ wch: 28 }, { wch: 16 }, { wch: 12 }, { wch: 14 }, { wch: 14 }, { wch: 10 }];
+
+        // ----- Add a Filter (AutoFilter) to every column of the data table -----
+        var headerRowIdx = 4; // row index (0-based) of 'Product Name', 'Previous Sold Qty', ...
+        var lastRowIdx = wsData.length - 1;
+        var lastColIdx = wsData[headerRowIdx].length - 1;
+        ws['!autofilter'] = {
+            ref: XLSX.utils.encode_range({ s: { r: headerRowIdx, c: 0 }, e: { r: lastRowIdx, c: lastColIdx } })
+        };
+
+        // ----- Set background color (and bold white text) on the header row -----
+        var headerStyle = {
+            fill: { patternType: 'solid', fgColor: { rgb: '0DCAF0' } },
+            font: { bold: true, color: { rgb: 'FFFFFF' } },
+            alignment: { horizontal: 'center', vertical: 'center' }
+        };
+        for (var c = 0; c <= lastColIdx; c++) {
+            var cellRef = XLSX.utils.encode_cell({ r: headerRowIdx, c: c });
+            if (ws[cellRef]) ws[cellRef].s = headerStyle;
+        }
+
+        var wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Spot Sales Report');
+
+        function pad2(n) { return (n < 10 ? '0' : '') + n; }
+        var now = new Date();
+        // yyyyMMddhhmmsss: seconds plus one extra tenth-of-a-second digit
+        var timestamp = '' + now.getFullYear() + pad2(now.getMonth() + 1) + pad2(now.getDate())
+            + pad2(now.getHours()) + pad2(now.getMinutes()) + pad2(now.getSeconds())
+            + Math.floor(now.getMilliseconds() / 100);
+
+        var safeSalesman = ($.trim(salesmanText) || 'Salesman').replace(/[^a-zA-Z0-9]+/g, '_');
+        var fileName = 'SSR_' + safeSalesman + '_' + timestamp + '.xlsx';
+
+        //XLSX.writeFile(wb, fileName, { cellStyles: true, bookType: 'xlsx' });
+        var wbout = XLSX.write(wb, {
+            bookType: 'xlsx',
+            type: 'array',
+            cellStyles: true
+        });
+
+        var blob = new Blob(
+            [wbout],
+            {
+                type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            }
+        );
+
+        if (isMobileBrowser()) {// window.Android && Android.downloadExcel
+            var reader = new FileReader();
+            reader.onloadend = function () {
+                var base64 = reader.result.split(',')[1];
+                Android.downloadExcel(base64, fileName);
+            };
+            reader.readAsDataURL(blob);
+        }
+        else {
+            XLSX.writeFile(wb, fileName, { cellStyles: true, bookType: 'xlsx' });
+        }
+    }
+
+    $('#btnExportExcel').click(function () {
+        exportSpotSalesReport();
+    });
+
+
+        $(window).scroll(function () {
+            if ($(this).scrollTop() >= 200) {
+                $('#return-to-top').fadeIn(200);
+                $('#return-to-top').css("display", "flex");
+            } else {
+                $('#return-to-top').fadeOut(200);
+            }
+        });
+
+        $('#return-to-top').click(function () {
+            $('body,html').animate({
+                scrollTop: 0
+            }, 500);
+        });
+    function ClearForm() {
+        TableData = [];
+        renderProductCards([]);
+        $(".info-value").text("--");
+        $(".clrdivserror").html("");
+        $("#txtVLSNo").val("");
+        $("#txtVLSID,#txtVLSStatus").val("");
+        $("#txtCustomerName").val("");
+        $("#txtCustomerID").val("");
+        $("#txtProductSearch").val("");
+        $("#lnkMob1,#lnkMob2").hide();
+        $("#cmbSalesman").val(DefSMID);
+        $("#cmbSalesman").prop("disabled", enabSm);
+        VLSData = [];
+        VLSProductData = [];
+        // Summary / Product Details / Save-Clear panels should only be visible
+        // after VLS data has been successfully loaded
+        $("#dvInvoicesummary,#dvProductdetails,#dvReceiverInfo,#btnReset").hide();
+    }
+    var Customerlist = [];
+
+    GetInitialData();
+    function GetInitialData() {
+        $.ajax({
+            url: Aurl + "vls/initialdata",
+            type: 'get',
+            contentType: 'json',
+            data: {
+                CompanyCode: strCompanyCode, ID: UID
+            },
+            success: function (data) {
+                Customerlist = [];
+                var Todayroute = data.Table;
+                var Salesmans = data.Table1;
+
+                $('#cmbSalesman').find("option").remove();
+                $('#cmbSalesman').append($('<option/>', {
+                    value: 0,
+                    text: "-- Select --",
+                }));
+                $.each(Salesmans, function (i, items) {
+                    $('#cmbSalesman').append($('<option/>', {
+                        value: items.ID,
+                        text: items.Name,
+                    }));
+                });
+
+                if (Todayroute) {
+                    DefSMID = Todayroute[0].SalesmanID;
+                    $('#cmbSalesman').val(Todayroute[0].SalesmanID);
+                    $("#cmbSalesman").prop("disabled", enabSm);
+                }
+            }, error: function (data) {
+                if (data.status == "401") {
+                    var msg = data.responseJSON.Message;
+                    ////showErrorSnackbar(msg + " Logout and Login again.");
+                }
+            }
+        });
+    }
+
+    var VLSData = [],VLSProductData = [];
+    function LoadVLSData() {
+        var NSalesmanID = $('#cmbSalesman').val();
+        var nBranch = $('#cmbBranch').val();
+        $.ajax({
+            url: Aurl + "vls/generatedata",
+            type: 'get',
+            contentType: 'json',
+            data: {
+                CompanyCode: strCompanyCode, BranchID: nBranch, SalesmanID: NSalesmanID
+            },
+            success: function (data) {
+                VLSData = [], VLSProductData = [];
+                var invoicedata = data;
+                console.log(invoicedata)
+                if (data.length > 0) {
+                    // Bind the TableData variable - the Product Details card
+                    // view (and Export to Excel) both read from TableData.
+                    TableData = data;
+                    if (TableData.length == 0) {
+                        showErrorSnackbar("No items found");
+                    }
+                    renderProductCards(TableData);
+                    // VLS data loaded successfully - reveal the summary,
+                    // product details, and save/clear panels
+                    $("#dvInvoicesummary,#dvProductdetails,#dvReceiverInfo,#btnReset").show();
+
+                }
+                else {
+                    showErrorSnackbar("No records found")
+                    TableData = [];
+                    renderProductCards([]);
+                    $("#dvInvoicesummary,#dvProductdetails,#dvReceiverInfo,#btnReset").hide();
+                }
+
+            }, error: function (data) {
+                if (data.status == "401") {
+                    var msg = data.responseJSON.Message;
+                    ////showErrorSnackbar(msg + " Logout and Login again.");
+                }
+            }
+        });
+    }
+    var TableData = [
+        {
+            "ProdID": "614",
+            "Name": "MALBRO CIGG MB6",
+            "PreviousSoldQty": "5.0000",
+            "TodayVLS": "0.0000",
+            "TodaySoldQty": "0.0000",
+            "AvailVLSQty": "5.0000",
+            "MRP ": "100.0000 ",
+            "Imagedata ": ""
+        },
+        {
+            "ProdID": "615",
+            "Name": "MALBRO CIGG MB7",
+            "PreviousSoldQty": "7.0000",
+            "TodayVLS": "0.0000",
+            "TodaySoldQty": "0.0000",
+            "AvailVLSQty": "7.0000",
+            "MRP ": "100.0000 ",
+            "Imagedata ": ""
+        },
+        {
+            "ProdID": "619",
+            "Name": "MALBRO CIGG MB11",
+            "PreviousSoldQty": "18.0000",
+            "TodayVLS": "10.0000",
+            "TodaySoldQty": "5.0000",
+            "AvailVLSQty": "23.0000",
+            "MRP ": "100.0000",
+            "Imagedata ": ""
+        }
+    ]
+    $('#btnLoadVLSData').click(function () {
+        var IsValid = true;
+        $(".clrdivserror").html("");
+        //if ($('#txtVLSNo').val() == '') {
+        //    IsValid = false;
+        //    $('#divErrorOnInvNo').html('* VLS No should not be empty');
+        //    $('#txtVLSNo').focus();
+        //}
+        if ($('#cmbSalesman').val() == '' || $('#cmbSalesman').val() == 0 || $('#cmbSalesman').val() == null) {
+            IsValid = false;
+            $('#divErrorOnSalesman').html('* Select Salesman');
+            $('#cmbSalesman').focus();
+        }
+        if (IsValid) {
+            LoadVLSData();
+        }
+    });
+
+    // ----- Reset button: simply reset the whole form -----
+    $('#btnReset').click(function () {
+        ClearForm();
+    });
+    function isNullOrEmpty(val) {
+        return val === null || val === undefined || val === "" || val == 0;
+    }
+
+    function isMobileBrowser() {
+        return /Android|iPhone|iPad|iPod|Windows Phone|Opera Mini|IEMobile|Mobile/i.test(navigator.userAgent);
+    }
+    function OpenWhatsApp(phone, message) {
+        if (!phone) {
+            showErrorSnackbar("Mobile No not found for this customer");
+            return;
+        }
+        var encodedMsg = encodeURIComponent(message);
+        if (isMobileBrowser()) {
+            // Open WhatsApp app
+            window.location.href = "whatsapp://send?phone=" + phone + "&text=" + encodedMsg;
+        } else {
+            // Open WhatsApp Web/Desktop
+            window.open("https://wa.me/" + phone + "?text=" + encodedMsg, "_blank");
+        }
+    }
+</script>

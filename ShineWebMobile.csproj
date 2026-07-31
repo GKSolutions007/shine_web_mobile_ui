@@ -133,6 +133,9 @@
     <Compile Include="Controllers\MobileDeliveryController.cs" />
     <Compile Include="Controllers\MobileSalesReturnController.cs" />
     <Compile Include="Controllers\MobileTodayRouteController.cs" />
+    <Compile Include="Controllers\MobileTransactionprintController.cs" />
+    <Compile Include="Controllers\SpotInvoiceReportController.cs" />
+    <Compile Include="Controllers\SpotsalesReportController.cs" />
     <Compile Include="Controllers\SystemApprovalController.cs" />
     <Compile Include="Controllers\UserActivitiesController.cs" />
     <Compile Include="Controllers\VanLoadingSlipController.cs" />
@@ -370,6 +373,9 @@
     <Content Include="Views\CommonReport\Index.cshtml" />
     <Content Include="Views\UserActivities\Index.cshtml" />
     <Content Include="Views\VanLoadingSlip\Index.cshtml" />
+    <Content Include="Views\SpotsalesReport\Index.cshtml" />
+    <Content Include="Views\MobileTransactionprint\Index.cshtml" />
+    <Content Include="Views\SpotInvoiceReport\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

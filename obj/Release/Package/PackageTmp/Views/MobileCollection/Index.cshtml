@@ -799,12 +799,15 @@
         @Html.HiddenFor(model => model.Modify, new { @autocomplete = "off", @class = "form-control", @id = "txtModifyID" })
         @Html.HiddenFor(model => model.View, new { @autocomplete = "off", @class = "form-control", @id = "txtViewID" })
         @Html.HiddenFor(model => model.ShowAllUserData, new { @autocomplete = "off", @class = "form-control", @id = "txtShowAllUserData" })
+
+        @Html.HiddenFor(model => model.AssignInvoicewise, new { @autocomplete = "off", @class = "form-control", @id = "txtAssignInvoicewiseID" })
+        @Html.HiddenFor(model => model.Customerwise, new { @autocomplete = "off", @class = "form-control", @id = "txtCustomerwiseID" })
         <h4 id="MainHeading">@ViewData["FormName"]</h4>
         <div class="toastBox"></div>
         <hr class="style14" />
         <div id="dvDocuments">
             <div class="col-12">
-
+                
                 <!-- Add New Button -->
                 <div class="row text-center mb-2 w-100">
                     <div class="col-12">
@@ -854,13 +857,13 @@
             @Html.HiddenFor(model => model.TransID, new { @autocomplete = "off", @class = "form-control", @id = "txtTransID" })
             <input hidden type="number" class="FormclrField" id="txtLatitude" />
             <input hidden type="number" class="FormclrField" id="txtLongtitude" />
-
+            
             <!-- Filter Selection -->
             <div class="radio-pill-group">
-                <input type="radio" name="rdoFilter" id="rdoAssignedInvoice" checked />
+                <input type="radio" name="rdoFilter" id="rdoAssignedInvoice" checked/>
                 <label for="rdoAssignedInvoice"><i class="bi bi-file-earmark-check"></i> Assigned Invoices</label>
 
-                <input type="radio" name="rdoFilter" id="rdoCustomer" />
+                <input type="radio" name="rdoFilter" id="rdoCustomer"/>
                 <label for="rdoCustomer"><i class="bi bi-person"></i> Customer</label>
             </div>
 
@@ -1160,6 +1163,33 @@ var Aurl = '@Session["APIurl"]';
     if ($("#txtAddID").val() == 0) {        
         $("#btnAddNew").hide();
     }
+    LoadPermission();
+    function LoadPermission() {
+        if ($("#txtAssignInvoicewiseID").val() == 0) {
+            $("#rdoAssignedInvoice, label[for='rdoAssignedInvoice']").hide();
+        }
+        if ($("#txtCustomerwiseID").val() == 0) {
+            $("#rdoCustomer, label[for='rdoCustomer']").hide();
+        }
+        setTimeout(() => {
+            var radioId = null;
+
+            if ($("label[for='rdoAssignedInvoice']").css("display") != "none") {
+                radioId = "rdoAssignedInvoice";
+            }
+            else if ($("label[for='rdoCustomer']").css("display") != "none") {
+                radioId = "rdoCustomer";
+            }
+
+            if (radioId) {
+                $("#" + radioId).prop("checked", true).trigger("change");
+            }
+        }, 1000)
+        //if (firstVisibleRadio)
+            //$("#" + firstVisibleRadio).trigger("click");
+    }
+    //rdoCust,rdoAI
+    //txtAssignInvoicewiseID,txtCustomerwiseID,radio-pill-group,rdoAssignedInvoice,rdoCustomer
     $(window).scroll(function () {
         if ($(this).scrollTop() >= 200) {        // If page is scrolled more than 50px
             $('#return-to-top').fadeIn(200);    // Fade in the arrow

@@ -1,0 +1,873 @@
+﻿@model ShineWebMobile.Models.SingleMasterModel
+@{
+    ViewBag.Title = ViewData["FormName"];
+    Layout = "~/Views/Shared/_LayoutBT5.cshtml";
+}
+
+<link href="~/Content/navbar.css" rel="stylesheet" />
+<link href="~/Content/buttonTop.css" rel="stylesheet" />
+<link href="~/Content/dataTables.dataTables.2.2.2.css" rel="stylesheet" />
+<link rel="stylesheet" href="~/Content/jquery-ui.css">
+@*<link href="~/Content/surroundingcustomerstyle.css" rel="stylesheet" />*@
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery-3.7.1.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Scripts/dataTables.2.2.2.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<header>
+    <link rel="stylesheet" href="~/Content/index.css">
+</header>
+<style>
+
+    .each {
+        border-bottom: 1px solid #555;
+        padding: 3px 0;
+    }
+
+    .acItem .name {
+        font-size: 14px;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .acItem .desc {
+        font-size: 10px;
+        font-family: Arial, Helvetica, sans-serif;
+        color: #555;
+    }
+
+    .ui-autocomplete {
+        max-height: 245px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    input[type=number]::placeholder {
+        text-align: left;
+    }
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+
+    .mobile-delivery-container {
+        padding: 5px;
+        animation: fadeIn 0.4s ease-in-out;
+    }
+
+    .modern-card {
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        margin-bottom: 1rem;
+        background: #fff;
+    }
+
+        .modern-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+    /* ---------- Invoice List ---------- */
+    .modern-search .form-control {
+        box-shadow: none;
+    }
+
+    .modern-search .input-group-text {
+        border-radius: 8px 0 0 8px;
+    }
+
+    .modern-search .form-control {
+        border-radius: 0 8px 8px 0;
+    }
+
+    #tblInvoiceList {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 10px;
+    }
+
+    .invoice-row {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+        cursor: pointer;
+        transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+        opacity: 0;
+        transform: translateY(12px);
+        animation: rowFadeIn 0.4s ease forwards;
+    }
+
+        .invoice-row:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(13,110,253,0.15);
+            background: #f8fbff;
+        }
+
+        .invoice-row.row-selected {
+            background: #e7f1ff;
+            box-shadow: 0 0 0 2px #0d6efd inset;
+        }
+
+        .invoice-row td {
+            padding: 0;
+            border: none;
+        }
+
+    .invoice-card-body {
+        padding: 12px 15px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px 14px;
+    }
+
+    @@media (min-width: 768px) {
+        .invoice-card-body {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    .invoice-card-body .field-full {
+        grid-column: 1 / -1;
+    }
+
+    .invoice-field {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.25;
+    }
+
+        .invoice-field .field-label {
+            font-size: 10.5px;
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            color: #8a94a6;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .invoice-field .field-value {
+            font-size: 13.5px;
+            font-weight: 600;
+            color: #212529;
+            word-break: break-word;
+        }
+
+    .invoice-doc-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 15px;
+        background: linear-gradient(135deg,#0d6efd,#4a90ff);
+        border-radius: 12px 12px 0 0;
+        color: #fff;
+    }
+
+        .invoice-doc-header .doc-id {
+            font-size: 14px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .invoice-doc-header .doc-date {
+            font-size: 12px;
+            opacity: .9;
+        }
+
+    .dbl-click-hint {
+        font-size: 10.5px;
+        color: #adb5bd;
+        text-align: center;
+        margin-top: 6px;
+    }
+
+    @@keyframes rowFadeIn {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px 15px;
+        color: #adb5bd;
+        animation: fadeIn .4s ease-in-out;
+    }
+
+        .empty-state i {
+            font-size: 42px;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    /* ---------- Product Modal ---------- */
+    #invoiceProductModal .modal-content {
+        border-radius: 16px;
+        border: none;
+        overflow: hidden;
+    }
+
+    #invoiceProductModal .modal-header {
+        background: linear-gradient(135deg,#0d6efd,#4a90ff);
+        color: #fff;
+        border: none;
+    }
+
+        #invoiceProductModal .modal-header .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+
+    .modal-doc-info {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-bottom: 14px;
+        padding: 12px 14px;
+        background: #f5f8ff;
+        border-radius: 10px;
+        border: 1px solid #e2ecff;
+    }
+
+        .modal-doc-info .info-block .info-label {
+            font-size: 10.5px;
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            color: #6c8ae4;
+            font-weight: 700;
+        }
+
+        .modal-doc-info .info-block .info-value {
+            font-size: 12px;
+            font-weight: 700;
+            color: #212529;
+        }
+
+    #tblProductDetails thead th {
+        background: #f0f4ff;
+        font-size: 11.5px;
+        text-transform: uppercase;
+        letter-spacing: .3px;
+        color: #495057;
+        white-space: nowrap;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    #tblProductDetails tbody tr {
+        opacity: 0;
+        animation: rowFadeIn 0.35s ease forwards;
+    }
+
+        #tblProductDetails tbody tr:hover {
+            background: #f8fbff;
+        }
+
+    .modal-table-wrap {
+        max-height: 55vh;
+        overflow-y: auto;
+        border-radius: 10px;
+        border: 1px solid #eef1f6;
+    }
+
+    /* ---------- Responsive ---------- */
+    @@media (max-width: 576px) {
+        .invoice-doc-header .doc-id {
+            font-size: 13px;
+        }
+
+        .modal-doc-info {
+            gap: 10px;
+        }
+
+        #tblProductDetails thead {
+            display: none;
+        }
+
+        #tblProductDetails, #tblProductDetails tbody, #tblProductDetails tr, #tblProductDetails td {
+            display: block;
+            width: 100%;
+        }
+
+            #tblProductDetails tr {
+                border: 1px solid #eef1f6;
+                border-radius: 10px;
+                margin-bottom: 10px;
+                padding: 8px 10px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            }
+
+            #tblProductDetails td {
+                border: none;
+                padding: 4px 2px;
+                display: flex;
+                justify-content: space-between;
+                font-size: 13px;
+            }
+
+                #tblProductDetails td::before {
+                    content: attr(data-label);
+                    font-weight: 700;
+                    color: #6c757d;
+                    font-size: 11px;
+                    text-transform: uppercase;
+                }
+    }
+
+    /* ===== Qty / Value summary bar (above the product table) ===== */
+    .qty-summary-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .qty-summary-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: #e7f7fb;
+        color: #0b5f70;
+        border: 1px solid #b6ebf5;
+        border-radius: 8px;
+        padding: 3px 10px;
+        font-weight: 700;
+        font-size: 0.85rem;
+    }
+
+        .qty-summary-badge.qty-summary-value {
+            background: #eafaf0;
+            color: #14532d;
+            border-color: #c3f0d6;
+        }
+</style>
+<body>
+    <div class="mobile-delivery-container">
+        @Html.HiddenFor(model => model.FormName, new { @autocomplete = "off", @class = "form-control", @id = "txtFormName" })
+        @Html.HiddenFor(model => model.TransType, new { @autocomplete = "off", @class = "form-control", @id = "txtTransType" })
+        @Html.HiddenFor(model => model.TransID, new { @autocomplete = "off", @class = "form-control", @id = "txtTransID" })
+        @Html.HiddenFor(model => model.UserID, new { @autocomplete = "off", @class = "form-control", @id = "txtSwitchSMID" })
+
+        <div class="d-flex align-items-center mb-3">
+            <h4 id="MainHeading" class="m-0 fw-bold text-primary"><i class="bi bi-receipt-cutoff me-2"></i>@ViewData["FormName"]</h4>
+        </div>
+
+        <div class="toastBox"></div>
+        <hr class="text-muted" />
+
+        <div class="row g-3" id="dvFilters">
+            <!-- Left Column: Inputs & Actions -->
+            <div class="col-12 col-lg-4">
+                <div class="modern-card card p-3">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-primary"><i class="bi bi-person-badge me-2 text-primary"></i>Salesman</label>
+                        <select id="cmbSalesman" class="form-select shadow-sm border-1 bg-light"><option value="0">Select Salesman</option></select>
+                        <div class="text-danger small mt-1 clrdivserror" id="divErrorOnSalesman"></div>
+
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-primary"><i class="bi bi-calendar me-2 text-primary"></i>Date</label>
+                        @**@
+                        <div class="d-flex gap-2">
+                            <input id="dtpDate" type="date" class="form-control shadow-sm border-1 bg-light" />
+                            
+                        </div>
+                        <div class="text-danger small mt-1 clrdivserror" id="divErrorOndtpDate"></div>
+
+                    </div>
+                    <div class="d-flex gap-2 mt-auto">
+
+                        <button id="btnReset" type="button" class="btn btn-danger deliveryaction-btn flex-grow-1 text-white">
+                            <i class="bi bi-arrow-counterclockwise"></i> Reset
+                        </button>
+                        <button id="btnLoadData" type="button" class="btn btn-primary deliveryaction-btn flex-grow-1">
+                            <i class="bi bi-cloud-download"></i> Load
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr class="text-muted my-4" />
+
+        <!-- Invoice Details -->
+        <div class="modern-card card p-3" id="dvInvoiceDetails" style="display:none;">
+            <div class="d-flex align-items-center flex-wrap gap-2 mb-3">
+                <h5 class="fw-bold m-0 flex-grow-1"><i class="bi bi-receipt me-2 text-info"></i>Invoice Details</h5>
+                <div class="qty-summary-bar">
+                    <span class="qty-summary-badge">
+                        
+                        <i class="bi bi-cart"></i> <span style="font-size:11px;font-weight:500" id="lblInvoiceCount">0</span> Invoice(s)
+                    </span>
+                    <span class="qty-summary-badge qty-summary-value">
+                        <i class="bi bi-cash-stack"></i> Total Value: <span style="font-size:11px;font-weight:500" id="lblInvoiceTotalValue">0.00</span>
+                    </span>
+                </div>
+                <div class="invoice-search-wrap">
+
+                    <div class="input-group input-group-sm modern-search">
+                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+                        <input type="text" id="txtInvoiceSearch" class="form-control border-start-0" placeholder="Search Invoice..." autocomplete="off" />
+                    </div>
+                </div>
+            </div>
+            <div class="dbl-click-hint"><i class="bi bi-info-circle me-1"></i>Double click / double tap a row to view its products</div>
+            <div class="table-responsive mt-2">
+                <table id="tblInvoiceList" class="mb-0">
+                    <tbody id="tbodyInvoiceList"></tbody>
+                </table>
+            </div>
+            <div id="dvInvoiceEmpty" class="empty-state" style="display:none;">
+                <i class="bi bi-inbox"></i>
+                No invoices found
+            </div>
+        </div>
+
+        <a href="javascript:" id="return-to-top" class="btn btn-primary shadow-lg" style="position: fixed; bottom: 35px; right: 5px; border-radius: 50%; width: 45px; height: 45px; display: none; align-items: center; justify-content: center; z-index: 999; ">
+            <i class="bi bi-chevron-up" style="top: 0px !important; left: 0px !important;"></i>
+        </a>
+
+        <!-- Invoice Product Popup -->
+        <div class="modal fade" id="invoiceProductModal" tabindex="-1" aria-labelledby="invoiceProductModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="invoiceProductModalLabel"><i class="bi bi-box-seam me-2"></i>Product Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="modal-doc-info">
+                            <div class="info-block">
+                                <div class="info-label"><i class="bi bi-file-earmark-text me-1"></i>Doc ID</div>
+                                <div class="info-value" id="popupDocID">-</div>
+                            </div>
+                            <div class="info-block">
+                                <div class="info-label"><i class="bi bi-person me-1"></i>Customer</div>
+                                <div class="info-value" id="popupCustomer">-</div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center flex-wrap gap-2 mb-2">
+                            <span class="fw-bold text-muted small flex-grow-1"><i class="bi bi-cart4 me-1"></i>Products</span>
+                            <div class="input-group input-group-sm modern-search" style="max-width:220px;">
+                                <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+                                <input type="text" id="txtProductSearch" class="form-control border-start-0" placeholder="Search Product..." autocomplete="off" />
+                            </div>
+                        </div>
+
+                        <div class="modal-table-wrap">
+                            <table id="tblProductDetails" class="table table-sm align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Code</th>
+                                        <th>Name</th>
+                                        <th>HSN Code</th>
+                                        <th>MRP</th>
+                                        <th>Qty</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbodyProductDetails"></tbody>
+                            </table>
+                        </div>
+                        <div id="dvProductEmpty" class="empty-state" style="display:none;">
+                            <i class="bi bi-inbox"></i>
+                            No products found
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+        var UID = '@Session["LoginUserID"]';
+var Aurl = '@Session["APIurl"]';
+   var DecVal = '@Session["DecimalValues"]';
+    var strCompanyCode = '@Session["CompanyCode"]';
+    var DefSMID = 0;
+    var PrintTransID = 4, PrintConfigID = 0;
+    var enabSm = UID == 1 || UID == 2 ? false : true;
+    //$("#dvFilters").hide();
+    $("#cmbSalesman").prop("disabled", true);
+    if (UID == 1 || UID == 2) {
+        //$("#dvFilters").show();
+        $("#cmbSalesman").prop("disabled", false);
+    }
+    
+        $(window).scroll(function () {
+            if ($(this).scrollTop() >= 200) {
+                $('#return-to-top').fadeIn(200);
+                $('#return-to-top').css("display", "flex");
+            } else {
+                $('#return-to-top').fadeOut(200);
+            }
+        });
+
+        $('#return-to-top').click(function () {
+            $('body,html').animate({
+                scrollTop: 0
+            }, 500);
+        });
+    function ClearForm() {
+        $(".clrdivserror").html("");
+        setCurrentDate("dtpDate");
+        GetInitialData();
+        $('#dvInvoiceDetails').hide();
+        $('#tbodyInvoiceList').empty();
+        $('#txtInvoiceSearch').val('');
+        if (invoiceProductModal) {
+            invoiceProductModal.hide();
+        }
+    }
+    setCurrentDate("dtpDate");
+    GetInitialData();
+    function GetInitialData() {
+        $.ajax({
+            url: Aurl + "vls/initialdata",
+            type: 'get',
+            contentType: 'json',
+            data: {
+                CompanyCode: strCompanyCode, ID: UID
+            },
+            success: function (data) {
+                Customerlist = [];
+                var Todayroute = data.Table;
+                var Salesmans = data.Table1;
+
+                $('#cmbSalesman').find("option").remove();
+                $('#cmbSalesman').append($('<option/>', {
+                    value: 0,
+                    text: "-- Select --",
+                }));
+                $.each(Salesmans, function (i, items) {
+                    $('#cmbSalesman').append($('<option/>', {
+                        value: items.ID,
+                        text: items.Name,
+                    }));
+                });
+
+                if (Todayroute) {
+                    DefSMID = Todayroute[0].SalesmanID;
+                    $('#cmbSalesman').val(Todayroute[0].SalesmanID);
+                    $("#cmbSalesman").prop("disabled", enabSm);
+                }
+            }, error: function (data) {
+                if (data.status == "401") {
+                    var msg = data.responseJSON.Message;
+                    ////showErrorSnackbar(msg + " Logout and Login again.");
+                }
+            }
+        });
+    }
+
+    // ----- Reset button: simply reset the whole form -----
+    $('#btnReset').click(function () {
+        ClearForm();
+    });
+    function isNullOrEmpty(val) {
+        return val === null || val === undefined || val === "" || val == 0;
+    }
+
+    var InvoiceData = [
+        {
+            "ID": "1015",
+            "DocID": "INV/2526/MDV/134",
+            "DocDate": "27/Jul/2026",
+            "Beat": "CHROMEPET",
+            "Salesman": "BALA MANIKANDAN",
+            "Customer": "63IDEAS INFOLABS PRIVATE LIMITED",
+            "Mob1": null,
+            "NetAmt": "31.5000",
+            "TotalQty": "1.0000",
+            "ItemCount ": "1 "
+        },
+        {
+            "ID": "1016",
+            "DocID": "INV/2526/MDV/135",
+            "DocDate": "27/Jul/2026",
+            "Beat": "CHROMEPET",
+            "Salesman": "BALA MANIKANDAN",
+            "Customer": "63IDEAS INFOLABS PRIVATE LIMITED",
+            "Mob1": null,
+            "NetAmt": "31.5000",
+            "TotalQty": "1.0000",
+            "ItemCount ": "1 "
+        },
+        {
+            "ID": "1019",
+            "DocID": "INV/2526/MDV/138",
+            "DocDate": "27/Jul/2026",
+            "Beat": "CHROMEPET",
+            "Salesman": "BALA MANIKANDAN",
+            "Customer": "63IDEAS INFOLABS PRIVATE LIMITED",
+            "Mob1": null,
+            "NetAmt": "295.5000",
+            "TotalQty": "3.0000",
+            "ItemCount ": "1 "
+        }
+    ]
+
+    var InvoiceProducts = [
+        {
+            "ID": "1015",
+            "Code": "014",
+            "Name": "T FLOOR CLE FRESH 200ML",
+            "HSNCode": "34011190",
+            "MRP": "37.0000",
+            "UomQty ": "1.0000"
+        },
+        {
+            "ID": "1016",
+            "Code": "014",
+            "Name": "T FLOOR CLE FRESH 200ML",
+            "HSNCode": "34011190",
+            "MRP": "37.0000",
+            "UomQty ": "1.0000"
+        },
+        {
+            "ID": "1017",
+            "Code": "014",
+            "Name": "T FLOOR CLE FRESH 200ML",
+            "HSNCode": "34011190",
+            "MRP": "37.0000",
+            "UomQty ": "1.0000"
+        },
+        {
+            "ID": "1018",
+            "Code": "MB11",
+            "Name": "MALBRO CIGG MB11",
+            "HSNCode": "83534334",
+            "MRP": "100.0000",
+            "UomQty ": "5.0000"
+        }
+    ]
+
+    // =======================================================
+    //  Helpers
+    // =======================================================
+    function htmlEscape(val) {
+        if (val === null || val === undefined) return "";
+        return String(val)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;");
+    }
+
+    function fmtAmt(val) {
+        var n = parseFloat(val);
+        return isNaN(n) ? htmlEscape(val) : n.toFixed(2);
+    }
+
+    function fmtQty(val) {
+        var n = parseFloat(val);
+        return isNaN(n) ? htmlEscape(val) : (n % 1 === 0 ? n.toString() : n.toFixed(2));
+    }
+
+    var invoiceProductModal = null;
+
+    // =======================================================
+    //  Invoice list rendering (row wise, single column fields)
+    // =======================================================
+    function renderInvoiceTable(data) {
+        var $tbody = $('#tbodyInvoiceList');
+        $tbody.empty();
+
+        var NSalesmanID = $('#cmbSalesman').val();
+        var ndata = $('#dtpDate').val();
+        $.ajax({
+            url: Aurl + "spotsales/generatedata",
+            type: 'get',
+            contentType: 'json',
+            data: {
+                CompanyCode: strCompanyCode, Mode: 1, SalesmanID: NSalesmanID, Date: ndata
+            },
+            success: function (data) {
+                if (!data || data.length === 0) {
+                    showErrorSnackbar("No invoice found");
+                    $('#dvInvoiceEmpty').show();
+                    return;
+                }
+                $('#dvInvoiceEmpty').hide();
+                InvoiceData = data;
+                var TotalInvoices = InvoiceData.length;
+                var InvoiceValue = 0;
+                $.each(data, function (i, inv) {
+                    InvoiceValue += parseFloat(inv.NetAmt)
+                    var html = '';
+                    html += '<tr class="invoice-row" data-id="' + htmlEscape(inv.ID) + '" style="animation-delay:' + (i * 0.04) + 's;">';
+                    html += '  <td>';
+                    html += '    <div class="invoice-doc-header">';
+                    html += '      <span class="doc-id"><i class="bi bi-file-earmark-text"></i>' + htmlEscape(inv.DocID) + '</span>';
+                    html += '      <span class="doc-date"><i class="bi bi-calendar3 me-1"></i>' + htmlEscape(inv.DocDate) + '</span>';
+                    html += '    </div>';
+                    html += '    <div class="invoice-card-body">';
+                    html += buildField('bi-person', 'Customer', inv.Customer, 'field-full');
+                    html += buildField('bi-person-badge', 'Salesman', inv.Salesman);
+                    html += buildField('bi-signpost-2', 'Beat', inv.Beat);
+                    html += buildField('bi-telephone', 'Mobile', isNullOrEmpty(inv.Mob1) ? '-' : inv.Mob1);
+                    html += buildField('bi-cash-coin', 'Net Amount', fmtAmt(inv.NetAmt));
+                    html += buildField('bi-boxes', 'Total Qty', fmtQty(inv.TotalQty));
+                    html += buildField('bi-list-check', 'Items', (inv["ItemCount "] || inv.ItemCount || '0').toString().trim());
+                    html += '    </div>';
+                    html += '  </td>';
+                    html += '</tr>';
+                    $tbody.append(html);
+                });
+
+
+                $('#lblInvoiceCount').text(TotalInvoices);
+                $('#lblInvoiceTotalValue').text(parseFloat(InvoiceValue).toFixed(2));//.toFixed(2)
+            }
+        });
+        
+    }
+
+    function buildField(icon, label, value, extraClass) {
+        return '<div class="invoice-field ' + (extraClass || '') + '">' +
+            '<span class="field-label"><i class="bi ' + icon + '"></i>' + label + '</span>' +
+            '<span class="field-value">' + htmlEscape(value) + '</span>' +
+            '</div>';
+    }
+    setTimeout(() => {
+        $('#btnLoadData').trigger("click");
+    }, 2000);
+    // ----- Load button: show invoice list -----
+    $('#btnLoadData').click(function () {
+        $('#dvInvoiceDetails').show();
+        $('#txtInvoiceSearch').val('');
+        //lblInvoiceCount,lblInvoiceTotalValue
+        $('#lblInvoiceCount').text("0");
+        $('#lblInvoiceTotalValue').text("0.00");
+        renderInvoiceTable(InvoiceData);
+        $('html, body').animate({ scrollTop: $('#dvInvoiceDetails').offset().top - 80 }, 400);
+    });
+
+    // ----- Search: Invoice table -----
+    $(document).on('keyup', '#txtInvoiceSearch', function () {
+        var term = $(this).val().trim().toLowerCase();
+        var visibleCount = 0;
+        $('#tbodyInvoiceList .invoice-row').each(function () {
+            var match = $(this).text().toLowerCase().indexOf(term) > -1;
+            $(this).toggle(match);
+            if (match) visibleCount++;
+        });
+        $('#dvInvoiceEmpty').toggle(visibleCount === 0);
+    });
+
+    // ----- Double click on invoice row: open product popup -----
+    $(document).on('dblclick', '.invoice-row', function () {
+        var id = $(this).data('id');
+        $('.invoice-row').removeClass('row-selected');
+        $(this).addClass('row-selected');
+        openProductPopup(id);
+    });
+
+    // Touch devices: simulate double-tap since dblclick can be unreliable on mobile
+    (function () {
+        var lastTap = 0, lastEl = null;
+        $(document).on('touchend', '.invoice-row', function (e) {
+            var now = Date.now();
+            if (lastEl === this && (now - lastTap) < 350) {
+                $('.invoice-row').removeClass('row-selected');
+                $(this).addClass('row-selected');
+                openProductPopup($(this).data('id'));
+                e.preventDefault();
+            }
+            lastTap = now;
+            lastEl = this;
+        });
+    })();
+
+    function openProductPopup(id) {
+        var invoice = $.grep(InvoiceData, function (inv) { return String(inv.ID) === String(id); })[0];
+        //var products = $.grep(InvoiceProducts, function (p) { return String(p.ID) === String(id); });
+
+        $('#popupDocID').text(invoice ? invoice.DocID : '-');
+        $('#popupCustomer').text(invoice ? invoice.Customer : '-');
+
+        $('#txtProductSearch').val('');
+        $.ajax({
+            url: Aurl + "spotsales/generatedata",
+            type: 'get',
+            contentType: 'json',
+            data: {
+                CompanyCode: strCompanyCode, Mode: 2, SalesmanID: id, Date: null
+            },
+            success: function (data) {
+                if (!data || data.length === 0) {
+                    $('#dvInvoiceEmpty').show();
+                    showErrorSnackbar("No Items found");
+                    return;
+                }
+                var products = data
+                renderProductTable(products);
+                if (!invoiceProductModal) {
+                    invoiceProductModal = new bootstrap.Modal(document.getElementById('invoiceProductModal'));
+                }
+                invoiceProductModal.show();
+            }
+        });
+        
+    }
+
+    function renderProductTable(products) {
+        var $tbody = $('#tbodyProductDetails');
+        $tbody.empty();
+
+        if (!products || products.length === 0) {
+            $('#dvProductEmpty').show();
+            return;
+        }
+        $('#dvProductEmpty').hide();
+
+        $.each(products, function (i, p) {
+            var qty = p["UomQty "] || p.UomQty || 0;
+            var html = '';
+            html += '<tr style="animation-delay:' + (i * 0.05) + 's;">';
+            //html += '  <td data-label="Code">' + htmlEscape(p.Code) + '</td>';
+            html += '  <td data-label="Name">' + htmlEscape(p.Name) + '</td>';
+            //html += '  <td data-label="HSN Code">' + htmlEscape(p.HSNCode) + '</td>';
+            html += '  <td data-label="MRP">' + fmtAmt(p.MRP) + '</td>';
+            html += '  <td data-label="Qty">' + fmtQty(qty) + '</td>';
+            html += '</tr>';
+            $tbody.append(html);
+        });
+    }
+
+    // ----- Search: Product table (inside popup) -----
+    $(document).on('keyup', '#txtProductSearch', function () {
+        var term = $(this).val().trim().toLowerCase();
+        var visibleCount = 0;
+        $('#tbodyProductDetails tr').each(function () {
+            var match = $(this).text().toLowerCase().indexOf(term) > -1;
+            $(this).toggle(match);
+            if (match) visibleCount++;
+        });
+        $('#dvProductEmpty').toggle(visibleCount === 0);
+    });
+</script>

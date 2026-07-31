@@ -1,0 +1,411 @@
+﻿@model ShineWebMobile.Models.SingleMasterModel
+@{
+    ViewBag.Title = ViewData["FormName"];
+    Layout = "~/Views/Shared/_LayoutBT5.cshtml";
+}
+
+<link href="~/Content/navbar.css" rel="stylesheet" />
+<link href="~/Content/buttonTop.css" rel="stylesheet" />
+<link href="~/Content/dataTables.dataTables.2.2.2.css" rel="stylesheet" />
+<link rel="stylesheet" href="~/Content/jquery-ui.css">
+@*<link href="~/Content/surroundingcustomerstyle.css" rel="stylesheet" />*@
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery-3.7.1.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Scripts/dataTables.2.2.2.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<header>
+    <link rel="stylesheet" href="~/Content/index.css">
+</header>
+<style>
+
+    .each {
+        border-bottom: 1px solid #555;
+        padding: 3px 0;
+    }
+
+    .acItem .name {
+        font-size: 14px;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .acItem .desc {
+        font-size: 10px;
+        font-family: Arial, Helvetica, sans-serif;
+        color: #555;
+    }
+
+    .ui-autocomplete {
+        max-height: 245px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    input[type=number]::placeholder {
+        text-align: left;
+    }
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+
+    .mobile-delivery-container {
+        padding: 5px;
+        animation: fadeIn 0.4s ease-in-out;
+    }
+
+    .modern-card {
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        margin-bottom: 1rem;
+        background: #fff;
+    }
+
+        .modern-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+</style>
+<body>
+    <div class="mobile-delivery-container">
+        @Html.HiddenFor(model => model.FormName, new { @autocomplete = "off", @class = "form-control", @id = "txtFormName" })
+        @Html.HiddenFor(model => model.TransType, new { @autocomplete = "off", @class = "form-control", @id = "txtTransType" })
+        @Html.HiddenFor(model => model.TransID, new { @autocomplete = "off", @class = "form-control", @id = "txtTransID" })
+        @Html.HiddenFor(model => model.UserID, new { @autocomplete = "off", @class = "form-control", @id = "txtSwitchSMID" })
+
+        <div class="d-flex align-items-center mb-3">
+            <h4 id="MainHeading" class="m-0 fw-bold text-primary"><i class="bi bi-printer me-2"></i>@ViewData["FormName"]</h4>
+        </div>
+
+        <div class="toastBox"></div>
+        <hr class="text-muted" />
+
+        <div class="row g-3">
+            <!-- Left Column: Inputs & Actions -->
+            <!--  $('#cmbTransaction,#cmbProfile').find("option").remove(); -->
+            <div class="col-12 col-lg-4">
+                <div class="modern-card card p-3">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-primary"><i class="bi bi-list-task me-2 text-primary"></i>Transaction *</label>
+                        <select id="cmbTransaction" class="form-select shadow-sm border-1 bg-light"><option value="0">Select Transaction</option></select>
+                        <div class="text-danger small mt-1 clrdivserror" id="divErrorOnTransaction"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-primary"><i class="bi bi-person-badge me-2 text-primary"></i>Profile *</label>
+                        <select id="cmbProfile" class="form-select shadow-sm border-1 bg-light"><option value="0">Select Profile</option></select>
+                        <div class="text-danger small mt-1 clrdivserror" id="divErrorOnProfile"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-primary"><i class="bi bi-sort-numeric-up me-2 text-primary"></i>Document ID *</label>
+
+                        <div class="d-flex gap-2">
+                            <input class="form-control shadow-sm border-1 bg-light" id="txtDocID" />
+
+                        </div>
+                        <div class="text-danger small mt-1 clrdivserror" id="divErrorOnDocID"></div>
+
+                    </div>
+                    <div class="d-flex gap-2 mt-auto">
+                        <button id="btnReset" type="button" class="btn btn-danger deliveryaction-btn flex-grow-1 text-white">
+                            <i class="bi bi-arrow-counterclockwise"></i> Reset
+                        </button>
+                        <button id="btnWhatsapp" type="button" class="btn btn-success deliveryaction-btn flex-grow-1">
+                            <i class="bi bi-whatsapp"></i> Whatsapp
+                        </button>
+                        <button id="btnSave" type="button" class="btn btn-primary deliveryaction-btn flex-grow-1">
+                            <i class="bi bi-cloud-download"></i> Download
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <a href="javascript:" id="return-to-top" class="btn btn-primary shadow-lg" style="position: fixed; bottom: 35px; right: 5px; border-radius: 50%; width: 45px; height: 45px; display: none; align-items: center; justify-content: center; z-index: 999; ">
+            <i class="bi bi-chevron-up" style="top: 0px !important; left: 0px !important;"></i>
+        </a>
+    </div>
+</body>
+
+<script>
+        var UID = '@Session["LoginUserID"]';
+var Aurl = '@Session["APIurl"]';
+   var DecVal = '@Session["DecimalValues"]';
+    var strCompanyCode = '@Session["CompanyCode"]';
+    var DefSMID = 0;
+    var PrintTransID = 4, PrintConfigID = 0;
+    var enabSm = UID == 1 || UID == 2 ? false : true;    
+        $(window).scroll(function () {
+            if ($(this).scrollTop() >= 200) {
+                $('#return-to-top').fadeIn(200);
+                $('#return-to-top').css("display", "flex");
+            } else {
+                $('#return-to-top').fadeOut(200);
+            }
+        });
+
+        $('#return-to-top').click(function () {
+            $('body,html').animate({
+                scrollTop: 0
+            }, 500);
+        });
+    function ClearForm() {
+        $(".clrdivserror").html("");    
+        $("#txtDocID").val("");
+        GetData();
+    }
+
+    $('#cmbTransaction').change(function (e) {
+        $('#cmbProfile').find("option").remove();
+        $("#txtDocID").val("");
+        $(".clrdiv").html("");
+        var ID = e.target.value;
+        var prefix = $('#cmbTransaction option:selected').data('prefix');        
+        var Profiles = arrProfiles.filter(a => a.TransID == ID);
+        if (Profiles.length > 0) {
+            $("#txtDocID").val(prefix);
+            var defid = Profiles.filter(f => f.DefaultConfig == 1)[0].ProfileID || Profiles[0].ProfileID;
+            for (var i = 0; i < Profiles.length; i++) {
+                $('#cmbProfile').append($('<option/>', {
+                    value: Profiles[i].ProfileID,
+                    text: Profiles[i].ProfileName,
+                }));
+            }
+            if (defid) {
+                $('#cmbProfile').val(defid);
+            }
+        } else {
+            showErrorSnackbar("No profiles found");
+        }
+    });
+    $('#btnSave').click(function () {
+        var IsValid = true;
+        $(".clrdivserror").html("");
+        //if ($('#txtVLSNo').val() == '') {
+        //    IsValid = false;
+        //    $('#divErrorOnInvNo').html('* VLS No should not be empty');
+        //    $('#txtVLSNo').focus();
+        //}
+        if ($('#cmbSalesman').val() == '' || $('#cmbSalesman').val() == 0 || $('#cmbSalesman').val() == null) {
+            IsValid = false;
+            $('#divErrorOnSalesman').html('* Select Salesman');
+            $('#cmbSalesman').focus();
+        }
+        if (IsValid) {
+            LoadVLSData();
+        }
+    });
+    var SendOption = "PDF";
+    //divErrorOnTransaction,divErrorOnProfile,txtDocID,divErrorOnDocID
+    $("#btnSave,#btnWhatsapp").click(function (e) {
+        SendOption = e.target.id == "btnSave" ? "PDF" : "Whatsapp";
+        $(".clrdivserror").html("");
+        var IsValid = true;
+        if ($("#cmbTransaction").val() == 0) {
+            IsValid = false;
+            $("#divErrorOnTransaction").html("Select Transaction");
+            showErrorSnackbar("Select Transaction");
+        }
+        if ($("#cmbProfile").val() == 0 || $("#cmbProfile").val() == "" || $("#cmbProfile").val() == null) {
+            IsValid = false;
+            $("#divErrorOnProfile").html("Select Profile");
+            showErrorSnackbar("Select Profile");
+        }
+        
+        if ($("#txtDocID").val() == "") {
+            IsValid = false;
+            $("#divErrorOnDocID").html("Doc ID should not be empty");
+            showErrorSnackbar("Doc ID should not be empty");
+        }
+        if (IsValid) {
+            if (cfFocus != 3) {
+                var DigMsg = SendOption == "PDF" ? " download pdf ?" : " send Whatsapp message ?"
+                ConfirmDialogMsg("Do you want to" + DigMsg);
+            } else {
+                SaveData();
+            }
+        }
+    });
+    function SaveData() {
+        var configid = $("#cmbProfile").val();
+        var transid = $("#cmbTransaction").val();
+        var docid = $("#txtDocID").val();
+        if (SendOption == "PDF")
+            PDFDocument(transid, configid, docid);
+        else
+            DocumentValidate(transid, docid);
+    }
+    // ----- Reset button: simply reset the whole form -----
+    $('#btnReset').click(function () {
+        ClearForm();
+    });
+    function isNullOrEmpty(val) {
+        return val === null || val === undefined || val === "" || val == 0;
+    }
+
+    function isMobileBrowser() {
+        return /Android|iPhone|iPad|iPod|Windows Phone|Opera Mini|IEMobile|Mobile/i.test(navigator.userAgent);
+    }
+    function OpenWhatsApp(phone, message) {
+        if (!phone) {
+            showErrorSnackbar("Mobile No not found for this customer");
+            return;
+        }
+        var encodedMsg = encodeURIComponent(message);
+        if (isMobileBrowser()) {
+            // Open WhatsApp app
+            window.location.href = "whatsapp://send?phone=" + phone + "&text=" + encodedMsg;
+        } else {
+            // Open WhatsApp Web/Desktop
+            window.open("https://wa.me/" + phone + "?text=" + encodedMsg, "_blank");
+        }
+    }
+    var arrTrans = [], arrProfiles = [];
+    GetData();
+    function GetData() {
+        $.ajax({
+            url: Aurl + "transactionprint/get",
+            type: 'get',
+            contentType: 'json',
+            data: { CompanyCode: strCompanyCode, UserID : UID },       
+            success: function (data) {
+                if (data.length > 0) {
+                    arrTrans = [], arrProfiles = [];
+                    $('#cmbTransaction,#cmbProfile').find("option").remove();
+                    $('#cmbTransaction').append($('<option/>', {
+                        value: 0,
+                        text: "-- Select --",
+                    }));
+                    $.each(data, function (i, items) {
+                        if (items.Type == 1) {
+                            var al = {
+                                "Transaction": items.Name,
+                                "TransID": items.ID,
+                                "Prefix": items.Prefix,
+                            }
+                            arrTrans.push(al);
+                            $('#cmbTransaction').append($('<option/>', {
+                                value: items.ID,
+                                text: items.Name,
+                                'data-prefix': items.Prefix
+                            }));
+                        }
+                        else if (items.Type == 2) {
+                            var al = {
+                                "ProfileName": items.Name,
+                                "ProfileID": items.ID,
+                                "TransID": items.TransID,
+                                "DefaultConfig": items.DefaultConfig,
+                                "NoCopies": items.NoCopies,
+                            }
+                            arrProfiles.push(al);
+                        }
+                    });
+                }
+                else {
+                    showErrorSnackbar("No Transactions Found");
+                }
+            }
+            , error: function (data) {
+                if (data.status == "401") {
+                    var msg = data.responseJSON.Message;
+                    ////showErrorSnackbar(msg + " Logout and Login again.");
+                }
+            }
+        });
+    }
+    function PDFDocument( strTransID, nConfigID,strDocID) {
+        if (nConfigID > 0) {
+            $.ajax({
+                url: Aurl + "transactionprint/generateprint",
+                type: 'GET',
+                datatype: 'json',
+                data: {
+                    Companycode: strCompanyCode, TransID: strTransID, ConfigID: nConfigID, DocValue: strDocID,
+                    Copies: "1", UserID : UID
+                },
+                success: function (data) {
+                    if (data.length > 0) {
+                        //location.href = 'Invoice/ExportData?Fname=' + data;
+                        location.href = Aurl + 'print/downloadprint?Companycode=' + strCompanyCode + '&Fname=' + data;
+                    } else {
+                        showErrorSnackbar('Invalid Document ID');
+                    }
+                }, error: function (data) {
+                    if (data.status == "401") {
+                        var msg = data.responseJSON.Message;
+                        //showErrorSnackbar(msg + " Logout and Login again.");
+                    }
+                }
+            });
+        }
+        else {
+            showErrorSnackbar("Select Print profile");
+        }
+    }
+    function DocumentValidate(dTransID, DocID) {
+        $.ajax({
+            url: Aurl + "printing/documentvalidate",
+            type: 'get',
+            contentType: 'json',
+            data: { Companycode: strCompanyCode, TransID: dTransID, strDocID: DocID },           
+            success: function (data) {
+                $.each(data, function (i, items) {
+                    if (items.MsgID == "0") {
+                        //items.ID,
+                        var configid = $("#cmbProfile").val();
+                        var transid = $("#cmbTransaction").val();
+                        WhatsappDocument(items.ID, transid, configid);
+                    } else {
+                        showErrorSnackbar("Doc ID not matched. Enter correct Doc ID");
+                    }
+                });
+            }
+        });
+    }
+    function WhatsappDocument(ID, strTransID, nConfigID) {
+        var strcopy = 1;// $("#txtNoofCopies").val() == "" || $("#txtNoofCopies").val() == "0" || $("#txtNoofCopies").val() == null ? 1 : $("#txtNoofCopies").val();
+        $.ajax({
+            url: Aurl + "print/WhatsappGenerate",
+            type: 'GET',
+            datatype: 'json',
+            data: {
+                Companycode: strCompanyCode, DocID: ID, TransID: strTransID, ConfigID: nConfigID,
+                Copies: strcopy, APIURL: Aurl, UserID: UID
+            },
+            success: function (data) {
+                if (data.length > 0) {
+                    $.each(data, function (i, items) {
+                        if (items.MsgID == 0) {
+                            //showSuccessSnackbar(items.Message);
+                            var phone = items.RowID
+                            var message = items.Message;                           
+                            OpenWhatsApp(phone, message);
+                        }
+                        else if (items.MsgID == 1) {
+                            showErrorSnackbar(items.Message);
+                        }
+                    });
+                } else {
+                    showErrorSnackbar('Message Not Send. Try Again');
+                }
+            }, error: function (data) {
+                if (data.status == "401") {
+                    var msg = data.responseJSON.Message;
+                    //showErrorSnackbar(msg + " Logout and Login again.");
+                }
+            }
+        });
+    }
+</script>

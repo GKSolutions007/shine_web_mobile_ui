@@ -32,6 +32,8 @@ namespace ShineWebMobile.Controllers
             //Session["DeviceID"] =  DevID;
             //Session["DeviceName"] =  DivName;
             string api = "";
+            string APIurl = (ConfigurationManager.AppSettings["apiurl"].ToString());
+            Session["APIurl"] = APIurl;
             dicCompanyDetails = GetDBConfig();
             objLogonModel.CompanyCode = GetFilteredItemsFromDictionary(dicCompanyDetails);
             ViewData["MoborWindDevice"] = Request.Browser.IsMobileDevice ? "1" : "0";

@@ -28,6 +28,8 @@ namespace ShineWebMobile.Controllers
                 string ModPerm = dtPermission.Select("MenuID = 464", null).Length > 0 || UID == 1 ? "1" : "0";
                 string ViewPerm = dtPermission.Select("MenuID = 465", null).Length > 0 || UID == 1 ? "1" : "0";
                 string AllUserDataPerm = dtPermission.Select("MenuID = 466", null).Length > 0 || UID == 1 ? "1" : "0";
+                string AssignInvWise = dtPermission.Select("MenuID = 544", null).Length > 0 || UID == 1 ? "1" : "0";
+                string Customerwise = dtPermission.Select("MenuID = 545", null).Length > 0 || UID == 1 ? "1" : "0";
 
                 SingleMasterModel dam = new SingleMasterModel();
                 dam.FormName = Name;
@@ -38,6 +40,8 @@ namespace ShineWebMobile.Controllers
                 dam.Modify = ModPerm;
                 dam.View = ViewPerm;
                 dam.ShowAllUserData = AllUserDataPerm;
+                dam.AssignInvoicewise = AssignInvWise;
+                dam.Customerwise = Customerwise;
                 return View(dam);
             }
         }

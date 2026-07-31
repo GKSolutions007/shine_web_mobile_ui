@@ -223,6 +223,261 @@
         font-weight: 600;
         margin-bottom: 15px;
     }
+
+    /* Forgot Password link under Login button */
+    .forgot-pwd-link {
+        display: block;
+        text-align: left;
+    }
+
+    .forgot-pwd-link a {
+        color: #1e40af;
+        font-size: 13.5px;
+        transition: color 0.2s ease;
+    }
+
+    .forgot-pwd-link a:hover {
+        color: #ef4444;
+        text-decoration: underline !important;
+    }
+
+    /* ===== Forgot Password Modal ===== */
+    #myModalfg .modal-dialog {
+        animation: fgModalIn 0.35s ease-out;
+    }
+
+    @@keyframes fgModalIn {
+        from { opacity: 0; transform: translateY(-30px) scale(0.96); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .btn-warning-gradient {
+        background: var(--warning-gradient);
+    }
+
+    .btn-success-gradient {
+        background: var(--success-gradient);
+    }
+
+    /* Step Progress Indicator */
+    .fg-steps {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 28px;
+    }
+
+    .fg-step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        font-size: 11px;
+        font-weight: 700;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
+
+    .fg-step span {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #e2e8f0;
+        color: #64748b;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: 700;
+        transition: all 0.35s ease;
+    }
+
+    .fg-step.active span {
+        background: var(--warning-gradient);
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(180, 83, 9, 0.35);
+        transform: scale(1.1);
+    }
+
+    .fg-step.done span {
+        background: var(--success-gradient);
+        color: #fff;
+    }
+
+    .fg-step.active, .fg-step.done {
+        color: #1e293b;
+    }
+
+    .fg-step-line {
+        flex: 1;
+        height: 3px;
+        background: #e2e8f0;
+        margin: 0 8px 20px 8px;
+        border-radius: 3px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .fg-step-line.filled::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: var(--success-gradient);
+        transform: scaleX(0);
+        transform-origin: left;
+        animation: fgLineFill 0.5s ease forwards;
+    }
+
+    @@keyframes fgLineFill {
+        to { transform: scaleX(1); }
+    }
+
+    /* Stage transition animation */
+    .fg-stage {
+        animation: fgStageIn 0.45s ease;
+    }
+
+    @@keyframes fgStageIn {
+        from { opacity: 0; transform: translateX(18px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+
+    .fg-stage-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 12px auto;
+        font-size: 24px;
+        color: #fff;
+        animation: fgIconPop 0.5s ease;
+    }
+
+    @@keyframes fgIconPop {
+        0% { transform: scale(0); opacity: 0; }
+        70% { transform: scale(1.1); opacity: 1; }
+        100% { transform: scale(1); }
+    }
+
+    /* OTP input styling */
+    .otp-input {
+        letter-spacing: 0.6em !important;
+        font-weight: 700;
+        font-size: 20px !important;
+        padding-left: 15px !important;
+        text-align: center;
+    }
+
+    /* Password show/hide icon */
+    .toggle-pwd-icon {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #64748b;
+        cursor: pointer;
+        font-size: 15px;
+        z-index: 6;
+        transition: color 0.2s ease;
+    }
+
+    .toggle-pwd-icon:hover {
+        color: #1e40af;
+    }
+
+    #dvverpwd .mod-input,
+    #dvverpwd .field-wrap {
+        padding-right: 0;
+    }
+
+    #dvverpwd .mod-input {
+        padding-right: 42px;
+    }
+
+    .fg-shake {
+        animation: fgShake 0.4s ease;
+    }
+
+    @@keyframes fgShake {
+        10%, 90% { transform: translateX(-1px); }
+        20%, 80% { transform: translateX(2px); }
+        30%, 50%, 70% { transform: translateX(-4px); }
+        40%, 60% { transform: translateX(4px); }
+    }
+
+    .fg-success-check {
+        text-align: center;
+        animation: fgStageIn 0.4s ease;
+    }
+
+    .fg-success-check i {
+        font-size: 54px;
+        color: #22c55e;
+        animation: fgIconPop 0.5s ease;
+    }
+
+    /* Mobile responsiveness for Forgot Password modal */
+    @@media (max-width: 480px) {
+        #myModalfg .modal-dialog {
+            margin: 10px;
+            max-width: calc(100% - 20px);
+        }
+
+        #myModalfg .modal-header {
+            padding: 18px !important;
+        }
+
+        #myModalfg .modal-header h5 {
+            font-size: 16px;
+        }
+
+        #myModalfg .modal-body {
+            padding: 20px !important;
+        }
+
+        .fg-steps {
+            margin-bottom: 20px;
+        }
+
+        .fg-step {
+            font-size: 9.5px;
+        }
+
+        .fg-step span {
+            width: 26px;
+            height: 26px;
+            font-size: 12px;
+        }
+
+        .fg-step-line {
+            margin: 0 4px 16px 4px;
+        }
+
+        .otp-input {
+            letter-spacing: 0.4em !important;
+            font-size: 18px !important;
+        }
+
+        .mod-input, .mod-select {
+            height: 50px;
+            font-size: 14px;
+        }
+    }
+
+    @@media (max-width: 360px) {
+        .fg-step {
+            font-size: 8.5px;
+        }
+
+        .fg-step span {
+            width: 22px;
+            height: 22px;
+            font-size: 11px;
+        }
+    }
 </style>
 
 <script type="text/javascript">
@@ -231,22 +486,24 @@
 </script>
 
 <body onload="noBack();" onpageshow="if (event.persisted) noBack()">
+    <div class="toastBox"></div>
     <div class="login-container">
         <div class="login-card">
             <div class="login-header">
                 <img src="~/Images/Logo/g_large_transparent.png" class="login-logo" alt="Logo" />
-                <h1 class="login-title">Shine Web</h1>                
+                <h1 class="login-title">Shine Web</h1>
             </div>
 
             <div class="login-body">
                 @using (Html.BeginForm())
                 {
-                    @Html.AntiForgeryToken()
                     
+                    @Html.AntiForgeryToken()
+                    <input hidden id="txtOTPID" />
+                    <input hidden id="txtUserID" />
                     <div class="validationsummary">@ViewData["AlertMessage"]</div>
                     <label hidden id="lblErrorID">@ViewData["EID"]</label>
                     <label hidden id="lblMobWin">@ViewData["MoborWindDevice"]</label>
-
                     <!-- Company Selection -->
                     <div class="field-wrap">
                         <label class="mod-label" for="drpCompCode">Company Code *</label>
@@ -259,7 +516,7 @@
                     <div class="login-type-toggle" id="dvLType1" hidden>
                         <div class="login-type-btn" id="btnTypePIN" onclick="setLoginType('PIN')">PIN LOGIN</div>
                         <div class="login-type-btn active" id="btnTypeUNPWD" onclick="setLoginType('UNPWD')">PASSWORD LOGIN</div>
-                        
+
                         @Html.RadioButtonFor(model => model.UsingUNPWD, false, new { @Id = "chkPIN", @class = "d-none" })
                         @Html.RadioButtonFor(model => model.UsingUNPWD, true, new { @Id = "chkUNPWD", @class = "d-none", @checked = true })
                     </div>
@@ -302,76 +559,127 @@
                         </button>
                     </div>
 
-                    <div id="divMessagePasswordSet" class="text-success small mt-3 text-center"></div>
 
-                    <div class="d-flex justify-content-end align-items-center mt-4 pt-3 border-top">
-                        <a hidden href="javascript:void(0)" id="lnkfp" class="text-primary small text-decoration-none fw-bold">Forgot Password?</a>
-                        <a href="tel:+918939923150" id="lnkhp" class="btn btn-sm btn-outline-primary border-0 fw-bold">
-                            <i class="fas fa-headset me-1"></i> Help Desk
-                        </a>
+
+                    <div class="d-flex align-items-center justify-content-between mt-4 pt-3 border-top">
+
+                        <div class="forgot-pwd-link">
+                            <a href="javascript:void(0)" id="lnkfp" class="text-decoration-none">
+                                <i class="fas fa-key me-1"></i> Reset Password?
+                            </a>
+                        </div>
+
+                        <div class="ms-auto">
+                            <a href="tel:+918939923150" id="lnkhp" class="btn btn-sm btn-outline-primary border-0 fw-bold">
+                                <i class="fas fa-headset me-1"></i> Help Desk
+                            </a>
+                        </div>
+
                     </div>
+
+
                 }
             </div>
         </div>
     </div>
     <!-- Modern Forgot Password Modal -->
-    <div class="modal fade" id="myModalfg" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="myModalfg" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
-                <div class="modal-header border-0 bg-warning text-white p-4">
+                <div class="modal-header border-0 bg-primary text-white p-4">
                     <h5 class="modal-title fw-bold">
-                        <i class="fas fa-key me-2"></i> Forgot Password?
+                        <i class="fas fa-key me-2"></i> Reset Password
                     </h5>
                     <button type="button" class="btn-close btn-close-white closefg" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-4 bg-light">
-                    <div class="text-center mb-4">
-                        <p class="text-secondary small mb-2 text-uppercase fw-bold">Recovery Email Address</p>
-                        <h6 id="lblresetemail" class="text-dark fw-bold"></h6>
+
+                    <!-- Step Progress Indicator -->
+                    <div class="fg-steps">
+                        <div class="fg-step active" id="fgStepInd1"><span><i class="fas fa-id-card"></i></span>Details</div>
+                        <div class="fg-step-line" id="fgLine1"></div>
+                        <div class="fg-step" id="fgStepInd2"><span><i class="fas fa-shield-alt"></i></span>OTP</div>
+                        <div class="fg-step-line" id="fgLine2"></div>
+                        <div class="fg-step" id="fgStepInd3"><span><i class="fas fa-lock"></i></span>Reset</div>
                     </div>
 
-                    <div class="field-wrap">
-                        <label class="mod-label" for="txtEmailID">E-mail ID</label>
-                        <input type="email" placeholder=" " class="mod-input" id="txtEmailID" />
-                        <div id="divMessageemail" class="text-danger small mt-1 clrdivs"></div>
-                    </div>
-
-                    <button class="btn btn-login btn-warning-gradient border-0 text-white mb-4" id="btnfgGetCode">
-                        <i class="fas fa-paper-plane me-2"></i> Get Verification Code
-                    </button>
-                    
-                    <div id="divMessagevercode" class="clrdivs text-center mb-3"></div>
-
-                    <div id="dvverotp" style="display:none;">
-                        <input type="number" id="txtVerifyOTP" hidden />
-                        <div class="row g-2">
-                            <div class="col-8">
-                                <div class="field-wrap mb-0">
-                                    <label class="mod-label" for="txtOTP">Enter OTP</label>
-                                    <input type="number" placeholder=" " class="mod-input" id="txtOTP" maxlength="6" />
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <button class="btn-login" id="btnfgVerifyOTP" style="height: 54px; background: var(--info-gradient);">Verify</button>
-                            </div>
+                    <!-- Stage 1: Username & Email -->
+                    <div id="dvFgStage1" class="fg-stage">
+                        <div class="text-center mb-3">
+                            <p class="text-secondary small mb-0">Enter your username and registered e-mail ID to receive an OTP.</p>
                         </div>
-                        <div id="divMessageverotp" class="text-danger small mt-1 clrdivs text-center"></div>
+                        <div class="field-wrap">
+                            <label class="mod-label" for="txtFgUserName">Username</label>
+                            <input type="text" placeholder=" " class="mod-input" id="txtFgUserName" autocomplete="off" />
+                            <i class="fas fa-user field-icon"></i>
+                            <div id="divMessageFgUserName" class="text-danger small mt-1 clrdivs"></div>
+                        </div>
+
+                        <div class="field-wrap">
+                            <label class="mod-label" for="txtEmailID">E-mail ID</label>
+                            <input type="email" placeholder=" " class="mod-input" id="txtEmailID" autocomplete="off" />
+                            <i class="fas fa-envelope field-icon"></i>
+                            <div id="divMessageemail" class="text-danger small mt-1 clrdivs"></div>
+                        </div>
+
+                        <button type="button" class="btn btn-login btn-warning-gradient border-0 text-white" id="btnfgGetCode">
+                            <i class="fas fa-paper-plane me-2"></i> GET OTP
+                        </button>
+
+                        <div id="divMessagevercode" class="clrdivs text-center mt-3"></div>
                     </div>
 
-                    <div id="dvverpwd" style="display:none;" class="mt-4">
+                    <!-- Stage 2: OTP Verification -->
+                    <div id="dvverotp" class="fg-stage" style="display:none;">
+                        <input type="hidden" id="txtVerifyOTP" />
+                        <div class="fg-stage-icon" style="background: var(--info-gradient);">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <p class="text-secondary small text-center mb-3">A 6-digit OTP has been sent to your e-mail. Enter it below to continue.</p>
+
+                        <div class="field-wrap">
+                            <label class="mod-label" for="txtOTP">Enter OTP</label>
+                            <input type="text" placeholder=" " class="mod-input otp-input" id="txtOTP" maxlength="6" inputmode="numeric" pattern="[0-9]*" autocomplete="off" />
+                            <i class="fas fa-key field-icon"></i>
+                        </div>
+                        <div id="divMessageverotp" class="text-danger small mt-1 mb-2 clrdivs text-center"></div>
+
+                        <button type="button" class="btn-login border-0" id="btnfgVerifyOTP" style="background: var(--info-gradient);">
+                            <i class="fas fa-check-circle me-2"></i> VERIFY OTP
+                        </button>
+                    </div>
+
+                    <!-- Stage 3: New Password -->
+                    <div id="dvverpwd" class="fg-stage" style="display:none;">
+                        <div class="fg-stage-icon" style="background: var(--success-gradient);">
+                            <i class="fas fa-lock-open"></i>
+                        </div>
+                        <p class="text-secondary small text-center mb-3">Create a new password for your account.</p>
+
                         <div class="field-wrap">
                             <label class="mod-label" for="txtpwd">New Password</label>
-                            <input type="password" placeholder=" " class="mod-input" id="txtpwd" />
+                            <input type="password" placeholder=" " class="mod-input" id="txtpwd" autocomplete="new-password" />
+                            <i class="fas fa-lock field-icon"></i>
+                            <i class="fas fa-eye toggle-pwd-icon" id="togglePwd" data-target="txtpwd"></i>
                             <div id="divMessagepwd" class="text-danger small mt-1 clrdivs"></div>
                         </div>
                         <div class="field-wrap">
                             <label class="mod-label" for="txtCnfpwd">Confirm Password</label>
-                            <input type="password" placeholder=" " class="mod-input" id="txtCnfpwd" />
+                            <input type="password" placeholder=" " class="mod-input" id="txtCnfpwd" autocomplete="new-password" />
+                            <i class="fas fa-lock field-icon"></i>
+                            <i class="fas fa-eye toggle-pwd-icon" id="toggleCnfPwd" data-target="txtCnfpwd"></i>
                             <div id="divMessagecnfpwd" class="text-danger small mt-1 clrdivs"></div>
                         </div>
-                        <button type="button" class="btn-login btn-success-gradient border-0 mt-3" id="btnFGAccept">
+                        <button type="button" class="btn-login btn-success-gradient border-0 mt-2" id="btnFGAccept">
                             <i class="fas fa-save me-2"></i> RESET PASSWORD
                         </button>
+                    </div>
+
+                    <!-- Stage 4: Success -->
+                    <div id="dvFgSuccess" class="fg-success-check" style="display:none;">
+                        <i class="fas fa-check-circle"></i>
+                        <h4 class="fw-bold mt-3 mb-1">Password Reset Successful</h4>
+                        <p id="divMessagePasswordSet" class="text-secondary small"></p>
                     </div>
                 </div>
                 <div class="modal-footer border-0 p-3 bg-white justify-content-center">
@@ -381,7 +689,6 @@
                 </div>
             </div>
         </div>
-    </div>
     </div>
     <style>
         .resolution-overlay {
@@ -480,6 +787,7 @@
             $('#dvUNPWD').show();
         }
     }
+     var Aurl = '@Session["APIurl"]';
     var uuid = crypto.randomUUID()
     //alert(uuid);
     $(document).ready(function () {
@@ -488,12 +796,31 @@
         //if (screenWidth <= 420) {
         //    $("#Resolutionerror").hide();
         //} else {
-        //    $(".divmargintop65bottom60").hide();       
+        //    $(".divmargintop65bottom60").hide();
         //}
-            var modal = document.getElementById("myModalfg");
-            var span = document.getElementsByClassName("closefg")[0];
-            span.onclick = function () {
-                modal.style.display = "none";
+            var fgModalEl = document.getElementById("myModalfg");
+            var fgModal;
+            if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                fgModal = new bootstrap.Modal(fgModalEl);
+            } else {
+                // Fallback controller (used only if bootstrap.bundle.js is not loaded by the layout)
+                fgModal = {
+                    show: function () {
+                        $(fgModalEl).addClass('show').css('display', 'block').attr('aria-hidden', 'false');
+                        if ($('#fgManualBackdrop').length == 0) {
+                            $('body').append('<div id="fgManualBackdrop" class="modal-backdrop fade show"></div>');
+                        }
+                        $('body').addClass('modal-open');
+                        $(fgModalEl).trigger('show.bs.modal');
+                    },
+                    hide: function () {
+                        $(fgModalEl).removeClass('show').css('display', 'none').attr('aria-hidden', 'true');
+                        $('#fgManualBackdrop').remove();
+                        $('body').removeClass('modal-open');
+                    }
+                };
+                $(fgModalEl).find('[data-bs-dismiss="modal"]').on('click', function () { fgModal.hide(); });
+                $('#fgManualBackdrop').on('click', function () { fgModal.hide(); });
             }
             if ($('#drpCompCode :selected').text() == "- Select Company Code -") {
                 $('#drpCompCode').focus();
@@ -514,7 +841,7 @@
         }
         $('#btnclick').click(function () {
             Loader(1);
-        });           
+        });
             function ValidationforDevice() {
                 if ($("#lblMobWin").text() == "0") {
                     $('#dvLType1').hide();
@@ -558,147 +885,263 @@
 
                     return Keypress(key)
                 });
-                $('#btnBatchClose').click(function (e) {
-                    modal.style.display = "none";
-                });
-                $("#dvverotp").hide();
-                $("#dvverpwd").hide();
-                $('#lnkfp').click(function (e) {
-                    if ($('#txtUserName').val() == "") {
-                        $('#divMessageUserName').html('* User name should not empty');
-                    } else {
-                        modal.style.display = "block";
-                        $("#txtEmailID").prop("disabled", false);
-                        $('#btnfgGetCode').prop("disabled", false);
-                        $("#txtOTP").prop("disabled", false);
-                        $('#btnfgVerifyOTP').prop("disabled", false);
-                        $('#txtEmailID').val("");
-                        $('#txtOTP').val("");
-                        $('.clrdivs').html("");
-                        $("#dvverotp").hide();
-                        $("#dvverpwd").hide();
-                        $('#txtpwd').val("");
-                        $('#txtCnfpwd').val("");
-                        verifyfg(1, $('#drpCompCode').val(), $('#txtUserName').val(), "", "", "")
-                    }
+                // ===================== FORGOT / RESET PASSWORD =====================
+
+                // Move to a given stage (1, 2 or 3) with animation + step indicator update
+                function fgGoToStage(stage) {
+                    $('.fg-stage').removeClass('fg-stage').hide();
+                    var target = stage == 1 ? '#dvFgStage1' : (stage == 2 ? '#dvverotp' : '#dvverpwd');
+                    $(target).show().addClass('fg-stage');
+
+                    $('.fg-step').removeClass('active done');
+                    $('.fg-step-line').removeClass('filled');
+
+                    if (stage >= 1) { $('#fgStepInd1').addClass(stage > 1 ? 'done' : 'active'); }
+                    if (stage >= 2) { $('#fgLine1').addClass('filled'); $('#fgStepInd2').addClass(stage > 2 ? 'done' : 'active'); }
+                    if (stage >= 3) { $('#fgLine2').addClass('filled'); $('#fgStepInd3').addClass('active'); }
+                }
+
+                // Reset the entire modal back to Stage 1 - runs every time the modal is opened
+                function fgResetModal() {
+                    $('#txtFgUserName').val("").prop("disabled", false);
+                    $('#txtEmailID').val("").prop("disabled", false);
+                    $('#txtOTP').val("").prop("disabled", false);
+                    $('#txtVerifyOTP,#txtOTPID,#txtUserID').val("");
+                    $('#txtpwd').val("").attr("type", "password");
+                    $('#txtCnfpwd').val("").attr("type", "password");
+                    $('#togglePwd').removeClass('fa-eye-slash').addClass('fa-eye');
+                    $('#toggleCnfPwd').removeClass('fa-eye-slash').addClass('fa-eye');
+                    $('#btnfgGetCode').prop("disabled", false);
+                    $('#btnfgVerifyOTP').prop("disabled", false);
+                    $('.clrdivs').html("");
+                    $('#dvFgSuccess').hide();
+                    fgGoToStage(1);
+                }
+
+                $(fgModalEl).on('show.bs.modal', function () {
+                    fgResetModal();
                 });
 
-                function verifyfg(nFlag, DBs, Param1, Param2, Param3, Param4) {
+                $('#lnkfp').click(function (e) {
+                    e.preventDefault();
+                    fgModal.show();
+                });
+
+        function ValidateRPCredential(nFlag, strCompCode, strUName, strEmail) {
+            Loader(1);
                     $.ajax({
-                        url: '@Url.Action("ManageForgotPassword", "LogOn")',
+                         url: Aurl + "forgotpassword/validateuser",
                         type: 'GET',
                         datatype: 'json',
-                        data: { Flag: nFlag, DB: DBs, Val1: Param1, Val2: Param2, Val3: Param3, Val4: Param4 },
+                        //data: { Flag: nFlag, Companycode: DBs, Val1: Param1, Val2: Param2, Val3: Param3, Val4: Param4 },
+                        data: {
+                            Companycode: strCompCode, UserName: strUName, Email: strEmail
+                        },
                         success: function (data) {
-                            if (nFlag == 1) {
-                                $("#lblresetemail").text("");
+                            Loader(2);
+                            if (nFlag == 2) {
                                 $.each(data, function (i, items) {
-                                    if (items.ID == "2") {
-                                        //alert(items.Msg);
-                                        $("#lblresetemail").text(items.Val1);
-
-                                    } else if (items.ID == "3" || items.ID == "1") {
-                                        alert(items.Msg)
-                                        modal.style.display = "none";
-                                    }
-                                });
-                            }
-                            else if (nFlag == 2) {
-                                $.each(data, function (i, items) {
-                                    if (items.ID == "2") {
-                                        //alert(items.Msg);
-                                        $("#txtVerifyOTP").val(items.Val1);
-                                        $("#dvverotp").show();
-                                        //alert(items.Msg)
-                                        $('#txtOTP').focus();
-                                        $("#divMessagevercode").html(items.Msg);
-                                        document.getElementById("divMessagevercode").style.color = "green";
-                                        $("#txtEmailID").prop("disabled", true);
+                                    if (items.Mode == "2") {
+                                        $("#divMessagevercode").html('');
                                         $('#btnfgGetCode').prop("disabled", true);
+                                        $("#txtFgUserName").prop("disabled", true);
+                                        $("#txtEmailID").prop("disabled", true);
+                                        fgGoToStage(2);
+                                        setTimeout(function () { $('#txtOTP').focus(); }, 300);
+                                        $("#txtOTPID").val(items.ID);
+                                        $("#txtUserID").val(items.UserID);
+                                        showSuccessSnackbar(items.ResponseMessage);
+
+                                        //We've detected a sign-in attempt from a new device
                                     }
-                                    else if (items.ID == "3" || items.ID == "1") {
-                                        //alert(items.Msg)
-                                        $("#divMessagevercode").html(items.Msg);
-                                        document.getElementById("divMessagevercode").style.color = "red";
-                                        modal.style.display = "none";
+                                    else if (items.Mode == "3") {
+                                        $("#divMessagevercode").html(items.ResponseMessage);
+                                        document.getElementById("divMessagevercode").style.color = "#ef4444";
+                                        $('#dvFgStage1').addClass('fg-shake');
+                                        setTimeout(function () { $('#dvFgStage1').removeClass('fg-shake'); }, 400);
+                                        showErrorSnackbar(items.ResponseMessage);
                                     }
                                 });
-                            }
-                            else if (nFlag == 3) {
-                                $.each(data, function (i, items) {
-                                    if (items.ID == "1") {
-                                        $("#divMessagePasswordSet").html(items.Msg)
-                                        modal.style.display = "none";
-                                    } else {
-                                        $("#divMessagecnfpwd").html(items.Msg)
-                                    }
-                                });
-                            }
+
+
+                            }                            
+                        }, error: function (data) {
+                            Loader(2);
                         }
                     });
                 }
 
+        function ValidateOTP(strCompCode, nOTPID, strOTP) {
+            $.ajax({
+                url: Aurl + "otpverify",
+                type: 'GET',
+                datatype: 'json',
+                //data: { Flag: nFlag, Companycode: DBs, Val1: Param1, Val2: Param2, Val3: Param3, Val4: Param4 },
+                data: {
+                    Companycode: strCompCode, OTPID: nOTPID, OTP: strOTP
+                },
+                success: function (data) {
+                    
+                        $.each(data, function (i, items) {
+                            if (items.MsgID == "1") {
+                                $("#divMessagevercode").html('');
+                                $("#txtOTP").prop("disabled", true);
+                                $('#btnfgVerifyOTP').prop("disabled", true);
+                                fgGoToStage(3);
+                                setTimeout(function () { $('#txtpwd').focus(); }, 300);                                
+                                $("#txtUserID").val(items.ID);
+                                showSuccessSnackbar(items.Message);
+                                //We've detected a sign-in attempt from a new device
+                            }
+                            else if (items.MsgID == "2") {
+                                $("#divMessagevercode").html(items.Msg);
+                                document.getElementById("divMessagevercode").style.color = "#ef4444";
+                                $('#dvFgStage1').addClass('fg-shake');
+                                setTimeout(function () { $('#dvFgStage1').removeClass('fg-shake'); }, 400);
+                                showErrorSnackbar(items.Message);
+                            }
+                        });
+                }
+            });
+        }
+        function SetPassword(strCompCode, strUName, strEmail, strpwd) {
+            $.ajax({
+                url: Aurl + "forgotpassword/setpassword",
+                type: 'GET',
+                datatype: 'json',
+                //data: { Flag: nFlag, Companycode: DBs, Val1: Param1, Val2: Param2, Val3: Param3, Val4: Param4 },
+                data: {
+                    Companycode: strCompCode, UserName: strUName, Email: strEmail, Password: strpwd
+                },
+                success: function (data) {
+                    $.each(data, function (i, items) {
+                        if (items.MsgID == "0") {
+                            $('.fg-stage').removeClass('fg-stage').hide();
+                            $('#fgStepInd1, #fgStepInd2, #fgStepInd3').removeClass('active').addClass('done');
+                            $('#fgLine1, #fgLine2').addClass('filled');
+                            $("#divMessagePasswordSet").html(items.Message);
+                            $('#dvFgSuccess').show();
+                            setTimeout(function () { fgModal.hide(); }, 1800);
+                            showSuccessSnackbar(items.Message);
+                            //We've detected a sign-in attempt from a new device
+                        }
+
+                    });
+                }
+            });
+        }
+                // ---- Stage 1: Username + E-mail -> Get OTP ----
                 $("#btnfgGetCode").click(function () {
+                    $('#divMessageFgUserName').html('');
                     $('#divMessageemail').html('');
                     var IsValid = true;
-                    if ($('#txtEmailID').val() == "") {
+
+                    if ($('#txtFgUserName').val().trim() == "") {
                         IsValid = false;
-                        $('#txtEmailID').focus();
-                        $('#divMessageemail').html('* E-Mail ID should not empty');
+                        $('#txtFgUserName').focus();
+                        $('#divMessageFgUserName').html('* User name should not be empty');
+                    }
+
+                    var emailVal = $('#txtEmailID').val().trim();
+                    if (emailVal == "") {
+                        IsValid = false;
+                        if ($('#divMessageemail').html() == '') $('#txtEmailID').focus();
+                        $('#divMessageemail').html('* E-Mail ID should not be empty');
                     }
                     else {
-                        var pattern = /^\w+[a-zA-Z_.]+?\.[a-zA-Z]{2,3}$/;
-                        if (pattern.test($('#txtEmailID').val())) {
+                        var pattern = /^[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                        if (!pattern.test(emailVal)) {
                             IsValid = false;
                             $('#txtEmailID').focus();
                             $('#divMessageemail').html('* Invalid E-Mail format');
                         }
                     }
+
                     if (IsValid) {
-                        verifyfg(2, $('#drpCompCode').val(), $('#txtUserName').val(), $('#txtEmailID').val(), "", "")
+                        ValidateRPCredential(2, $('#drpCompCode').val(), $('#txtFgUserName').val().trim(), emailVal);
+                    } else {
+                        $('#dvFgStage1').addClass('fg-shake');
+                        setTimeout(function () { $('#dvFgStage1').removeClass('fg-shake'); }, 400);
                     }
                 });
+
+                // OTP field: numeric only, hard max-length of 6
+                $('#txtOTP').on('input', function () {
+                    this.value = this.value.replace(/\D/g, '').slice(0, 6);
+                });
+
+                // ---- Stage 2: Verify OTP ----
                 $('#btnfgVerifyOTP').click(function (e) {
                     $('#divMessageverotp').html('');
-                    if ($('#txtOTP').val() == "") {
-                        $('#divMessageverotp').html('* Enter Valid OTP...');
+                    var otpVal = $('#txtOTP').val().trim();
+
+                    if (otpVal == "") {
+                        $('#divMessageverotp').html('* Please enter the OTP');
                         $('#txtOTP').focus();
-                        $("#dvverpwd").hide();
-                    } else {
-                        if ($('#txtOTP').val() == $("#txtVerifyOTP").val()) {
-                            $("#dvverpwd").show();
-                            $('#txtpwd').focus();
-                            $("#txtOTP").prop("disabled", true);
-                            $('#btnfgVerifyOTP').prop("disabled", true);
-                        }
-                        else {
-                            $('#txtOTP').focus();
-                            $("#dvverpwd").hide();
-                            $('#divMessageverotp').html('* OTP Incorrect...');
-                        }
+                    }
+                    else if (otpVal.length != 6) {
+                        $('#divMessageverotp').html('* OTP must be exactly 6 digits');
+                        $('#txtOTP').focus();
+                    }
+                    //else if (otpVal != $("#txtVerifyOTP").val()) {
+                    //    $('#divMessageverotp').html('* Incorrect OTP, please try again');
+                    //    $('#txtOTP').focus();
+                    //    $('#dvverotp').addClass('fg-shake');
+                    //    setTimeout(function () { $('#dvverotp').removeClass('fg-shake'); }, 400);
+                    //}
+                    else {
+                        ValidateOTP($('#drpCompCode').val(), $('#txtOTPID').val().trim(), $('#txtOTP').val().trim());
                     }
                 });
+
+                if ($('#txtOTP').length) {
+                    $('#txtOTP').keypress(function (e) {
+                        if (e.which == 13) { $('#btnfgVerifyOTP').click(); }
+                    });
+                }
+
+                // ---- Password show / hide toggle ----
+                $('.toggle-pwd-icon').click(function () {
+                    var targetId = $(this).data('target');
+                    var input = $('#' + targetId);
+                    if (input.attr('type') === 'password') {
+                        input.attr('type', 'text');
+                        $(this).removeClass('fa-eye').addClass('fa-eye-slash');
+                    } else {
+                        input.attr('type', 'password');
+                        $(this).removeClass('fa-eye-slash').addClass('fa-eye');
+                    }
+                });
+
+                // ---- Stage 3: New Password + Confirm -> Reset ----
                 $('#btnFGAccept').click(function (e) {
                     var IsValid = true;
                     $('#divMessagepwd').html('');
                     $('#divMessagecnfpwd').html('');
-                    if ($('#txtpwd').val() == "") {
-                        $('#divMessagepwd').html('* Password should not empty...');
+                    var pwdVal = $('#txtpwd').val();
+                    var cnfVal = $('#txtCnfpwd').val();
+
+                    if (pwdVal == "") {
+                        $('#divMessagepwd').html('* Password should not be empty');
                         $('#txtpwd').focus();
                         IsValid = false;
                     }
-                    else if ($('#txtCnfpwd').val() == "") {
-                        $('#divMessagecnfpwd').html('* Confirm Password should not empty...');
+                    else if (cnfVal == "") {
+                        $('#divMessagecnfpwd').html('* Confirm Password should not be empty');
                         $('#txtCnfpwd').focus();
                         IsValid = false;
                     }
-                    else if ($('#txtpwd').val() != $('#txtCnfpwd').val()) {
-                        $('#divMessagecnfpwd').html('* Password & Confirm Password is mismatching...');
+                    else if (pwdVal != cnfVal) {
+                        $('#divMessagecnfpwd').html('* Password & Confirm Password do not match');
                         $('#txtCnfpwd').focus();
                         IsValid = false;
                     }
+
                     if (IsValid) {
-                        verifyfg(3, $('#drpCompCode').val(), $('#txtUserName').val(), $('#txtEmailID').val(), $('#txtpwd').val(), "")
+                        SetPassword($('#drpCompCode').val(), $('#txtFgUserName').val().trim(), $('#txtEmailID').val().trim(), pwdVal)                        
+                    } else {
+                        $('#dvverpwd').addClass('fg-shake');
+                        setTimeout(function () { $('#dvverpwd').removeClass('fg-shake'); }, 400);
                     }
                 });
                 function Keypress(key) {
