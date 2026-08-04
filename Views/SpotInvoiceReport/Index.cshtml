@@ -185,7 +185,15 @@
             font-size: 12px;
             opacity: .9;
         }
-
+    .invoice-doc-footer {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        padding: 10px 15px;
+        background: linear-gradient(135deg, #f2f7ff, #fcfffe);
+        border-radius: 0 0 12px 12px;
+        color: #fff;
+    }
     .dbl-click-hint {
         font-size: 10.5px;
         color: #adb5bd;
@@ -393,17 +401,34 @@
                         @**@
                         <div class="d-flex gap-2">
                             <input id="dtpDate" type="date" class="form-control shadow-sm border-1 bg-light" />
-                            
+
                         </div>
                         <div class="text-danger small mt-1 clrdivserror" id="divErrorOndtpDate"></div>
 
                     </div>
+
+                    <!-- Print Profile -->
+                    <div class="row g-2 mb-3" id="dvPrintProfile">
+                        <div class="col-12">
+                            <div class="form-label fw-bold text-primary" id="lblprintprof">Print Profile</div>
+                            <span class="form-label">
+                                <select class="form-control" id="cmbPrintProfile"><option value="0">Select</option></select>
+                            </span>
+                            <div class="text-danger ps-1" id="divErrPrintProfile"></div>
+                        </div>
+                        @*<div class="col-4">
+                <div class="form-label fw-bold text-primary">Copies</div>
+                <span class="form-label">
+                    <input id="txtNoofCopies" class="form-control" value="1" type="number">
+                </span>
+            </div>*@
+                    </div>
                     <div class="d-flex gap-2 mt-auto">
 
-                        <button id="btnReset" type="button" class="btn btn-danger deliveryaction-btn flex-grow-1 text-white">
+                        <button id="btnReset" type="button" class="btn btn-danger flex-grow-1 text-white">
                             <i class="bi bi-arrow-counterclockwise"></i> Reset
                         </button>
-                        <button id="btnLoadData" type="button" class="btn btn-primary deliveryaction-btn flex-grow-1">
+                        <button id="btnLoadData" type="button" class="btn btn-primary flex-grow-1">
                             <i class="bi bi-cloud-download"></i> Load
                         </button>
                     </div>
@@ -574,6 +599,10 @@ var Aurl = '@Session["APIurl"]';
                     DefSMID = Todayroute[0].SalesmanID;
                     $('#cmbSalesman').val(Todayroute[0].SalesmanID);
                     $("#cmbSalesman").prop("disabled", enabSm);
+                    var profile = Todayroute[0].PrintProfileID;
+
+                    GetPrintProfile(strCompanyCode, PrintTransID, profile, false, []);
+
                 }
             }, error: function (data) {
                 if (data.status == "401") {
@@ -734,6 +763,10 @@ var Aurl = '@Session["APIurl"]';
                     html += buildField('bi-boxes', 'Total Qty', fmtQty(inv.TotalQty));
                     html += buildField('bi-list-check', 'Items', (inv["ItemCount "] || inv.ItemCount || '0').toString().trim());
                     html += '    </div>';
+                    html += '    <div class="invoice-doc-footer">';
+                    html += '      <button type="button" data-docid="' + inv.DocID +'" class="btn btn-success vlswhatsapp-btn flex-grow-1"><i class="bi bi-whatsapp"></i > Whatsapp</button >';
+                    html += '      <button type="button" data-docid="' + inv.DocID +'" class="btn vlspdf-btn flex-grow-1" style="background-color:brown;color:white"><i class="bi bi-filetype-pdf"></i> Download PDF</button>';
+                    html += '    </div>';
                     html += '  </td>';
                     html += '</tr>';
                     $tbody.append(html);
@@ -786,7 +819,18 @@ var Aurl = '@Session["APIurl"]';
         $(this).addClass('row-selected');
         openProductPopup(id);
     });
-
+    // ----- click on WhatsApp button : Trigger to send whatsapp message -----
+    $(document).on('click', '.vlswhatsapp-btn', function () {
+        var id = $(this).data('docid');
+        var ProfileID = $("#cmbPrintProfile").val();
+        DocumentValidate(ProfileID, id);
+    });
+    // ----- click on Download PDF button : Trigger to Download  the inoive pdf-----
+    $(document).on('click', '.vlspdf-btn', function () {
+        var id = $(this).data('docid');
+        var ProfileID = $("#cmbPrintProfile").val();
+        PDFDocument(4, ProfileID, id );
+    });
     // Touch devices: simulate double-tap since dblclick can be unreliable on mobile
     (function () {
         var lastTap = 0, lastEl = null;
@@ -870,4 +914,111 @@ var Aurl = '@Session["APIurl"]';
         });
         $('#dvProductEmpty').toggle(visibleCount === 0);
     });
+   
+    function PDFDocument(strTransID, nConfigID, strDocID) {
+        if (nConfigID > 0) {
+            $.ajax({
+                url: Aurl + "transactionprint/generateprint",
+                type: 'GET',
+                datatype: 'json',
+                data: {
+                    Companycode: strCompanyCode, TransID: strTransID, ConfigID: nConfigID, DocValue: strDocID,
+                    Copies: "1", UserID: UID
+                },
+                success: function (data) {
+                    if (data.length > 0) {
+                        //location.href = 'Invoice/ExportData?Fname=' + data;
+                        location.href = Aurl + 'print/downloadprint?Companycode=' + strCompanyCode + '&Fname=' + data;
+                    } else {
+                        showErrorSnackbar('Invalid Document ID');
+                    }
+                }, error: function (data) {
+                    if (data.status == "401") {
+                        var msg = data.responseJSON.Message;
+                        //showErrorSnackbar(msg + " Logout and Login again.");
+                    }
+                }
+            });
+        }
+        else {
+            showErrorSnackbar("Select Print profile");
+        }
+    }
+    function DocumentValidate(nProfileID, DocID) {
+        if (nProfileID > 0) {
+            $.ajax({
+                url: Aurl + "printing/documentvalidate",
+                type: 'get',
+                contentType: 'json',
+                data: { Companycode: strCompanyCode, TransID: 4, strDocID: DocID },
+                success: function (data) {
+                    $.each(data, function (i, items) {
+                        if (items.MsgID == "0") {
+                            WhatsappDocument(items.ID, 4, nProfileID);
+                        } else {
+                            showErrorSnackbar("Doc ID not matched. Enter correct Doc ID");
+                        }
+                    });
+                }
+            });
+        }
+        else {
+            showErrorSnackbar("Select Print profile");
+        }
+    }
+    function WhatsappDocument(ID, strTransID, nConfigID) {
+        var strcopy = 1;// $("#txtNoofCopies").val() == "" || $("#txtNoofCopies").val() == "0" || $("#txtNoofCopies").val() == null ? 1 : $("#txtNoofCopies").val();
+        $.ajax({
+            url: Aurl + "print/WhatsappGenerate",
+            type: 'GET',
+            datatype: 'json',
+            data: {
+                Companycode: strCompanyCode, DocID: ID, TransID: strTransID, ConfigID: nConfigID,
+                Copies: strcopy, APIURL: Aurl, UserID: UID
+            },
+            success: function (data) {
+                if (data.length > 0) {
+                    $.each(data, function (i, items) {
+                        if (items.MsgID == 0) {
+                            //showSuccessSnackbar(items.Message);
+                            var phone = items.RowID
+                            var message = items.Message;
+                            OpenWhatsApp(phone, message);
+                        }
+                        else if (items.MsgID == 1) {
+                            showErrorSnackbar(items.Message);
+                        }
+                    });
+                } else {
+                    showErrorSnackbar('Message Not Send. Try Again');
+                }
+            }, error: function (data) {
+                if (data.status == "401") {
+                    var msg = data.responseJSON.Message;
+                    //showErrorSnackbar(msg + " Logout and Login again.");
+                }
+            }
+        });
+    }
+    function isNullOrEmpty(val) {
+        return val === null || val === undefined || val === "" || val == 0;
+    }
+
+    function isMobileBrowser() {
+        return /Android|iPhone|iPad|iPod|Windows Phone|Opera Mini|IEMobile|Mobile/i.test(navigator.userAgent);
+    }
+    function OpenWhatsApp(phone, message) {
+        if (!phone) {
+            showErrorSnackbar("Mobile No not found for this customer");
+            return;
+        }
+        var encodedMsg = encodeURIComponent(message);
+        if (isMobileBrowser()) {
+            // Open WhatsApp app
+            window.location.href = "whatsapp://send?phone=" + phone + "&text=" + encodedMsg;
+        } else {
+            // Open WhatsApp Web/Desktop
+            window.open("https://wa.me/" + phone + "?text=" + encodedMsg, "_blank");
+        }
+    }
 </script>
