@@ -262,12 +262,17 @@
     }
 
     .prod-meta {
-        font-size: 1rem;
-        color: #43494e;
+        font-size: 0.85rem;
+        color: black;
         margin-top: 2px;
         word-break: break-word;
     }
-
+    .prod-price {
+        font-size: 1.2rem;
+        color: red;
+        margin-top: 2px;
+        word-break: break-word;
+    }
     .prod-avl {
         margin-top: 4px;
         font-size: 0.8rem;
@@ -470,11 +475,12 @@
         }
 
         .prod-name {
-            font-size: 0.85rem;
+            font-size: 1rem;
         }
 
         .prod-meta, .prod-avl {
-            font-size: 0.72rem;
+            font-size: 1.2rem;
+            font-weight:500;
         }
 
         .qty-stepper {
@@ -892,7 +898,7 @@
                                 <i class="bi bi-geo-alt-fill"></i> Near Me
                             </button>
                         </div>
-                        <div class="text-danger small mt-1 clrdivserror" id="divErrorOnSalesman"></div>
+                        <div class="text-danger small mt-1 clrdivserror" id="divErrorOnCustName"></div>
                     </div>
 
                     <div>
@@ -1121,7 +1127,13 @@
                 <div class="card-header-custom">
                     <i class="bi bi-cart-check"></i>
                     <span class="flex-grow-1">Selected Products (Qty)</span>
-                    <button type="button" class="btn-close btn-close-white" id="btnQtySummaryCloseX" aria-label="Close" style="margin-left:auto;"></button>
+                    @*<button type="button" class="btn-close" id="btnQtySummaryCloseX" aria-label="Close" style="margin-left:auto;color:white"></button>*@
+                    <button type="button"
+                            id="btnQtySummaryCloseX"
+                            class="btn p-0 border-0 ms-auto"
+                            style="color:#fff;font-size:28px;line-height:1;">
+                        &times;
+                    </button>
                 </div>
                 <div class="modal-body">
                     <div class="table-responsive">
@@ -1161,8 +1173,9 @@
 <script>
         var UID = '@Session["LoginUserID"]';
 var Aurl = '@Session["APIurl"]';
-   var DecVal = '@Session["DecimalValues"]';
+   var DecVal = 2;
     var strCompanyCode = '@Session["CompanyCode"]';
+    var strSpotSalesPriceMode = '@Session["SpotSalesPriceMode"]';
     var DefSMID = 0;
     var PrintTransID = 4, PrintConfigID = 0;
     $("#lnkMob1,#lnkMob2").hide();
@@ -1207,11 +1220,11 @@ var Aurl = '@Session["APIurl"]';
                     // Show Image unchecked: imgBlockHtml stays empty (no placeholder at all),
                     // so the flex .prod-info block below simply expands to fill the space.
 
-                    var uomQty = row.UomQty !== undefined ? row.UomQty : "0.00";
-                    var uomPrice = row.InclPrice !== undefined ? row.InclPrice : "0.00";
+                    var uomQty = row.UomQty !== undefined ? row.UomQty : "0";
+                    var uomPrice = row.InclPrice !== undefined ? row.InclPrice : "0";
                     var adjQty = row.AdjustQty;
                     var mrp = row.MRP !== undefined ? row.MRP : null;
-                    var avlVls = row.AvlVLS !== undefined ? parseFloat(row.AvlVLS).toFixed(DecVal) : null;
+                    var avlVls = row.AvlVLS !== undefined ? parseFloat(row.AvlVLS) : null;
 
                     //var metaParts = [];
                     //if (uomQty !== undefined && uomQty !== null && uomQty !== '') metaParts.push('Tot Qty: ' + uomQty);
@@ -1225,10 +1238,10 @@ var Aurl = '@Session["APIurl"]';
                     var metaLine = metaParts.length ? '<div class="prod-meta">' + metaParts.join(' &nbsp;|&nbsp; ') + '</div>' : '';
 
                     metaParts = [];
-                    if (uomPrice !== undefined && uomPrice !== null && uomPrice !== '') metaParts.push('Price: ' + parseFloat(uomPrice).toFixed(DecVal));
-                    if (mrp !== undefined && mrp !== null && mrp !== '') metaParts.push('MRP: ' + parseFloat(mrp).toFixed(DecVal) );
+                    if (uomPrice !== undefined && uomPrice !== null && uomPrice !== '') metaParts.push('Price : <label class="prod-price">' + parseFloat(uomPrice).toFixed(DecVal) + '</label>');
+                    if (mrp !== undefined && mrp !== null && mrp !== '') metaParts.push('MRP : <label class="prod-price">' + parseFloat(mrp).toFixed(DecVal) + '</label>');
                     metaLine += metaParts.length ? '<div class="prod-meta">' + metaParts.join(' &nbsp;|&nbsp; ') + '</div>' : '';
-
+                    //prod-price
                     var avlHtml = (avlVls !== null && !isNaN(avlVls))
                         ? '<div class="prod-avl">Available VLS: <span class="avl-highlight">' + avlVls + '</span></div>'
                         : '';
@@ -1258,7 +1271,7 @@ var Aurl = '@Session["APIurl"]';
                     return '<div class="qty-stepper">'
                         + '<button type="button" class="qty-btn qty-btn-minus" data-row="' + rowIdx + '" tabindex="-1"><i class="bi bi-dash-lg" style="color:red"></i></button>'
                         + '<input type="text" inputmode="decimal" class="qty-input" '
-                        + 'data-row="' + rowIdx + '" min="0"' + maxAttr + ' step="0.01" placeholder="0.00" value="' + currentQty + '" />'
+                        + 'data-row="' + rowIdx + '" min="0"' + maxAttr + ' step="0.01" placeholder="0" value="' + currentQty + '" />'
                         + '<button type="button" class="qty-btn qty-btn-plus" data-row="' + rowIdx + '" tabindex="-1"><i class="bi bi-plus-lg" style="color:green"></i></button>'
                         + '</div>'
                         + '<div class="text-danger small qty-error" id="qtyError_' + rowIdx + '"></div>';
@@ -1274,7 +1287,7 @@ var Aurl = '@Session["APIurl"]';
         "bSearchable": true,
         "bInfo": false,
         "bPaginate": false,
-        "scrollY": "375px",
+        "scrollY": "500px",
         "scrollX": true,
         "scrollCollapse": true,
         "data": [],
@@ -1492,16 +1505,14 @@ var Aurl = '@Session["APIurl"]';
 
         var uomPrice = d.InclPrice !== undefined ? d.InclPrice : "0.00";
         var mrp = d.MRP !== undefined ? d.MRP : null;
-        var avlVls = d.AvlVLS !== undefined ? parseFloat(d.AvlVLS).toFixed(DecVal) : null;
+        var avlVls = d.AvlVLS !== undefined ? parseFloat(d.AvlVLS) : null;
 
         var metaParts = [];
-        if (uomPrice !== undefined && uomPrice !== null && uomPrice !== '') metaParts.push('Price: ' + parseFloat(uomPrice).toFixed(DecVal));
-        if (mrp !== undefined && mrp !== null && mrp !== '') metaParts.push('MRP: ' + parseFloat(mrp).toFixed(DecVal));
+        if (uomPrice !== undefined && uomPrice !== null && uomPrice !== '') metaParts.push('Price :  <label class="prod-price">' + parseFloat(uomPrice).toFixed(DecVal) + '</label>');
+        if (mrp !== undefined && mrp !== null && mrp !== '') metaParts.push('MRP :  <label class="prod-price">' + parseFloat(mrp).toFixed(DecVal) + '</label>');
         var metaLine = metaParts.length ? '<div class="prod-meta">' + metaParts.join(' &nbsp;|&nbsp; ') + '</div>' : '';
 
-        var avlHtml = (avlVls !== null && !isNaN(avlVls))
-            ? '<div class="prod-avl">Available VLS: <span class="avl-highlight">' + avlVls + '</span></div>'
-            : '';
+        var avlHtml = (avlVls !== null && !isNaN(avlVls)) ? '<div class="prod-avl">Available VLS: <span class="avl-highlight">' + avlVls + '</span></div>' : '';
 
         var detailsHtml = '<div class="prod-cell">'
             + imgBlockHtml
@@ -1852,7 +1863,7 @@ var Aurl = '@Session["APIurl"]';
             type: 'get',
             contentType: 'json',
             data: {
-                CompanyCode: strCompanyCode, SalesmanID: NSalesmanID, DocNo: nVLSNo
+                CompanyCode: strCompanyCode, SalesmanID: NSalesmanID, DocNo: nVLSNo, SpotSalePriceMode: strSpotSalesPriceMode
             },
             success: function (data) {
                 VLSData = [], VLSProductData = [];
@@ -2009,6 +2020,7 @@ var Aurl = '@Session["APIurl"]';
                 "CustomerID": $("#txtCustomerID").val(),
                 "Status": $("#txtVLSStatus").val(),
                 "BranchID": $("#cmbBranch").val(),
+                "SpotSalePriceMode": strSpotSalesPriceMode,
                 "UserID": UID,
                 "ItemData": SelectedProducts
             };

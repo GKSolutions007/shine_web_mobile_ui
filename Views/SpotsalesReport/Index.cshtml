@@ -113,7 +113,7 @@
         word-break: break-word;
     }
 
-    .deliverydeliveryaction-btn {
+    .deliveryaction-btn {
         border-radius: 8px;
         font-weight: 600;
         letter-spacing: 0.5px;
@@ -268,7 +268,6 @@
         margin-top: 2px;
         word-break: break-word;
     }
-
     .prod-avl {
         margin-top: 4px;
         font-size: 0.8rem;
@@ -540,7 +539,7 @@
         min-width: 0;
         display: flex;
         flex-direction: column;
-        gap: 3px;
+        /*gap: 3px;*/
     }
 
     .ssr-name-val {
@@ -578,8 +577,9 @@
     }
 
     .ssr-value {
-        color: #212529;
-        font-weight: 600;
+        font-size: 1.2rem;
+        color: red;
+        margin-top: 2px;
         word-break: break-word;
     }
 
@@ -1029,17 +1029,18 @@
                         @**@
                         <div class="d-flex gap-2">
                             <select id="cmbSalesman" class="form-select shadow-sm border-1 bg-light"><option value="0">Select Salesman</option></select>
-                            <button id="btnLoadVLSData" type="button" class="btn btn-primary deliveryaction-btn flex-shrink-0">
-                                <i class="bi bi-cloud-download"></i> Load
-                            </button>
+                           
                         </div>
                         <div class="text-danger small mt-1 clrdivserror" id="divErrorOnSalesman"></div>
 
                     </div>
                     <div class="d-flex gap-2 mt-auto">
 
-                        <button id="btnReset" type="button" class="btn btn-danger deliveryaction-btn flex-grow-1 text-white">
+                        <button id="btnReset" type="button" class="btn btn-danger flex-grow-1 text-white">
                             <i class="bi bi-arrow-counterclockwise"></i> Reset
+                        </button>
+                        <button id="btnLoadVLSData" type="button" class="btn btn-primary flex-grow-1 text-white">
+                            <i class="bi bi-cloud-download"></i> Load
                         </button>
                     </div>
                 </div>

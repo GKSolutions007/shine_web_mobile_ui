@@ -234,6 +234,7 @@ namespace ShineWebMobile.Controllers
                                                         Session["DecimalValues"] = dtAppconfig.Rows[0]["DecimalValues"].ToString();
                                                         Session["ItemOrderby"] = dtAppconfig.Rows[0]["ItemOrderby"].ToString();
                                                         Session["ItemsperPage"] = dtAppconfig.Rows[0]["ItemsperPage"].ToString();
+                                                        Session["SpotSalesPriceMode"] = dtAppconfig.Rows[0]["SpotSalesPriceMode"].ToString();
                                                         Session["APIURL"] = ConfigurationManager.AppSettings["apiurl"].ToString();
                                                         FormsAuthenticationTicket authTicket;
                                                         HttpCookie authCookie;
@@ -374,6 +375,7 @@ namespace ShineWebMobile.Controllers
                                         Session["DecimalValues"] = dtAppconfig.Rows[0]["DecimalValues"].ToString();
                                         Session["ItemOrderby"] = dtAppconfig.Rows[0]["ItemOrderby"].ToString();
                                         Session["ItemsperPage"] = dtAppconfig.Rows[0]["ItemsperPage"].ToString();
+                                        Session["SpotSalesPriceMode"] = dtAppconfig.Rows[0]["SpotSalesPriceMode"].ToString();
                                         //Random RN = new Random();
                                         //int LogToken = Convert.ToInt32(RN.Next(100000, 999999));
                                         //Session["LoginToken"] = LogToken.ToString();
