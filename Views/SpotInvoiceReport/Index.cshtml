@@ -371,6 +371,67 @@
             color: #14532d;
             border-color: #c3f0d6;
         }
+
+    #tblProductDetails {
+        width: 100%;
+    }
+
+        /* Scrollable tbody */
+        #tblProductDetails tbody {
+            display: block;
+            max-height: 500px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            margin-bottom: 50px;
+            /*background-color: #e2e3e5;*/
+            /* Mobile touch scrolling */
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+            /* Firefox */
+            scrollbar-width: auto;
+            scrollbar-color: #8b8f94 #d5d7da;
+        }
+
+            #tblProductDetails thead,
+            #tblProductDetails tbody tr {
+                display: table;
+                width: 100%;
+                table-layout: fixed;
+            }
+
+        /* Header */
+        #tblProductDetails thead {
+            background-color: #ced4da;
+            display: none;
+        }
+
+        /* Rows */
+        #tblProductDetails tbody tr {
+            background-color: #f8f9fa;
+            
+        }
+
+            #tblProductDetails tbody tr:hover {
+                background-color: #dee2e6;
+            }
+
+        /* Desktop Chrome/Edge scrollbar */
+        #tblProductDetails tbody::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #tblProductDetails tbody::-webkit-scrollbar-track {
+            background: #d5d7da;
+        }
+
+        #tblProductDetails tbody::-webkit-scrollbar-thumb {
+            background-color: #8b8f94;
+            border-radius: 6px;
+        }
+
+            #tblProductDetails tbody::-webkit-scrollbar-thumb:hover {
+                background-color: #6c7075;
+            }
 </style>
 <body>
     <div class="mobile-delivery-container">
@@ -481,7 +542,14 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="invoiceProductModalLabel"><i class="bi bi-box-seam me-2"></i>Product Details</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        @*<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>*@
+                        <button type="button"
+                                id="btnQtySummaryCloseX"
+                                class="btn p-0 border-0 ms-auto"
+                                 data-bs-dismiss="modal" aria-label="Close"
+                                style="color:#fff;font-size:28px;line-height:1;">
+                            &times;
+                        </button>
                     </div>
                     <div class="modal-body">
                         <div class="modal-doc-info">
@@ -892,7 +960,7 @@ var Aurl = '@Session["APIurl"]';
         $.each(products, function (i, p) {
             var qty = p["UomQty "] || p.UomQty || 0;
             var html = '';
-            html += '<tr style="animation-delay:' + (i * 0.05) + 's;">';
+            html += '<tr style="animation-delay:' + (i * 0.15) + 's;">';
             //html += '  <td data-label="Code">' + htmlEscape(p.Code) + '</td>';
             html += '  <td data-label="Name">' + htmlEscape(p.Name) + '</td>';
             //html += '  <td data-label="HSN Code">' + htmlEscape(p.HSNCode) + '</td>';

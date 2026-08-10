@@ -664,11 +664,11 @@
     .customdabuttons {
         border-radius: 22px;
         font-weight: 700;
-        font-size: 12.5px;
+        font-size: 12px;
         background: linear-gradient(135deg, #00bcd4, #0097a7);
         border: none;
         color: #fff;
-        padding: 8px 16px;
+        padding: 10px 16px;
         width: 100%;
         display: flex;
         align-items: center;
@@ -1342,14 +1342,14 @@
                 </div>
                 <div class="row g-2 mb-2">
                     @*<div class="col-12 col-md-4">
-                        <div class="field-wrap">
-                            <i class="bi bi-person field-icon" id="Custinfo" style="cursor:pointer"></i>
-                            <label class="mod-label">Customer <span style="color:#d32f2f">*</span></label>
-                            <input type="text" class="mod-input FormclrField" id="txtCustomerName" autocomplete="off" />
-                            <div class="field-error clrdivs" id="divErrorOnCustName"></div>
-                        </div>
-                    </div>*@
-                    <div class="col-12 col-md-4">
+            <div class="field-wrap">
+                <i class="bi bi-person field-icon" id="Custinfo" style="cursor:pointer"></i>
+                <label class="mod-label">Customer <span style="color:#d32f2f">*</span></label>
+                <input type="text" class="mod-input FormclrField" id="txtCustomerName" autocomplete="off" />
+                <div class="field-error clrdivs" id="divErrorOnCustName"></div>
+            </div>
+        </div>*@
+                    <div class="col-10 col-md-4">
                         <div class="field-wrap">
                             <i class="bi bi-person field-icon" style="cursor:pointer"></i>
                             <label class="mod-label">
@@ -1370,10 +1370,16 @@
                             <div class="field-error clrdivs" id="divErrorOnCustName"></div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-4">
+
+                    <div class="col-2 col-md-4">
                         <div class="field-wrap">
-                            <button class="customdabuttons hidewhenview" id="btnGetSurrCustomers" style="align-content:center"><span class="glyphicon glyphicon-map-marker"></span>&nbsp;Surrounding Customers</button>
+                            <button class="customdabuttons hidewhenview" title="Surrounding Customers" id="btnGetSurrCustomers" style="align-content: center; font-size: 16px"><span class="glyphicon glyphicon-map-marker"></span></button>
                         </div>
+                    </div>
+                    
+                    <div class="col-12">
+                        <b>OS : </b> <label id="lblOSCountValue">0.00 Cr/0</label>&ensp;
+                        <b>LSD : </b> <label id="lblLastSaleDate">--</label>
                     </div>
                 </div>
 
@@ -1885,6 +1891,7 @@
                     var Colljsdata = JSON.parse(data);
                     var HeaderData = Colljsdata.Table[0];
                     var DocData = Colljsdata.Table1;
+                    
                     $('#txtID').val(HeaderData.ID),
                         $('#txtStatusID').val(HeaderData.StatusID),
                         $('#cmbBeatName').val(HeaderData.BeatID),
@@ -1949,6 +1956,7 @@
                     setTimeout(() => {
                         ShowHideFields(HeaderData.ActivityID == 1);
                         CalcProdDtl();
+                        getPartyInfo(HeaderData.CustomerID);
                     }, 500);
                     
 
@@ -2197,6 +2205,7 @@
                                 GetData(2, $('#cmbBeatName').val(), $('#cmbSalesManName').val());
                             }, 500);
                         }
+                        
                         //else if ($('#cmbBeatName').val() != '' && $('#cmbSalesManName').val() != '') {
                         //    $('#txtAdtnlDisc').val(items.ot_AdtnlDisc)
                         //    $('#lblCustOS').text(items.ot_OSValue.toString())
@@ -2214,6 +2223,39 @@
             }
         });
     }
+    function getPartyInfo(nPartyID) {
+        
+        var var_Branch = $('#cmbBranchName').val();
+        if (var_Branch > 0) {
+            $.ajax({
+                url: Aurl + "partyinfos",
+                type: "GET",
+                datatype: "JSON",
+                data: {
+                    CompanyCode: strCompanyCode, PartyID: nPartyID, BranchID: var_Branch
+                },
+                success: function (data) {
+                    var CustomerData = data;
+                    //lblOSCountValue,lblLastSaleDate
+                    var PartyActivity = CustomerData[0].CustomerActivity;
+                    $("#lblOSCountValue").text(formatIndianCurrency(PartyActivity[0].OSValue) + " " + PartyActivity[0].CrDr + " / " + PartyActivity[0].OSCount);
+                    if (PartyActivity[0].CrDr == "Cr") {
+                        $("#lblOSCountValue").css("color", "red");
+                    } else {
+                        $("#lblOSCountValue").css("color", "green");                        
+                    }
+                    $("#lblLastSaleDate").text(PartyActivity[0].LastSaleDate);
+                    //console.log("CustomerData ", CustomerData);
+                },
+                error: function (data) {
+
+                }
+            });
+        }
+        else {
+            showErrorSnackbar("Select Branch");
+        }
+    }
     $('#cmbBeatName,#cmbSalesManName').change(function () {
         $(".clrdivs").html("");
         $("txtCustomerName").val();
@@ -2229,6 +2271,7 @@
                     //customer info function
                     GetData(5, ui.item.id);
                     $("#txtCustomerID").val(ui.item.id);
+                    getPartyInfo(ui.item.id);
                 }
                 return false;
             },
@@ -2844,6 +2887,8 @@
         Table.clear().draw();
         objItemDetails = [];
         loaditemcounttotamt("0", "0.00", "0.00");
+        $("#lblOSCountValue").text("0.00 Cr/0");
+        $("#lblLastSaleDate").text("--");
         Table.search('').columns().search('').draw();
         $('.chosen-Manuf').val('').trigger('chosen:updated');
         $('.chosen-Category').val('').trigger('chosen:updated');
@@ -3049,6 +3094,7 @@
             }
         });
     }
+
     function buildCustomerInfoHtml(cust, imagedata) {
         const fullAddress = [cust.Billadd1, cust.Billadd2, cust.Billadd3]
             .filter(Boolean)
@@ -3247,6 +3293,7 @@
         var Cust = TableSurroundCustomers.row(this).data()[1];
         $('#txtCustomerName').val(Cust);
         GetData(5, CustID);
+        getPartyInfo(CustID);
         $("#txtCustomerID").val(CustID);
         modal.hide();
     });

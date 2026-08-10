@@ -7,7 +7,7 @@
 <link href="~/Content/buttonTop.css" rel="stylesheet" />
 <link rel="stylesheet" href="~/Content/jquery-ui.css">
 <link href="~/Content/dataTables.dataTables.2.2.2.css" rel="stylesheet" />
-
+<link href="~/Content/surroundingcustomerstyle.css" rel="stylesheet" />
 <script src="~/Scripts/jquery-1.10.2.min.js"></script>
 <script src="~/Scripts/jquery-3.7.1.js"></script>
 <script src="~/Scripts/jquery-ui.js"></script>
@@ -1179,7 +1179,7 @@
                     </div>
                 </div>
                 <div class="row g-2 mb-2">
-                    <div class="col-12 col-md-4">
+                    <div class="col-10 col-md-4">
                         <div class="field-wrap">
                             <i class="bi bi-person field-icon" id="Custinfo" style="cursor:pointer"></i>
                             <label class="mod-label">Customer <span style="color:#d32f2f">*</span></label>
@@ -1188,9 +1188,9 @@
                         </div>
                     </div>
 
-                    <div class="col-12 col-md-4">
+                    <div class="col-2 col-md-4">
                         <div class="field-wrap">
-                            <button class="customdabuttons" id="btnGetSurrCustomers" style="align-content:center"><span class="glyphicon glyphicon-map-marker"></span>&nbsp;Surrounding Customers</button>
+                            <button class="customdabuttons" id="btnGetSurrCustomers" style="align-content:center;font-size:16px"><span class="glyphicon glyphicon-map-marker"></span></button>
                         </div>
                     </div>
                 </div>
@@ -1280,14 +1280,14 @@
                 <button id="btnClose" type="button" class="btn btn-warning">
                     <i class="bi bi-x-circle"></i> Close
                 </button>
+                <button id="btnAddTop" type="button" class="btn btn-primary tblot1">
+                    <i class="bi bi-cart-plus"></i>
+                </button>
                 <button id="btnClear" type="button" class="btn btn-danger">
                     <i class="bi bi-arrow-counterclockwise"></i> Clear
                 </button>
-                <button id="btnAddTop" type="button" class="btn btn-primary tblot1">
-                    <i class="bi bi-cart-plus"></i> Add
-                </button>
                 <button id="btnViewTop" type="button" class="btn btn-info text-white tblot1">
-                    <i class="bi bi-eye"></i> View
+                    <i class="bi bi-eye"></i>
                 </button>
                 <button id="btnSave" type="button" class="btn btn-success">
                     <i class="bi bi-save2"></i> Save
@@ -1360,11 +1360,9 @@
                                     <thead>
                                         <tr>
                                             <th>CustomerID</th>
-                                            <th style="width:80%">
-                                                <i class="bi bi-person-fill me-1"></i>Customer Name
-                                            </th>
-                                            <th style="width:20%">
-                                                <i class="bi bi-signpost-split me-1"></i>Distance
+                                            <th>Customer Name</th>
+                                            <th style="width:100%">
+                                                <i class="bi bi-person-fill me-1"></i>Customer Info
                                             </th>
                                         </tr>
                                     </thead>
@@ -1462,7 +1460,7 @@
         "bInfo": false,
         "bPaginate": false,
         "ordering": false,
-        "columnDefs": [{ "targets": [0], "visible": false, searchable: false, ordering: false }]
+        "columnDefs": [{ "targets": [0,1], "visible": false, searchable: false, ordering: false }]
         //"selected":true,
     });
     var modal = new bootstrap.Modal(document.getElementById('myModalfg'));// document.getElementById("myModalfg");
@@ -2854,12 +2852,12 @@
                     if (data.length > 0) {
                         if (data[0].Mode == 0) {
                             modal.show();
-                            var customerdata = JSON.parse(data[0].Customerdata);
+                            var customerdata = (data[0].Customerdata);
                             $.each(customerdata, function (i, items) {
                                 TableSurroundCustomers.row.add([
                                     items.ID,
-                                    items["Customer Name"],
-                                    items.Radius
+                                    items.Customername,
+                                    renderCustomerCell(items, i)
                                 ]).draw(false);
                             });
                         } else {
@@ -2876,6 +2874,38 @@
             modal.hide();
             $('#divErrorOnCustName').html('Location Not Identified. Try again');
         }
+    }
+    function initials(name) {
+        if (!name) return "?";
+        var parts = name.trim().split(/\s+/);
+        var chars = parts.length > 1 ? parts[0][0] + parts[1][0] : parts[0].slice(0, 2);
+        return chars.toUpperCase();
+    }
+
+    function renderCustomerCell(items, rowIndex) {
+        var avatar;
+        if (items.ImageData && items.ImageData.trim() !== "") {
+            var imgSrcdata = "data:image/jpeg;base64," + items.ImageData;
+            avatar = '<img class="cust-avatar" src="' + imgSrcdata + '" alt="' + items.Customername + '" />';
+        } else {
+            avatar = '<div class="cust-avatar-fallback">' + initials(items.Customername) + '</div>';
+        }
+
+        // Stagger the entrance animation per row, capped so long lists don't feel sluggish
+        var delay = Math.min(rowIndex * 60, 400);
+
+        return (
+            '<div class="cust-card" style="animation-delay:' + delay + 'ms">' +
+            avatar +
+            '<div class="cust-body">' +
+            '<div class="cust-name">' + items.Customername + '</div>' +
+            '<div class="cust-meta">' +
+            '<span><i class="bi bi-signpost-split-fill"></i>' + items.Radius + '</span>' +
+            '<span><i class="bi bi-geo-alt-fill"></i>' + items.Address + '</span>' +
+            '</div>' +
+            '</div>' +
+            '</div>'
+        );
     }
     $('#tblSurroundCustomers tbody').on('click', 'tr', function () {
         $('#txtBeatName').val('');

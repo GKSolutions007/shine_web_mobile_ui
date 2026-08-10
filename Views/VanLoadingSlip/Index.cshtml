@@ -1724,6 +1724,7 @@ var Aurl = '@Session["APIurl"]';
         Table.search("").draw();
         $("#cmbSalesman").val(DefSMID);
         $("#cmbSalesman").prop("disabled", true);
+        $("#btnSubmitDelivery").prop("disabled", false);
         VLSData = [];
         VLSProductData = [];
         // Summary / Product Details / Save-Clear panels should only be visible
@@ -2012,6 +2013,7 @@ var Aurl = '@Session["APIurl"]';
             $('#cmbBranch').focus();
         }
         if (IsValid) {
+            $("#btnSubmitDelivery").prop("disabled", true);
             console.log("Selected products to save", SelectedProducts);
             var vlsdata = {
                 "CompanyCode": strCompanyCode,
@@ -2033,6 +2035,7 @@ var Aurl = '@Session["APIurl"]';
                 cache: false,
                 processData: false,
                 success: function (data) {
+                    $("#btnSubmitDelivery").prop("disabled", false);
                     $.each(data, function (i, items) {
                         if (items.MsgID == 0) {
                             showSuccessSnackbar(items.Message);
@@ -2049,6 +2052,7 @@ var Aurl = '@Session["APIurl"]';
                         }
                     });
                 }, error: function (data) {
+                    $("#btnSubmitDelivery").prop("disabled", false);
                     if (data.status == "401") {
                         var msg = data.responseJSON.Message;
                         ////showErrorSnackbar(msg + " Logout and Login again.");
