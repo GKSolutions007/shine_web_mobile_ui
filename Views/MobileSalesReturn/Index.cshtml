@@ -1120,7 +1120,7 @@
                 <!-- Card View Container -->
                 <div id="divMobCollDocsList"
                      class="row"
-                     style="overflow-x:auto;height:600px;">
+                     style="overflow-x:auto;height:auto;">
                 </div>
             </div>
         </div>
@@ -1317,7 +1317,7 @@
                             </thead>
                         </table>
                     </div>
-                    <div class="cart-badge-row">
+                    <div class="cart-badge-row d-none">
                         <i class="bi bi-cart3" id="cartBottom"></i>
                         <span id="divAddedItemsCountBottom"></span>
                     </div>
@@ -2453,10 +2453,8 @@
         $(".clrdivs").html("");
     }
     function loaditemcounttotamt(count, totamt, amt) {
-        $('#divAddedItemsCountTop').html('' + count + ' items in cart - Tot Amt : ' + parseFloat(totamt).toFixed(2) + ',' +
-            '<br\>' + 'M. Amt :' + parseFloat(amt).toFixed(2));
-        $('#divAddedItemsCountBottom').html('' + count + ' items in cart -  Tot Amt : ' + parseFloat(totamt).toFixed(2) + ',' +
-            '<br\>' + 'M. Amt :' + parseFloat(amt).toFixed(2));
+        $('#divAddedItemsCountTop').html('' + count + ' items in cart - Tot Amt : ' + parseFloat(totamt).toFixed(2));
+        $('#divAddedItemsCountBottom').html('' + count + ' items in cart -  Tot Amt : ' + parseFloat(totamt).toFixed(2));
     }
     function AddItemsinCart() {
         console.log("objItemDetails ", objItemDetails);
@@ -2648,6 +2646,7 @@
         $(".FormclrcmbField").val(0);
         $(".clrdivs").html("");
         InitializeData();
+        GetSetFilterData(6, 0);
         Table.clear().draw();
         objItemDetails = [];
         loaditemcounttotamt("0", "0.00", "0.00");

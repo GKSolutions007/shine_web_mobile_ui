@@ -190,7 +190,7 @@ table.dataTable {
     /* Hide the DataTables ID/name header columns on small screens,
        everything relevant now lives inside the card */
     table.dataTable thead {
-        display: none;
+        /*display: none;*/
     }
 }
 
