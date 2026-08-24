@@ -76,6 +76,8 @@ namespace ShineWebMobile.Models
 
         public string AssignInvoicewise { get; set; }
         public string Customerwise { get; set; }
+        public string EditPartyDetail { get; set; }
+        public string EditAddressDetail { get; set; }
     }
     public class clspermissions
     {

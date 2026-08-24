@@ -26,12 +26,18 @@ namespace ShineWebMobile.Controllers
                 string AddPerm = dtPermission.Select("MenuID = 493", null).Length > 0 || UID == 1 ? "1" : "0";
                 string ModPerm = dtPermission.Select("MenuID = 494", null).Length > 0 || UID == 1 ? "1" : "0";
                 string ViewPerm = dtPermission.Select("MenuID = 495", null).Length > 0 || UID == 1 ? "1" : "0";
+
+                string EditPartyDetail = dtPermission.Select("MenuID = 559", null).Length > 0 || UID == 1 ? "1" : "0";
+                string EditAddressDetail = dtPermission.Select("MenuID = 560", null).Length > 0 || UID == 1 ? "1" : "0";
+
                 SingleMasterModel dam = new SingleMasterModel();
                 dam.FormName = Name;
                 dam.EnablePrice = editprice;
                 dam.Add = AddPerm;
                 dam.Modify = ModPerm;
                 dam.View = ViewPerm;
+                dam.EditPartyDetail = EditPartyDetail;
+                dam.EditAddressDetail = EditAddressDetail;
                 return View(dam);
             }
         }

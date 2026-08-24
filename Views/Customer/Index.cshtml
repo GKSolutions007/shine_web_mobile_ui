@@ -199,6 +199,7 @@
 
     .card-label {
         font-weight: 500;
+        font-size:12px;
         color: var(--text-muted);
         display: flex;
         align-items: center;
@@ -951,7 +952,8 @@
         @Html.HiddenFor(model => model.Modify, new { @autocomplete = "off", @class = "form-control", @id = "txtModifyID" })
         @Html.HiddenFor(model => model.View, new { @autocomplete = "off", @class = "form-control", @id = "txtViewID" })
 
-
+        @Html.HiddenFor(model => model.EditPartyDetail, new { @autocomplete = "off", @class = "form-control", @id = "txtEditPartyDetail" })
+        @Html.HiddenFor(model => model.EditAddressDetail, new { @autocomplete = "off", @class = "form-control", @id = "txtEditAddressDetail" })
 
         <!-- Page Header -->
         <div class="page-header-bar">
@@ -1157,6 +1159,15 @@ var Aurl = '@Session["APIurl"]';
    var DecVal = '@Session["DecimalValues"]';
     var strCompanyCode = '@Session["CompanyCode"]';
     $("#btnAddNew").hide();
+    //txtEditAddressDetail
+    //txtEditPartyDetail
+    var Permissions = {
+        AddNew: $("#txtAddID").val() == 1,
+        Modify: $("#txtModifyID").val() == 1,
+        View: $("#txtViewID").val() == 1,
+        EditAddressDetail: $("#txtEditAddressDetail").val() == 1,
+        EditPartyDetail: $("#txtEditPartyDetail").val() == 1,
+    }
     //if ($("#txtAddID").val() == 0) {
     //    $("#btnAddNew").hide();
     //}
@@ -1229,15 +1240,15 @@ var Aurl = '@Session["APIurl"]';
 
                            if (status === "No") {
                                 statusIcon = "bi-x-circle";
-                                statusClass = "bg-danger";
+                                statusClass = "bg-danger fs-6";
                             }
                            else if (status === "Yes") {
                                 statusIcon = "bi-check-circle";
-                                statusClass = "bg-success";
+                               statusClass = "bg-success fs-6";
                             }
-
+                            const statuslabel = status === "Yes" ? "Active" : "In-Active";
                             cardHtml += '        <div class="col-6">';
-                            cardHtml += '          <span class="badge ' + statusClass + '"><i class="bi ' + statusIcon + '"></i> ' + status + '</span>';
+                            cardHtml += '          <span class="badge ' + statusClass + '"><i class="bi ' + statusIcon + '"></i> ' + statuslabel + '</span>';
                             cardHtml += '        </div>';
                             cardHtml += '      </div>';
 
@@ -1246,10 +1257,10 @@ var Aurl = '@Session["APIurl"]';
                             // Footer
                             cardHtml += '    <div class="card-footer card-footer-view text-right">';
 
-                            cardHtml += $("#txtViewID").val() == 0 ? '' :
+                            cardHtml += !Permissions.View ? '' :
                                 '<button id="btnView' + rowIndex + '" type="button" class="btn btn-info btn-sm clsview" data-id="' + value.ID + '" data-customername="' + value.Name + '"><i class="bi bi-eye"></i> View</button>';
 
-                            cardHtml += $("#txtModifyID").val() == 1 ?
+                            cardHtml += Permissions.Modify ?
                                 '<button id="btnEdit' + rowIndex + '" type="button" class="btn btn-warning btn-sm clsedit ms-2" data-id="' + value.ID + '" data-customername="' + value.Name + '"><i class="bi bi-pencil"></i> Edit</button>' : '';
 
                             cardHtml += '    </div>';
@@ -1306,7 +1317,8 @@ var Aurl = '@Session["APIurl"]';
                         $("#txtGSTIN").val(items.GSTIN),
                         $("#txtPincode").val(items.Pincode),
                         $("#txtLatLong").val(items.Latitude + "," + items.Longtitude),
-                        $("#txtAddress").val(items.Billadd1 + "," + items.Billadd2 + "," + items.Billadd3);
+                        $("#txtAddress").val(items.MobilePinAddress);
+                    //items.Billadd1 + "," + items.Billadd2 + "," + items.Billadd3
                 });
 
                 // Reset any previous image state before loading this customer's image
@@ -1397,9 +1409,9 @@ var Aurl = '@Session["APIurl"]';
                 var ncount = Math.round((count - 3) / 2);
                 for (var i = 0; i < count - 3; i++) {
                     if (ncount > i) {
-                        madds1 += value[i] + ",";
+                        madds1 += value[i] != "" ? value[i] + "," : "";
                     } else {
-                        madds2 += value[i].trim() + ",";
+                        madds2 += value[i] != "" ? value[i].trim() + "," : "";
                     }
                 }
                 madds3 = city.trim() + " - " + pincode.trim() + ", " + state.trim();
@@ -1420,6 +1432,7 @@ var Aurl = '@Session["APIurl"]';
         $("#lblPopupheading").html('<i class="bi bi-eye-fill me-1"></i> View Customer');
         $("#txtCode,#txtName,#txtLatLong").prop("disabled", true);
         $("input,textarea").prop("disabled", true);
+        $("#btnGetLocation").prop("disabled", false);
         clearImageSelection();
         setImageEditable(false);
         modal.show();
@@ -1433,7 +1446,10 @@ var Aurl = '@Session["APIurl"]';
         $("#viewlocicon").hide();
         $("#editlocicon").show();
         $("#lblPopupheading").html('<i class="bi bi-pencil-square me-1"></i> Edit Customer');
-        $("input,textarea").prop("disabled", false);
+        
+        $("#txtName,#txtMob1,#txtGSTIN").prop("disabled", !Permissions.EditPartyDetail);
+        $("#txtPincode,#txtAddress,#btnGetLocation").prop("disabled", !Permissions.EditAddressDetail);
+
         $("#txtCode,#txtLatLong").prop("disabled", true);
         clearImageSelection();
         setImageEditable(true);
