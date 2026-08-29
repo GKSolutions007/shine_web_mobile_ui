@@ -1446,10 +1446,15 @@ function CloseConfirmDialogMsg(message) {
 
         //showPopupAtButton(this); // (your existing position code)
     });
+    //function formatIndianCurrency(num) {
+    //    return '₹ ' + parseFloat(num).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    //}
     function formatIndianCurrency(num) {
-        return '₹ ' + parseFloat(num).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        return parseFloat(num).toLocaleString('en-IN', {
+            minimumFractionDigits: 2, maximumFractionDigits: 2, style: 'currency',
+            currency: 'INR'
+        });
     }
-
 
     function GetDocumentID(dtpDate, nBranchID, nTransID, oldprefix, isModify, fieldid) {
         if (nBranchID > 0 && dtpDate != "") {

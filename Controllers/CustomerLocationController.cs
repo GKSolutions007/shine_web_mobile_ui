@@ -8,9 +8,10 @@ using System.Web.Mvc;
 
 namespace ShineWebMobile.Controllers
 {
-    public class MobileTodayRouteController : Controller
+    public class CustomerLocationController : Controller
     {
-        public ActionResult Index(string Name, string strFormID)
+        // GET: CustomerLocation
+        public ActionResult Index(string Name, string strFormID, string TypeID, string TranID, string SMID)
         {
             if (Session["LoginUserID"] == null)
             {
@@ -21,14 +22,17 @@ namespace ShineWebMobile.Controllers
                 //Name = clsEncryptDecrypt.Decrypt(Name);
                 //string decFormID = clsEncryptDecrypt.Decrypt(strFormID);
                 ViewData["FormName"] = Name;
-                //ViewData["FormID"] = decFormID;
                 DataTable dtPermission = (System.Data.DataTable)Session["dtPermission"];
                 int UID = Convert.ToInt32(Session["LoginUserID"]);
-                string SMEditable = dtPermission.Select("MenuID = 563", null).Length > 0 || UID == 1 ? "1" : "0";
+                string AssignInvWise = dtPermission.Select("MenuID = 544", null).Length > 0 || UID == 1 ? "1" : "0";
+                string Customerwise = dtPermission.Select("MenuID = 545", null).Length > 0 || UID == 1 ? "1" : "0";
 
                 SingleMasterModel dam = new SingleMasterModel();
                 dam.FormName = Name;
-                dam.EditPartyDetail = SMEditable;
+                dam.TransType = TypeID;
+                dam.TransID = TranID;
+                dam.AssignInvoicewise = AssignInvWise;
+                dam.Customerwise = Customerwise;
                 return View(dam);
             }
         }

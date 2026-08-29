@@ -123,6 +123,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\CommonReportController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
+    <Compile Include="Controllers\CustomerLocationController.cs" />
     <Compile Include="Controllers\DailyActivityController.cs" />
     <Compile Include="Controllers\DraftInvoiceController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -376,6 +377,7 @@
     <Content Include="Views\SpotsalesReport\Index.cshtml" />
     <Content Include="Views\MobileTransactionprint\Index.cshtml" />
     <Content Include="Views\SpotInvoiceReport\Index.cshtml" />
+    <Content Include="Views\CustomerLocation\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

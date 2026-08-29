@@ -1581,6 +1581,7 @@ var Aurl = '@Session["APIurl"]';
         $("#dvDocuments").show();
         $("#MainHeading").text($("#txtFormName").val());         
         $('#txtSearchCards,#chkShowAll').prop("disabled", false);
+        GetSetFilterData(7, 0, 0);
     }
     function GetData(nMode, strID = null, strSalesmanID = null) {
         $.ajax({

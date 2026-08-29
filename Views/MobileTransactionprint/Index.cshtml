@@ -76,6 +76,191 @@
             box-shadow: 0 8px 25px rgba(0,0,0,0.1);
         }
 
+    /* ---------- Doc Filter Modal ---------- */
+    #docFilterModal .modal-header {
+        background: #f8f9fa;
+    }
+
+    #docFilterModal .selected-transaction-name {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #0d6efd;
+    }
+
+    /* ---------- Doc Filter Search Bar ---------- */
+    .doc-search-wrap {
+        margin-bottom: 12px;
+    }
+
+    .doc-search-group .input-group-text,
+    .doc-search-group .form-control,
+    .doc-search-group .btn {
+        border-color: #dfe4ea;
+    }
+
+    .doc-search-group .form-control {
+        box-shadow: none;
+    }
+
+        .doc-search-group .form-control:focus {
+            box-shadow: none;
+            border-color: #86b7fe;
+        }
+
+    /* ---------- Select Button (redesigned) ---------- */
+    .doc-select-btn {
+        border: none;
+        border-radius: 999px;
+       /* padding: 7px 20px;*/
+        font-size: 12.5px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        color: #fff;
+        background: linear-gradient(135deg, #0d6efd, #0a58ca);
+        box-shadow: 0 2px 8px rgba(13,110,253,0.35);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+
+        .doc-select-btn i {
+            font-size: 15px;
+        }
+
+        .doc-select-btn:hover,
+        .doc-select-btn:focus {
+            background: linear-gradient(135deg, #0b5ed7, #084298);
+            box-shadow: 0 5px 14px rgba(13,110,253,0.45);
+            transform: translateY(-1px);
+            color: #fff;
+        }
+
+        .doc-select-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 6px rgba(13,110,253,0.3);
+        }
+
+    @@media (max-width: 420px) {
+        .doc-row-action {
+            justify-items: stretch;
+        }
+
+        .doc-select-btn {
+            width: 100%;
+            justify-content: center;
+            /*padding: 9px 0;*/
+        }
+    }
+
+    .doc-cards-wrap {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .doc-card {
+        border: 1px solid #e3e7ee;
+        border-radius: 10px;
+        padding: 10px 14px;
+        background: #fff;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        transition: box-shadow 0.2s ease, transform 0.2s ease;
+    }
+
+        .doc-card:hover {
+            box-shadow: 0 4px 14px rgba(0,0,0,0.09);
+        }
+
+    .doc-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4px 16px;
+        padding: 3px 0;
+    }
+
+        .doc-row + .doc-row {
+            border-top: 1px dashed #e9ecef;
+        }
+
+    .doc-row-header {
+        padding-top: 0;
+    }
+
+    .doc-row-single .doc-col-full {
+        grid-column: 1 / -1;
+    }
+
+    .doc-row-action {
+        grid-template-columns: 1fr;
+        justify-items: end;
+        padding-top: 10px;
+        margin-top: 2px;
+        border-top: 1px solid #e9ecef !important;
+    }
+
+    .doc-col {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+
+    .doc-col-empty {
+        visibility: hidden;
+    }
+
+    .doc-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        color: #6c757d;
+        font-weight: 700;
+        margin-bottom: 2px;
+    }
+
+    .doc-value {
+        font-size: 13.5px;
+        color: #212529;
+        word-break: break-word;
+    }
+
+    .doc-value-strong {
+        font-weight: 700;
+        color: #0d6efd;
+    }
+
+    #divDocFilterResults {
+        max-height: 55vh;
+        overflow-y: auto;
+        padding-right: 2px;
+    }
+
+    @@media (max-width: 576px) {
+        #docFilterModal .modal-body {
+            padding: 0.75rem;
+        }
+
+        #divDocFilterResults {
+            max-height: none;
+            padding-bottom: 100px;
+        }
+    }
+
+    @@media (max-width: 420px) {
+        .doc-row {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .doc-row-header .doc-col:first-child {
+            border-bottom: 1px dashed #eef1f5;
+            padding-bottom: 4px;
+            margin-bottom: 2px;
+        }
+
+        .doc-col-empty {
+            display: none;
+        }
+    }
 </style>
 <body>
     <div class="mobile-delivery-container">
@@ -112,7 +297,9 @@
 
                         <div class="d-flex gap-2">
                             <input class="form-control shadow-sm border-1 bg-light" id="txtDocID" />
-
+                            <button id="btnDocFilter" type="button" class="btn btn-outline-primary flex-shrink-0" title="Doc Filter">
+                                <i class="bi bi-funnel"></i> Doc Filter
+                            </button>
                         </div>
                         <div class="text-danger small mt-1 clrdivserror" id="divErrorOnDocID"></div>
 
@@ -136,6 +323,62 @@
             <i class="bi bi-chevron-up" style="top: 0px !important; left: 0px !important;"></i>
         </a>
     </div>
+
+    <!-- ===================== Doc Filter Modal ===================== -->
+    <div class="modal fade" id="docFilterModal" tabindex="-1" aria-labelledby="docFilterModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg modal-fullscreen-sm-down">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="docFilterModalLabel">
+                        <i class="bi bi-funnel me-2 text-primary"></i>
+                        <span class="selected-transaction-name" id="lblDocFilterTransName"></span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-12 col-md-4">
+                            <label class="form-label fw-bold text-primary"><i class="bi bi-person me-2 text-primary"></i>User Name *</label>
+                            <select id="cmbDocUserName" class="form-select shadow-sm border-1 bg-light">
+                                <option value="0">-- Select --</option>
+                            </select>
+                            <div class="text-danger small mt-1 docFilterError" id="divErrorOnDocUserName"></div>
+                        </div>
+                        <div class="col-5 col-md-4">
+                            <label class="form-label fw-bold text-primary"><i class="bi bi-calendar-event me-2 text-primary"></i>From Date *</label>
+                            <input type="date" id="txtDocFromDate" class="form-control shadow-sm border-1 bg-light" autocomplete="off" />
+                            <div class="text-danger small mt-1 docFilterError" id="divErrorOnFromDate"></div>
+                        </div>
+                        <div class="col-5 col-md-4">
+                            <label class="form-label fw-bold text-primary"><i class="bi bi-calendar-event me-2 text-primary"></i>To Date *</label>
+                            <input type="date" id="txtDocToDate" class="form-control shadow-sm border-1 bg-light" autocomplete="off" />
+                            <div class="text-danger small mt-1 docFilterError" id="divErrorOnToDate"></div>
+                        </div>
+                        <div class="col-2 text-end mt-5">
+                            <button id="btnDocFilterLoad" type="button" class="btn btn-primary">
+                                <i class="bi bi-download me-1"></i>Load
+                            </button>
+                        </div>
+                    </div>
+
+                    <hr class="text-muted" />
+
+                    <div id="docSearchWrap" class="doc-search-wrap" style="display:none;">
+                        <div class="input-group input-group-sm doc-search-group">
+                            <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                            <input type="text" id="txtDocSearch" class="form-control border-start-0 border-end-0" placeholder="Search Doc ID, Date, Party Name..." autocomplete="off" />
+                            <button type="button" id="btnDocSearchClear" class="btn btn-outline-secondary border-start-0 d-none" title="Clear search">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                        <div class="small text-muted mt-1" id="lblDocResultCount"></div>
+                    </div>
+
+                    <div id="divDocFilterResults"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 <script>
@@ -145,7 +388,7 @@ var Aurl = '@Session["APIurl"]';
     var strCompanyCode = '@Session["CompanyCode"]';
     var DefSMID = 0;
     var PrintTransID = 4, PrintConfigID = 0;
-    var enabSm = UID == 1 || UID == 2 ? false : true;    
+    var enabSm = UID == 1 || UID == 2 ? false : true;
         $(window).scroll(function () {
             if ($(this).scrollTop() >= 200) {
                 $('#return-to-top').fadeIn(200);
@@ -161,29 +404,94 @@ var Aurl = '@Session["APIurl"]';
             }, 500);
         });
     function ClearForm() {
-        $(".clrdivserror").html("");    
+        $(".clrdivserror").html("");
         $("#txtDocID").val("");
         GetData();
     }
-
+    var TransactionDocuments = [
+        {
+            "Doc ID": "INV/2627/90",
+            "Doc Date": "27/Aug/2026",
+            "Party Name": "JAMES",
+            "Net Value": "24.00",
+            "User Name": "ADMIN",
+            "Create Time": "27/Aug/2026 04:07 PM "
+        },
+        {
+            "Doc ID": "INV/2627/91",
+            "Doc Date": "27/Aug/2026",
+            "Party Name": "SHREE ARIHANT TRADING",
+            "Net Value": "58.00",
+            "User Name": "ADMIN",
+            "Create Time": "27/Aug/2026 04:12 PM "
+        },
+        {
+            "Doc ID": "INV/2627/92",
+            "Doc Date": "27/Aug/2026",
+            "Party Name": "A TO Z DEPARTMENTAL AND CAFETERIA",
+            "Net Value": "254.00",
+            "User Name": "ADMIN",
+            "Create Time": "27/Aug/2026 04:13 PM "
+        },
+        {
+            "Doc ID": "INV/2627/93",
+            "Doc Date": "28/Aug/2026",
+            "Party Name": "JAMES",
+            "Net Value": "84.00",
+            "User Name": "ADMIN",
+            "Create Time": "28/Aug/2026 05:48 PM "
+        },
+        {
+            "Doc ID": "INV/2627/94",
+            "Doc Date": "29/Aug/2026",
+            "Party Name": "63IDEAS INFOLABS PRIVATE LIMITED",
+            "Net Value": "837.00",
+            "User Name": "ADMIN",
+            "Create Time": "29/Aug/2026 12:09 PM "
+        },
+        {
+            "Doc ID": "INV/2627/95",
+            "Doc Date": "29/Aug/2026",
+            "Party Name": "63IDEAS INFOLABS PRIVATE LIMITED",
+            "Net Value": "257.00",
+            "User Name": "ADMIN",
+            "Create Time": "29/Aug/2026 12:13 PM "
+        },
+        {
+            "Doc ID": "INV/2627/96",
+            "Doc Date": "29/Aug/2026",
+            "Party Name": "63IDEAS INFOLABS PRIVATE LIMITED",
+            "Net Value": "167.00",
+            "User Name": "ADMIN",
+            "Create Time": "29/Aug/2026 12:15 PM "
+        }
+    ];
     $('#cmbTransaction').change(function (e) {
         $('#cmbProfile').find("option").remove();
         $("#txtDocID").val("");
         $(".clrdiv").html("");
+        RenderDocFilterResults([]);
         var ID = e.target.value;
-        var prefix = $('#cmbTransaction option:selected').data('prefix');        
-        var Profiles = arrProfiles.filter(a => a.TransID == ID);
-        if (Profiles.length > 0) {
-            $("#txtDocID").val(prefix);
-            var defid = Profiles.filter(f => f.DefaultConfig == 1)[0].ProfileID || Profiles[0].ProfileID;
-            for (var i = 0; i < Profiles.length; i++) {
-                $('#cmbProfile').append($('<option/>', {
-                    value: Profiles[i].ProfileID,
-                    text: Profiles[i].ProfileName,
-                }));
-            }
-            if (defid) {
-                $('#cmbProfile').val(defid);
+        var prefix = $('#cmbTransaction option:selected').data('prefix');
+        if (prefix) {
+            var Profiles = arrProfiles.filter(a => a.TransID == ID);
+            if (Profiles.length > 0) {
+                $("#txtDocID").val(prefix);
+                var defid = 0;// Profiles.filter(f => f.DefaultConfig == 1)[0].ProfileID || Profiles[0].ProfileID;
+                for (var i = 0; i < Profiles.length; i++) {
+                    $('#cmbProfile').append($('<option/>', {
+                        value: Profiles[i].ProfileID,
+                        text: Profiles[i].ProfileName,
+                    }));
+                    if (Profiles.DefaultConfig == 1) {
+                        defid = Profiles[i].ProfileID;
+                    }
+                }
+                if (defid) {
+                    $('#cmbProfile').val(defid);
+                }
+            } else {
+                showErrorSnackbar("No profiles found");
             }
         } else {
             showErrorSnackbar("No profiles found");
@@ -222,7 +530,7 @@ var Aurl = '@Session["APIurl"]';
             $("#divErrorOnProfile").html("Select Profile");
             showErrorSnackbar("Select Profile");
         }
-        
+
         if ($("#txtDocID").val() == "") {
             IsValid = false;
             $("#divErrorOnDocID").html("Doc ID should not be empty");
@@ -278,16 +586,16 @@ var Aurl = '@Session["APIurl"]';
             url: Aurl + "transactionprint/get",
             type: 'get',
             contentType: 'json',
-            data: { CompanyCode: strCompanyCode, UserID : UID },       
+            data: { CompanyCode: strCompanyCode, UserID: UID },
             success: function (data) {
-                if (data.length > 0) {
+                if (data.Transactions.length > 0) {
                     arrTrans = [], arrProfiles = [];
                     $('#cmbTransaction,#cmbProfile').find("option").remove();
                     $('#cmbTransaction').append($('<option/>', {
                         value: 0,
                         text: "-- Select --",
                     }));
-                    $.each(data, function (i, items) {
+                    $.each(data.Transactions, function (i, items) {
                         if (items.Type == 1) {
                             var al = {
                                 "Transaction": items.Name,
@@ -316,6 +624,18 @@ var Aurl = '@Session["APIurl"]';
                 else {
                     showErrorSnackbar("No Transactions Found");
                 }
+                $('#cmbDocUserName').find("option").remove();
+                $('#cmbDocUserName').append($('<option/>', {
+                    value: 0,
+                    text: "-- Select --",
+                }));
+                $.each(data.Users, function (i, items) {
+                    $('#cmbDocUserName').append($('<option/>', {
+                        value: items.ID,
+                        text: items.Name
+                    }));
+                    $('#cmbDocUserName').val(UID);
+                });
             }
             , error: function (data) {
                 if (data.status == "401") {
@@ -359,7 +679,7 @@ var Aurl = '@Session["APIurl"]';
             url: Aurl + "printing/documentvalidate",
             type: 'get',
             contentType: 'json',
-            data: { Companycode: strCompanyCode, TransID: dTransID, strDocID: DocID },           
+            data: { Companycode: strCompanyCode, TransID: dTransID, strDocID: DocID },
             success: function (data) {
                 $.each(data, function (i, items) {
                     if (items.MsgID == "0") {
@@ -374,6 +694,239 @@ var Aurl = '@Session["APIurl"]';
             }
         });
     }
+    // ===================== Doc Filter Modal Logic =====================
+    var docFilterModalInstance = null;
+    var docFilterInitialized = false; // becomes true after the modal's date filter is set up the first time
+
+    // Returns today's date as "yyyy-mm-dd" (format required by <input type="date">)
+    function GetTodayISO() {
+        var d = new Date();
+        var mm = String(d.getMonth() + 1).padStart(2, '0');
+        var dd = String(d.getDate()).padStart(2, '0');
+        return d.getFullYear() + '-' + mm + '-' + dd;
+    }
+
+    $('#btnDocFilter').click(function () {
+        $("#divErrorOnTransaction").html("");
+        if (isNullOrEmpty($("#cmbTransaction").val())) {
+            $("#divErrorOnTransaction").html("Select Transaction");
+            showErrorSnackbar("Select Transaction");
+            return;
+        }
+
+        $(".docFilterError").html("");
+
+        var transName = $("#cmbTransaction option:selected").text();
+        $("#lblDocFilterTransName").text(transName);
+
+        // Current date is always the max selectable date (no future dates allowed)
+        var todayISO = GetTodayISO();
+        $("#txtDocFromDate, #txtDocToDate").attr("max", todayISO);
+
+        // Only set the default From/To date the first time the modal is opened.
+        // On subsequent opens we keep whatever the user had selected before (don't reset the filter).
+        if (!docFilterInitialized) {
+            $("#txtDocFromDate").val(todayISO);
+            $("#txtDocToDate").val(todayISO);
+            docFilterInitialized = true;
+        }
+
+        
+
+        var modalEl = document.getElementById('docFilterModal');
+        docFilterModalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
+        docFilterModalInstance.show();
+    });
+
+    // Converts "27/Aug/2026" style date strings to a JS Date object
+    function ParseDocDate(str) {
+        if (!str) return null;
+        var months = { Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5, Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11 };
+        var parts = $.trim(str).split('/');
+        if (parts.length !== 3 || !(parts[1] in months)) return null;
+        return new Date(parseInt(parts[2], 10), months[parts[1]], parseInt(parts[0], 10));
+    }
+
+    $('#btnDocFilterLoad').click(function () {
+        $(".docFilterError").html("");
+        var IsValid = true;
+
+        var userName = $("#cmbDocUserName").val();
+        var fromDateStr = $("#txtDocFromDate").val();
+        var toDateStr = $("#txtDocToDate").val();
+
+        //if (isNullOrEmpty(userName)) {
+        //    IsValid = false;
+        //    $("#divErrorOnDocUserName").html("Select User Name");
+        //}
+        if (fromDateStr === "" || fromDateStr === null || fromDateStr === undefined) {
+            IsValid = false;
+            $("#divErrorOnFromDate").html("From Date is required");
+        }
+        if (toDateStr === "" || toDateStr === null || toDateStr === undefined) {
+            IsValid = false;
+            $("#divErrorOnToDate").html("To Date is required");
+        }
+
+        if (IsValid) {
+            var fromDate = new Date(fromDateStr);
+            var toDate = new Date(toDateStr);
+            if (fromDate > toDate) {
+                IsValid = false;
+                $("#divErrorOnToDate").html("To Date should be greater than or equal to From Date");
+            }
+        }
+
+        if (!IsValid) {
+            showErrorSnackbar("Please correct the highlighted fields");
+            return;
+        }
+
+        var fromDate = fromDateStr;
+        var toDate = toDateStr;
+        var dTransID = $("#cmbTransaction").val();
+        $.ajax({
+            url: Aurl + "transactionprint/documentfilter",
+            type: 'get',
+            contentType: 'json',
+            data: { Companycode: strCompanyCode, TransID: dTransID, UserID: userName, FromDate: fromDate, ToDate: toDate },
+            success: function (data) {        
+                if (!data || data.length === 0) {
+                    showErrorSnackbar("No records found");
+                }
+                RenderDocFilterResults(data);
+            }
+        });
+
+        //var filteredData = $.grep(TransactionDocuments, function (doc) {
+        //    if (!isNullOrEmpty(userName) && userName !== "0" && doc["User Name"] !== userName) return false;
+        //    var docDate = ParseDocDate(doc["Doc Date"]);
+        //    if (!docDate) return false;
+        //    return docDate >= fromDate && docDate <= toDate;
+        //});
+        //RenderDocFilterResults(filteredData);
+    });
+
+    // Builds the responsive result cards.
+    // Layout per document (mobile + desktop):
+    //   Row 1 (static)  : Doc ID | Doc Date
+    //   Row 2 (static)  : Party Name (full width)
+    //   Row 3+ (dynamic): every remaining key from the data object, 2 columns per row
+    //   Last row        : Select button
+    function RenderDocFilterResults(data) {
+        // Reset search state on every fresh Load
+        $("#txtDocSearch").val("");
+        $("#btnDocSearchClear").addClass("d-none");
+
+        if (!data || data.length === 0) {
+            $("#docSearchWrap").hide();
+            $("#divDocFilterResults").html('<div class="text-center text-muted py-4"><i class="bi bi-inbox fs-3 d-block mb-2"></i>No Records Found</div>');
+            return;
+        }
+
+        $("#docSearchWrap").show();
+        UpdateDocResultCount(data.length, data.length);
+
+        var html = '<div class="doc-cards-wrap">';
+
+        $.each(data, function (i, doc) {
+            var docId = doc["Doc ID"] || "";
+            var docDate = doc["Doc Date"] || "";
+            var partyName = doc["Party Name"] || "";
+
+            // Collect any remaining keys (in their original order) other than the 3 static ones above
+            var restKeys = [];
+            $.each(doc, function (key) {
+                var trimmedKey = $.trim(key);
+                if (trimmedKey !== "Doc ID" && trimmedKey !== "Doc Date" && trimmedKey !== "Party Name") {
+                    restKeys.push(key);
+                }
+            });
+
+            html += '<div class="doc-card">';
+
+            // Row 1: Doc ID + Doc Date
+            html += '<div class="doc-row doc-row-header">';
+            html += '<div class="doc-col"><span class="doc-label">Doc ID</span><span class="btn doc-select-btn btnDocSelect" data-docid="' + $('<div/>').text(docId).html() + '">' + $('<div/>').text(docId).html() + '</span></div>';
+            html += '<div class="doc-col"><span class="doc-label">Doc Date</span><span class="doc-value">' + $('<div/>').text(docDate).html() + '</span></div>';
+            html += '</div>';
+
+            // Row 2: Party Name (full width)
+            html += '<div class="doc-row doc-row-single">';
+            html += '<div class="doc-col doc-col-full"><span class="doc-label">Party Name</span><span class="doc-value doc-value-strong">' + $('<div/>').text(partyName).html() + '</span></div>';
+            html += '</div>';
+
+            // Dynamic rows: remaining keys, 2 per row
+            for (var j = 0; j < restKeys.length; j += 2) {
+                html += '<div class="doc-row">';
+                html += '<div class="doc-col"><span class="doc-label">' + $.trim(restKeys[j]) + '</span><span class="doc-value">' + $('<div/>').text(doc[restKeys[j]]).html() + '</span></div>';
+                if (restKeys[j + 1] !== undefined) {
+                    html += '<div class="doc-col"><span class="doc-label">' + $.trim(restKeys[j + 1]) + '</span><span class="doc-value">' + $('<div/>').text(doc[restKeys[j + 1]]).html() + '</span></div>';
+                } else {
+                    html += '<div class="doc-col doc-col-empty"></div>';
+                }
+                html += '</div>';
+            }
+
+            // Final row: Select button
+            //html += '<div class="doc-row doc-row-action">';
+            //html += '<button type="button" class="btn doc-select-btn btnDocSelect" data-docid="' + $('<div/>').text(docId).html() + '"><i class="bi bi-check2-circle"></i>Select Document</button>';
+            //html += '</div>';
+
+            html += '</div>'; // .doc-card
+        });
+
+        html += '</div>'; // .doc-cards-wrap
+        $("#divDocFilterResults").html(html);
+    }
+
+    function UpdateDocResultCount(visibleCount, totalCount) {
+        if (totalCount === 0) {
+            $("#lblDocResultCount").text("");
+        } else if (visibleCount === totalCount) {
+            $("#lblDocResultCount").text(totalCount + (totalCount === 1 ? " document found" : " documents found"));
+        } else {
+            $("#lblDocResultCount").text("Showing " + visibleCount + " of " + totalCount);
+        }
+    }
+
+    // Live client-side search across all fields already rendered in the result cards
+    $(document).on('input', '#txtDocSearch', function () {
+        var term = $.trim($(this).val()).toLowerCase();
+        $("#btnDocSearchClear").toggleClass("d-none", term === "");
+
+        var cards = $("#divDocFilterResults .doc-card");
+        var totalCount = cards.length;
+        var visibleCount = 0;
+
+        cards.each(function () {
+            var isMatch = term === "" || $(this).text().toLowerCase().indexOf(term) !== -1;
+            $(this).toggle(isMatch);
+            if (isMatch) visibleCount++;
+        });
+
+        $("#divDocNoMatch").remove();
+        if (visibleCount === 0 && totalCount > 0) {
+            $("#divDocFilterResults").append('<div id="divDocNoMatch" class="text-center text-muted py-4"><i class="bi bi-search fs-3 d-block mb-2"></i>No matching documents</div>');
+        }
+
+        UpdateDocResultCount(visibleCount, totalCount);
+    });
+
+    $('#btnDocSearchClear').click(function () {
+        $("#txtDocSearch").val("").trigger('input').focus();
+    });
+
+    $(document).on('click', '.btnDocSelect', function () {
+        var docId = $(this).data('docid');
+        $("#txtDocID").val(docId);
+        $("#divErrorOnDocID").html("");
+        if (docFilterModalInstance) {
+            docFilterModalInstance.hide();
+        }
+    });
+    // =================== End Doc Filter Modal Logic ===================
+
     function WhatsappDocument(ID, strTransID, nConfigID) {
         var strcopy = 1;// $("#txtNoofCopies").val() == "" || $("#txtNoofCopies").val() == "0" || $("#txtNoofCopies").val() == null ? 1 : $("#txtNoofCopies").val();
         $.ajax({
@@ -390,7 +943,7 @@ var Aurl = '@Session["APIurl"]';
                         if (items.MsgID == 0) {
                             //showSuccessSnackbar(items.Message);
                             var phone = items.RowID
-                            var message = items.Message;                           
+                            var message = items.Message;
                             OpenWhatsApp(phone, message);
                         }
                         else if (items.MsgID == 1) {

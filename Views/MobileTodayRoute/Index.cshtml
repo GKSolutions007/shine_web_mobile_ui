@@ -92,70 +92,8 @@
 </style>
 
 <body>
-    <!--<div class="container">
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
-                <div class="card-containter">
-                    <h4 id="MainHeading" class="text-center" style="color: #333; font-weight: bold; margin-bottom: 25px;">@ViewData["FormName"]</h4>
-                    <hr />
-                    <div class="toastBox"></div>-->
-    <!-- Branch Field -->
-    <!--<div class="row form-group">
-        <div class="col-md-3 col-sm-12">
-            <label class="form-label-custom">Branch :</label>
-        </div>
-        <div class="col-md-9 col-sm-12">
-            <div class="input-group">
-                <span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span>
-                <select class="form-control FormclrcmbField" id="cmbBrach">
-                    <option value="0">Select</option>
-                </select>
-            </div>
-            <div style="color: red; padding-top: 5px; padding-left: 5px;" id="divErrBrach" class="clrdiv"></div>
-        </div>
-    </div>-->
-    <!-- Beat Field -->
-    <!--<div class="row form-group">
-        <div class="col-md-3 col-sm-12">
-            <label class="form-label-custom">Beat :</label>
-        </div>
-        <div class="col-md-9 col-sm-12">
-            <div class="input-group">
-                <span class="input-group-addon"><i class="glyphicon glyphicon-map-marker"></i></span>
-                <select class="form-control FormclrcmbField" id="cmbBeat">
-                    <option value="0">Select</option>
-                </select>
-            </div>
-            <div style="color: red; padding-top: 5px; padding-left: 5px;" id="divErrBeat" class="clrdiv"></div>
-        </div>
-    </div>-->
-    <!-- Salesman Field -->
-    <!--<div class="row form-group">
-        <div class="col-md-3 col-sm-12">
-            <label class="form-label-custom">Salesman :</label>
-        </div>
-        <div class="col-md-9 col-sm-12">
-            <div class="input-group">
-                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                <select class="form-control FormclrcmbField" id="cmbSalesman">
-                    <option value="0">Select</option>
-                </select>
-            </div>
-            <div style="color: red; padding-top: 5px; padding-left: 5px;" id="divErrSalesman" class="clrdiv"></div>
-        </div>
-    </div>-->
-    <!-- Save Button -->
-    <!--<div class="row form-group" style="margin-top: 25px;">
-                            <div class="col-md-9 col-md-offset-3 col-sm-12">
-                                <button type="button" class="btn btn-success btn-custom-save" id="btnSave">
-                                    <span class="glyphicon glyphicon-saved"></span> Save Data
-                                </button>
-                            </div>
-                        </div>
-                </div>
-            </div>
-        </div>
-    </div>-->
+    @Html.HiddenFor(model => model.EditPartyDetail, new { @autocomplete = "off", @class = "form-control", @id = "txtSMEditable" })
+
     <div class="container">
         <div class="row">
             <div class="col-md-8 offset-md-2 col-sm-10 offset-sm-1">
@@ -254,6 +192,10 @@
     var nMode = 1;
     var Aurl = '@Session["APIurl"]';
     var strCompanyCode = '@Session["CompanyCode"]';
+    
+    if ($("#txtSMEditable").val() == 0) {
+        $("#cmbSalesman").prop("disabled", true);
+    }
     GetData(1);
     GetData(2);
     function GetData(nMode, nBID = 0, nSMID = 0,nBranchID = 0) {

@@ -310,7 +310,8 @@
     .qty-stepper {
         display: inline-flex;
         align-items: stretch;
-        width: 100px;
+        width: 120px;
+        height: 45px;
         max-width: 100%;
         margin: 0 auto;
         border: 1px solid #dee2e6;
@@ -329,10 +330,10 @@
     .qty-btn {
         flex: 0 0 32px;
         border: none;
-        background: #fff;
+        background-color: ghostwhite;
         color: #0056b3;
         font-weight: 700;
-        font-size: 16px;
+        font-size: 25px;
         line-height: 1;
         display: flex; /* flex;*/
         align-items: center;
@@ -484,16 +485,18 @@
         }
 
         .qty-stepper {
-            width: 100px;
+            width: 120px;
+            height: 45px;
         }
 
         .qty-btn {
             flex-basis: 28px;
-            font-size: 14px;
+            font-size: 25px;
+            background-color: ghostwhite;
         }
 
         .qty-input {
-            font-size: 0.85rem;
+            font-size: 1.1rem;
         }
 
         #tblProductInfo td, #tblProductInfo th {
@@ -1239,7 +1242,7 @@ var Aurl = '@Session["APIurl"]';
 
                     metaParts = [];
                     if (uomPrice !== undefined && uomPrice !== null && uomPrice !== '') metaParts.push('Price : <label class="prod-price">' + parseFloat(uomPrice).toFixed(DecVal) + '</label>');
-                    if (mrp !== undefined && mrp !== null && mrp !== '') metaParts.push('MRP : <label class="prod-price">' + parseFloat(mrp).toFixed(DecVal) + '</label>');
+                    if (mrp !== undefined && mrp !== null && mrp !== '') metaParts.push('<br/>MRP : <label class="prod-price">' + parseFloat(mrp).toFixed(DecVal) + '</label>');
                     metaLine += metaParts.length ? '<div class="prod-meta">' + metaParts.join(' &nbsp;|&nbsp; ') + '</div>' : '';
                     //prod-price
                     var avlHtml = (avlVls !== null && !isNaN(avlVls))
