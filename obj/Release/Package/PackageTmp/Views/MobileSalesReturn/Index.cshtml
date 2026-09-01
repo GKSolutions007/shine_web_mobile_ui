@@ -1097,11 +1097,65 @@
 
                 <!-- Search Box -->
                 <div class="row mb-2">
+                    <div class="form-section-card" style="animation-delay:0.19s; z-index:1">
+                        <div class="form-section-title" style="cursor:pointer;user-select:none" onclick="toggleFilterCard()">
+                            <i class="bi bi-filter-circle"></i> Filters
+                            <button type="button" id="btnToggleDiscounts" class="card-collapse-btn ms-auto" title="Expand / Collapse">
+                                <i class="bi bi-plus-lg" id="icoToggleFilters"></i>
+                            </button>
+                        </div>
+                        <div id="filterfieldBody" class="card-collapsible-body collapsed">
+                            <div class="row g-2">
+                                <div class="col-12 col-sm-4 col-md-3">
+                                    <div class="field-wrap">
+                                        <i class="bi bi-person field-icon"></i>
+                                        <label class="mod-label">User Name</label>
+                                        <select class="mod-select" id="cmbUserName">
+                                            <option value="0">Select</option>
+                                        </select>
+                                        <div class="field-error clrdivs" id="divErrorOnUserName"></div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-4 col-md-2">
+                                    <div class="field-wrap">
+                                        <i class="bi bi-calendar-date field-icon"></i>
+                                        <label class="mod-label">From Date</label>
+                                        <input type="date" class="mod-input" id="dtpFromDate" />
+                                        <div class="field-error clrdivs" id="divErrorOnFromDate"></div>
+                                    </div>
+                                </div>
+
+                                <div class="col-6 col-sm-4 col-md-2">
+                                    <div class="field-wrap">
+                                        <i class="bi bi-calendar-date field-icon"></i>
+                                        <label class="mod-label">To Date</label>
+                                        <input type="date" class="mod-input" id="dtpToDate" />
+                                        <div class="field-error clrdivs" id="divErrorOnToDate"></div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-5">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <!-- All Status -->
+                                        <div class="form-check form-switch mb-0">
+                                            <label class="form-check-label me-2" for="chkShowAll"> All Status </label>
+                                            <input class="form-check-input" type="checkbox" id="chkShowAll">
+                                        </div>
+                                        <!-- Filter Button -->
+                                        <div class="load-btn-wrap">
+                                            <button id="btnLoadFilter" type="button" class="customdabuttons">
+                                                <i class="bi bi-funnel"></i> Filter Data
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-12 p-0">
 
-                        <label class="mb-2">
-                            <input type="checkbox" id="chkShowAll"> <label style="font-size:14px" for="chkShowAll"> Show All</label>
-                        </label>
+                        @*<label class="mb-2">
+                <input type="checkbox" id="chkShowAll"> <label style="font-size:14px" for="chkShowAll"> Show All</label>
+            </label>*@
 
                         <div class="input-group">
                             <span class="input-group-text">
@@ -1402,13 +1456,14 @@
         DRView: $("#txtDRViewID").val() == 1,
         DREdit: $("#txtDRModifyID").val() == 1,
         DRAdd: $("#txtDRAddID").val() == 1,
+        AllowAlluser: $('#txtShowAllUserData').val() == "1"
     };
+    $("#cmbUserName").prop("disabled", !userpermission.AllowAlluser);
+    LoadFieldData("users", null, 0, 0);
+    $('#dtpFromDate,#dtpToDate').prop("max", getCurrentDate()).val(getCurrentDate());
     manageaddpermission();
     function manageaddpermission(){
         //$("#btnAddNew").hide();
-
-        
-
         if (userpermission.SRAdd && userpermission.SREdit && userpermission.SRView &&
             !userpermission.DRView && !userpermission.DREdit && !userpermission.DRAdd) {
             $("#rdoSR,#lblrdoSR").prop("checked", true);
@@ -1468,8 +1523,10 @@
     $('#btnSCClose,#modelcloseX').click(function (e) {
         modal.hide();
     });
-
-    GetSetFilterData(6, 0);
+    setTimeout(() => {
+        LoadFilterdata();
+    }, 500);  
+    //GetSetFilterData(6, 0);
     function GetSetFilterData(nMode, strAllsts = "0") {
         var nSRDRType = $('#rdoSR').is(":checked") ? 1 : 2;
         $.ajax({
@@ -1687,7 +1744,147 @@
             }
         });
     }
+    function LoadFilterdata() {
+        $(".clrdivs").html("");
+        var IsValid = true;
+        //#dtpFromDate,#dtpToDate,divErrorOnToDate,divErrorOnFromDate
+        if ($("#dtpFromDate").val() == "") {
+            IsValid = false;
+            $("#divErrorOnFromDate").html("From date should not be empty");
+        }
+        if ($("#dtpToDate").val() == "") {
+            IsValid = false;
+            $("#divErrorOnToDate").html("To date should not be empty");
+        }
+        if ($("#dtpFromDate").val() > $("#dtpToDate").val()) {
+            IsValid = false;
+            $("#divErrorOnFromDate").html("From date should be lessthan To Date");
+        }
+        if (!IsValid) return;
+        var from = $("#dtpFromDate").val();
+        var to = $("#dtpToDate").val();
+        var seluser = $('#cmbUserName').val();
+        var shwall = $('#chkShowAll').is(':checked') ? 1 : 0;
+        var nSRDRType = $('#rdoSR').is(":checked") ? 1 : 2;
+        $.ajax({
+            url: Aurl + "salestransdocuments",
+            type: 'get',
+            contentType: 'json',
+            data: {
+                CompanyCode: strCompanyCode, TransID: 3, UserID: seluser, FromDate: from,
+                ToDate: to, ShowAll: shwall, TypeID: nSRDRType
+            },
+            success: function (data) {
+                var Docjsdata = data;// JSON.parse(data);
+                var cardHtml = "";
+                if (Docjsdata.length === 0) {
+                    cardHtml = '<div class="col-md-12 text-center" style="margin-top:20px;"><h5>No records found</h5></div>';
+                } else {
+                    $.each(Docjsdata, function (index, value) {
 
+                        var rowIndex = index;
+
+                        cardHtml += '<div class="col-12 col-md-4 card-item">';
+                        cardHtml += '  <div class="card card-view-item shadow-sm">';
+
+                        // Header
+                        cardHtml += '    <div class="card-header card-header-view">';
+                        cardHtml += '      <i class="bi bi-person"></i> <span>' + (value.CustomerName || "Unknown Customer") + '</span>';
+                        cardHtml += '    </div>';
+
+                        // Body
+                        cardHtml += '    <div class="card-body card-body-view">';
+
+                        // Row 1: Date & Activity
+                        cardHtml += '      <div class="row mb-1">';
+                        cardHtml += '        <div class="col-6">';
+                        cardHtml += '          <span class="card-label d-block small"><i class="bi bi-calendar"></i> ' + (value.DocDate || "-") + '</span>';
+                        cardHtml += '        </div>';
+
+                        cardHtml += '        <div class="col-6">';
+                        cardHtml += '          <span class="card-label d-block small"><i class="bi bi-cart"></i> ' + (value.BranchName || "-") + '</span>';
+                        cardHtml += '        </div>';
+                        cardHtml += '      </div>';
+
+                        // Row 2: Amount & Beat
+                        cardHtml += '      <div class="row mb-1">';
+                        cardHtml += '        <div class="col-6">';
+                        cardHtml += '          <span class="card-label d-block text-success fw-bold small"><i class="bi bi-currency-rupee"></i> ' + (value.Value || "0.00") + '(' + (value.ItemsCount || "0") + ')</span>';
+                        cardHtml += '        </div>';
+
+                        cardHtml += '        <div class="col-6">';
+                        cardHtml += '          <span class="card-label d-block small"><i class="bi bi-geo-alt"></i> ' + (value.BeatName || "-") + '</span>';
+                        cardHtml += '        </div>';
+                        cardHtml += '      </div>';
+
+                        // Row 3: Salesman & Status
+                        cardHtml += '      <div class="row">';
+                        cardHtml += '        <div class="col-6">';
+                        cardHtml += '          <span class="card-label d-block small"><i class="bi bi-person-badge"></i> ' + (value.SalesmanName || "-") + '</span>';
+                        cardHtml += '        </div>';
+
+                        // Status Logic
+                        var status = value.Status || "-";
+                        var statusIcon = "bi-info-circle";
+                        var statusClass = "bg-secondary";
+
+                        if (status === "Open" || status === "Amendment") {
+                            statusIcon = "bi-envelope-open";
+                            statusClass = "bg-primary";
+                        }
+                        else if (status === "Amended") {
+                            statusIcon = "bi-pencil-square";
+                            statusClass = "bg-warning";
+                        }
+                        else if (status === "Cancelled") {
+                            statusIcon = "bi-x-circle";
+                            statusClass = "bg-danger";
+                        }
+                        else if (status === "Processed") {
+                            statusIcon = "bi-check-circle";
+                            statusClass = "bg-success";
+                        }
+
+                        cardHtml += '        <div class="col-6">';
+                        cardHtml += '          <span class="badge ' + statusClass + '"><i class="bi ' + statusIcon + '"></i> ' + status + '</span>';
+                        cardHtml += '        </div>';
+
+                        cardHtml += '      </div>';
+                        // Row 4: Create By & Date
+                        cardHtml += '      <div class="row mb-1">';
+                        cardHtml += '        <div class="col-6 pe-1">';
+                        cardHtml += '          <span class="card-label d-block"><i class="fa fa-user me-1"></i>' + (value.UserName || "-") + '</span>';
+                        cardHtml += '        </div>';
+                        cardHtml += '        <div class="col-6 ps-1">';
+                        cardHtml += '          <span class="card-label d-block"><i class="fa fa-calendar me-1"></i>' + (value.CreateDate || "-") + '</span>';
+                        cardHtml += '        </div>';
+                        cardHtml += '      </div>';
+                        cardHtml += '    </div>'; // Body End
+
+                        // Footer
+                        cardHtml += '    <div class="card-footer card-footer-view text-right">';
+                        if (nSRDRType == 1) {
+                            cardHtml += !userpermission.SRView ? '' :
+                                '<button id="btnView' + rowIndex + '" type="button" class="btn btn-info btn-sm clsview" data-id="' + value.ID + '" data-customername="' + value.CustomerName + '"><i class="bi bi-eye"></i> View</button>';
+                            cardHtml += (value.StatusID == 1 || value.StatusID == 3) && userpermission.SREdit ?
+                                '<button id="btnEdit' + rowIndex + '" type="button" class="btn btn-warning btn-sm clsedit ms-2" data-id="' + value.ID + '" data-customername="' + value.CustomerName + '"><i class="bi bi-pencil"></i> Edit</button>' : '';
+                        } else {
+                            cardHtml += !userpermission.DRView ? '' :
+                                '<button id="btnView' + rowIndex + '" type="button" class="btn btn-info btn-sm clsview" data-id="' + value.ID + '" data-customername="' + value.CustomerName + '"><i class="bi bi-eye"></i> View</button>';
+                            cardHtml += (value.StatusID == 1 || value.StatusID == 3) && userpermission.DREdit ?
+                                '<button id="btnEdit' + rowIndex + '" type="button" class="btn btn-warning btn-sm clsedit ms-2" data-id="' + value.ID + '" data-customername="' + value.CustomerName + '"><i class="bi bi-pencil"></i> Edit</button>' : '';
+                        }
+                        cardHtml += '    </div>';
+
+                        cardHtml += '  </div>';
+                        cardHtml += '</div>';
+
+                    });
+                }
+                $('#divMobCollDocsList').html(cardHtml);
+            }
+        });
+    }
     // Function to filter cards based on search input
     function filterCards() {
         var input, filter, cards, cardContainer, h5, i, txtValue;
@@ -1706,14 +1903,13 @@
             }
         }
     }
-    $("#chkShowAll").click(function () {
-        var chkid = $("#chkShowAll").is(":checked") ? 1 : 0
-        GetSetFilterData(6, chkid);
+    $("#btnLoadFilter").click(function () {
+        LoadFilterdata();
     });
     $("#rdoSR,#rdoDR").click(function () {
         var chkid = $("#chkShowAll").is(":checked") ? 1 : 0
-        manageaddpermission();
-        GetSetFilterData(6, chkid);
+        manageaddpermission();        
+        LoadFilterdata();
     });
     $(document).on('click', '.clsedit', function () {
         console.log("Row Data : ", this);
@@ -1760,8 +1956,9 @@
         $("#dvDocuments").show();
         $("#MainHeading").text($("#txtFormName").val());
         $('#txtSearchCards,#chkShowAll').prop("disabled", false);
+        $("#cmbUserName").prop("disabled", !userpermission.AllowAlluser);
         var chkid = $("#chkShowAll").is(":checked") ? 1 : 0
-        GetSetFilterData(6, chkid);
+        LoadFilterdata();
         $('#rdoSR,#rdoDR').prop("disabled", false);
     }
     var arrManuf = [], arrCategory = [], arrProd = [], arrCustomers = [];
@@ -2645,8 +2842,7 @@
         $(".FormclrField").val("");
         $(".FormclrcmbField").val(0);
         $(".clrdivs").html("");
-        InitializeData();
-        GetSetFilterData(6, 0);
+        InitializeData();        
         Table.clear().draw();
         objItemDetails = [];
         loaditemcounttotamt("0", "0.00", "0.00");
@@ -2780,7 +2976,18 @@
             icon.classList.replace('bi-dash-lg', 'bi-plus-lg');
         }
     }
+    function toggleFilterCard() {
+        const body = document.getElementById('filterfieldBody');
+        const icon = document.getElementById('icoToggleFilters');
 
+        if (body.classList.contains('collapsed')) {
+            body.classList.remove('collapsed');
+            icon.classList.replace('bi-plus-lg', 'bi-dash-lg');
+        } else {
+            body.classList.add('collapsed');
+            icon.classList.replace('bi-dash-lg', 'bi-plus-lg');
+        }
+    }
     function toggleCustomerCard() {
         const body = document.getElementById('customerInfoBody');
         const icon = document.getElementById('icoToggleCustomer');
@@ -2916,4 +3123,32 @@
         $("#txtCustomerID").val(CustID);
         modal.hide();
     });
+    function LoadFieldData(strForm, strSub, strValue, strAssignValue) {
+        $.ajax({
+            url: Aurl + "masterlist",
+            type: 'get',
+            contentType: 'json',
+            data: {
+                CompanyCode: strCompanyCode, FormName: strForm, SubField: strSub, Value: strValue
+            },
+
+            success: function (data) {
+                if (strForm == "users") {
+                    $('#cmbUserName').find("option").remove();
+                    $('#cmbUserName').append($('<option/>', {
+                        value: 0,
+                        text: "-- Select --",
+                    }));
+                    $.each(data, function (i, items) {
+                        $('#cmbUserName').append($('<option/>', {
+                            value: items.ID,
+                            text: items.Name,
+                        }));
+                        $('#cmbUserName').val(UID);
+                    });
+
+                }
+            }
+        });
+    }
 </script>

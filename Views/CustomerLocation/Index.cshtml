@@ -313,7 +313,7 @@
         }
 
         .radio-pill-group label {
-            padding: 6px 16px;
+            padding: 5px 10px;
             border-radius: 20px;
             font-size: 13px;
             font-weight: 600;
@@ -569,6 +569,8 @@
 
         @Html.HiddenFor(model => model.AssignInvoicewise, new { @autocomplete = "off", @class = "form-control", @id = "txtAssignInvoicewiseID" })
         @Html.HiddenFor(model => model.Customerwise, new { @autocomplete = "off", @class = "form-control", @id = "txtCustomerwiseID" })
+        @Html.HiddenFor(model => model.OrderTaken, new { @autocomplete = "off", @class = "form-control", @id = "txtDeliverywiseID" })
+        
         <h4 id="MainHeading">@ViewData["FormName"]</h4>
         <div class="toastBox"></div>
         <hr class="style14" />
@@ -582,10 +584,13 @@
             <!-- Filter Selection -->
             <div class="radio-pill-group">
                 <input type="radio" name="rdoFilter" id="rdoAssignedInvoice" checked />
-                <label for="rdoAssignedInvoice"><i class="bi bi-file-earmark-check"></i> Assigned Invoices</label>
+                <label for="rdoAssignedInvoice"><i class="bi bi-file-earmark-check"></i> Assign Invoice</label>
 
                 <input type="radio" name="rdoFilter" id="rdoCustomer" />
                 <label for="rdoCustomer"><i class="bi bi-person"></i> Customer</label>
+
+                <input type="radio" name="rdoFilter" id="rdoDelivery" />
+                <label for="rdoDelivery"><i class="bi bi-truck"></i> Delivery</label>
             </div>
 
             <!-- SECTION 1: Location & Customer -->
@@ -710,6 +715,10 @@ var Aurl = '@Session["APIurl"]';
         if ($("#txtCustomerwiseID").val() == 0) {
             $("#rdoCustomer, label[for='rdoCustomer']").hide();
         }
+        if ($("#txtDeliverywiseID").val() == 0) {
+            $("#rdoDelivery, label[for='rdoDelivery']").hide();
+        }
+        
         setTimeout(() => {
             var radioId = null;
             rdoCheckedID = 2;
@@ -721,7 +730,10 @@ var Aurl = '@Session["APIurl"]';
                 radioId = "rdoCustomer";
                 rdoCheckedID = 2;
             }
-
+            else if ($("label[for='rdoDelivery']").css("display") != "none") {
+                radioId = "rdoDelivery";
+                rdoCheckedID = 3;
+            }
             if (radioId) {
                 $("#" + radioId).prop("checked", true).trigger("change");
             }
@@ -880,10 +892,7 @@ var Aurl = '@Session["APIurl"]';
     $('#rdoCustomer').click(function () {
         $('#txtCustomerName,#txtCustomerID').val("");
         rdoCheckedID = 2;
-        Table.clear().draw(); Table.clear().draw();
-        arrAmtAdjDocs = [];
-        $('#divBalanceTop').html('Col Amt : 0  ;  Bal : 0');
-        $('#divBalanceBottom').html('Col Amt : 0  ;  Bal : 0');
+        Table.clear().draw(); Table.clear().draw();       
         Table.search('').columns().search('').draw();
         GetData(2, $('#cmbBeatName').val(), $('#cmbSalesManName').val());
         //clearCollection(true);
@@ -891,13 +900,18 @@ var Aurl = '@Session["APIurl"]';
     $('#rdoAssignedInvoice').click(function () {
         $('#txtCustomerName,#txtCustomerID').val("");
         rdoCheckedID = 1;
-        Table.clear().draw(); Table.clear().draw();
-        arrAmtAdjDocs = [];
-        $('#divBalanceTop').html('Col Amt : 0  ;  Bal : 0');
-        $('#divBalanceBottom').html('Col Amt : 0  ;  Bal : 0');
+        Table.clear().draw(); Table.clear().draw();       
         Table.search('').columns().search('').draw();
         //clearCollection(true);
         GetData(2, 0, $('#cmbSalesManName').val());
+    });
+    $('#rdoDelivery').click(function () {
+        $('#txtCustomerName,#txtCustomerID').val("");
+        rdoCheckedID = 3;
+        Table.clear().draw(); Table.clear().draw();
+        Table.search('').columns().search('').draw();
+        GetData(2, $('#cmbBeatName').val(), $('#cmbSalesManName').val());
+        //clearCollection(true);
     });
     var ProdGridChange = false;
 

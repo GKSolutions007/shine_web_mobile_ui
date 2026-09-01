@@ -788,6 +788,28 @@
             box-shadow: 0 6px 18px rgba(229,57,53,0.38);
         }
     /* ===== End Surrounding Customer Modal ===== */
+
+    /* Large Desktop */
+    @@media (max-width: 1400px) {
+        .load-btn-wrap {
+            flex-basis: 75%;
+        }
+    }
+
+    /* Laptop / Tablet */
+    @@media (max-width: 992px) {
+        .load-btn-wrap {
+            flex-basis: 50%;
+        }
+    }
+
+    /* Mobile */
+    @@media (max-width: 576px) {
+        .load-btn-wrap {
+            flex-basis: 60%;
+        }
+
+    }
 </style>
 <body>
     <div style="margin-bottom:50px;">
@@ -821,11 +843,65 @@
 
                 <!-- Search Box -->
                 <div class="row mb-2">
+                    <div class="form-section-card" style="animation-delay:0.19s; z-index:1">
+                        <div class="form-section-title" style="cursor:pointer;user-select:none" onclick="toggleFilterCard()">
+                            <i class="bi bi-filter-circle"></i> Filters
+                            <button type="button" id="btnToggleDiscounts" class="card-collapse-btn ms-auto" title="Expand / Collapse">
+                                <i class="bi bi-plus-lg" id="icoToggleFilters"></i>
+                            </button>
+                        </div>
+                        <div id="filterfieldBody" class="card-collapsible-body collapsed">
+                            <div class="row g-2">
+                                <div class="col-12 col-sm-4 col-md-3">
+                                    <div class="field-wrap">
+                                        <i class="bi bi-person field-icon"></i>
+                                        <label class="mod-label">User Name</label>
+                                        <select class="mod-select" id="cmbUserName">
+                                            <option value="0">Select</option>
+                                        </select>
+                                        <div class="field-error clrdivs" id="divErrorOnUserName"></div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-4 col-md-2">
+                                    <div class="field-wrap">
+                                        <i class="bi bi-calendar-date field-icon"></i>
+                                        <label class="mod-label">From Date</label>
+                                        <input type="date" class="mod-input" id="dtpFromDate" />
+                                        <div class="field-error clrdivs" id="divErrorOnFromDate"></div>
+                                    </div>
+                                </div>
+
+                                <div class="col-6 col-sm-4 col-md-2">
+                                    <div class="field-wrap">
+                                        <i class="bi bi-calendar-date field-icon"></i>
+                                        <label class="mod-label">To Date</label>
+                                        <input type="date" class="mod-input" id="dtpToDate" />
+                                        <div class="field-error clrdivs" id="divErrorOnToDate"></div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-5">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <!-- All Status -->
+                                        <div class="form-check form-switch mb-0">
+                                            <label class="form-check-label me-2" for="chkShowAll"> All Status </label>
+                                            <input class="form-check-input" type="checkbox" id="chkShowAll">
+                                        </div>
+                                        <!-- Filter Button -->
+                                        <div class="load-btn-wrap">
+                                            <button id="btnLoadFilter" type="button" class="customdabuttons">
+                                                <i class="bi bi-funnel"></i> Filter Data
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-12 p-0">
 
-                        <label class="mb-2">
+                        @*<label class="mb-2">
                             <input type="checkbox" id="chkShowAll"> <label style="font-size:14px" for="chkShowAll"> Show All</label>
-                        </label>
+                        </label>*@
 
                         <div class="input-group">
                             <span class="input-group-text">
@@ -1131,6 +1207,9 @@
     </div>
 </body>
 <script type="text/javascript">
+    var Permissions = {      
+        AllowAlluser: $('#txtShowAllUserData').val() == "1"
+    };
         var UID = '@Session["LoginUserID"]';
 var Aurl = '@Session["APIurl"]';
     var DecVal = '@Session["DecimalValues"]';
@@ -1166,6 +1245,10 @@ var Aurl = '@Session["APIurl"]';
     if ($("#txtAddID").val() == 0) {        
         $("#btnAddNew").hide();
     }
+
+    $("#cmbUserName").prop("disabled", !Permissions.AllowAlluser);
+    LoadFieldData("users", null, 0, 0);
+    $('#dtpFromDate,#dtpToDate').prop("max", getCurrentDate()).val(getCurrentDate());
     LoadPermission();
     function LoadPermission() {
         if ($("#txtAssignInvoicewiseID").val() == 0) {
@@ -1212,7 +1295,10 @@ var Aurl = '@Session["APIurl"]';
     $('#divBalanceBottom').html('Col Amt : 0  ;  Bal : 0');
     GetData(1, UID);
     var arrParty = [], arrBankAccountData = [];
-    GetSetFilterData(7, 0, 0);
+    //GetSetFilterData(7, 0, 0);
+    setTimeout(() => {
+        LoadFilterdata();
+    }, 500);
     function GetSetFilterData(nMode, strID,strAllsts = "0") {
         $.ajax({
             url: Aurl + "mobilecollection/getdata",
@@ -1227,84 +1313,7 @@ var Aurl = '@Session["APIurl"]';
                     var cardHtml = "";
                     if (Docjsdata.length === 0) {
                         cardHtml = '<div class="col-md-12 text-center" style="margin-top:20px;"><h5>No records found</h5></div>';
-                    } else {
-                        //$.each(Docjsdata, function (index, value) {
-                        //    var rowIndex = index;// Using index as logic for button IDs, similar to original code
-
-                        //    cardHtml += '<div class="col-xs-12 col-sm-12 col-md-4 card-item">';
-                        //    cardHtml += '  <div class="card-view-item">';
-
-                        //    // Header
-                        //    cardHtml += '    <div class="card-header-view">';
-                        //    cardHtml += '      <i class="glyphicon glyphicon-user"></i> <span>' + (value.CustomerName || "Unknown Customer") + '</span>';
-                        //    cardHtml += '    </div>';
-
-                        //    // Body
-                        //    cardHtml += '    <div class="card-body-view">';
-
-                        //    // Row 1: Date & Mode
-                        //    cardHtml += '      <div class="row" style="margin-bottom: 5px;">';
-                        //    cardHtml += '        <div class="col-xs-6" style="padding-right: 5px;">';
-                        //    cardHtml += '          <span class="card-label" style="display:block; font-size:11px;"><i class="glyphicon glyphicon-calendar"></i> ' + (value.DocDate || "-") + '</span>';
-                        //    cardHtml += '        </div>';
-                        //    cardHtml += '        <div class="col-xs-6" style="padding-left: 5px;">';
-                        //    cardHtml += '          <span class="card-label" style="display:block; font-size:11px;"><i class="glyphicon glyphicon-credit-card"></i> ' + (value.PaymentMode || "-") + '</span>';
-                        //    cardHtml += '        </div>';
-                        //    cardHtml += '      </div>';
-
-                        //    // Row 2: Amount & Beat
-                        //    cardHtml += '      <div class="row" style="margin-bottom: 5px;">';
-                        //    cardHtml += '        <div class="col-xs-6" style="padding-right: 5px;">';
-                        //    cardHtml += '          <span class="card-label" style="display:block; color:green; font-weight:bold; font-size:12px;"><i class="fa fa-inr"></i> ' + (value.CollectionValue || "0.0") + '</span>';
-                        //    cardHtml += '        </div>';
-                        //    cardHtml += '        <div class="col-xs-6" style="padding-left: 5px;">';
-                        //    cardHtml += '          <span class="card-label" style="display:block; font-size:11px;"><i class="fas fa-map-marker-alt"></i> ' + (value.BeatName || "-") + '</span>';
-                        //    cardHtml += '        </div>';
-                        //    cardHtml += '      </div>';
-
-                        //    // Row 3: Salesman & Status
-                        //    cardHtml += '      <div class="row">';
-                        //    cardHtml += '        <div class="col-xs-6" style="padding-right: 5px;">';
-                        //    cardHtml += '          <span class="card-label" style="display:block; font-size:11px;"><i class="fas fa-user-tie"></i> ' + (value.SalesmanName || "-") + '</span>';
-                        //    cardHtml += '        </div>';
-
-                        //    // Status Logic
-                        //    var status = value.Status || "-";
-                        //    var statusIcon = "fa fa-info-circle";
-                        //    var statusStyle = "font-size:11px; padding: 4px 8px; border-radius: 12px; color: white; font-weight: bold; display: inline-block;";
-
-                        //    if (status === "Open" || status === "Amendment") {
-                        //        statusIcon = "fa fa-envelope-open";
-                        //        statusStyle += "background-color: #337ab7;"; // Primary Blue
-                        //    } else if (status === "Amended" ) {
-                        //        statusIcon = "fa fa-pencil-square-o";
-                        //        statusStyle += "background-color: #f0ad4e;"; // Warning Orange
-                        //    } else if (status === "Cancelled") {
-                        //        statusIcon = "fa fa-ban";
-                        //        statusStyle += "background-color: #d9534f;"; // Danger Red
-                        //    } else if (status === "Processed") {
-                        //        statusIcon = "fa fa-check-circle";
-                        //        statusStyle += "background-color: #5cb85c;"; // Success Green
-                        //    } else {
-                        //        statusStyle += "background-color: #777;"; // Default Grey
-                        //    }
-
-                        //    cardHtml += '        <div class="col-xs-6" style="padding-left: 5px;">';
-                        //    cardHtml += '          <span class="card-value" style="' + statusStyle + '"><i class="' + statusIcon + '"></i> ' + status + '</span>';
-                        //    cardHtml += '        </div>';
-                        //    cardHtml += '      </div>';
-
-                        //    cardHtml += '    </div>'; // End Body
-
-                        //    // Footer with Actions
-                        //    cardHtml += '    <div class="card-footer-view">';
-                        //    cardHtml += $("#txtViewID").val() == 0 ? '' : '<button id="btnView' + rowIndex + '" type="button" class="btn btn-info clsview" data-id="' + value.ID + '" data-customername="' + value.CustomerName + '"><i class="glyphicon glyphicon-eye-open"></i> View</button>';
-                        //    cardHtml += (value.StatusID == 1 || value.StatusID == 3) && $("#txtModifyID").val() == 1 ? '<button id="btnEdit' + rowIndex + '" type="button" class="btn btn-warning clsedit" data-id="' + value.ID + '" data-customername="' + value.CustomerName + '"><i class="glyphicon glyphicon-pencil"></i> Edit</button>' : '';
-                        //    cardHtml += '    </div>';
-
-                        //    cardHtml += '  </div>'; // End Card Item
-                        //    cardHtml += '</div>'; // End Col
-                        //});
+                    } else {                        
                         $.each(Docjsdata, function (index, value) {
 
                             var rowIndex = index;
@@ -1375,9 +1384,17 @@ var Aurl = '@Session["APIurl"]';
                             cardHtml += '          <span class="' + statusClass + '"><i class="' + statusIcon + ' me-1"></i>' + status + '</span>';
                             cardHtml += '        </div>';
                             cardHtml += '      </div>';
-
+                            // Row 4: Create By & Date
+                            cardHtml += '      <div class="row mb-1">';
+                            cardHtml += '        <div class="col-6 pe-1">';
+                            cardHtml += '          <span class="card-label d-block"><i class="fa fa-user me-1"></i>' + (value.UserName || "-") + '</span>';
+                            cardHtml += '        </div>';
+                            cardHtml += '        <div class="col-6 ps-1">';
+                            cardHtml += '          <span class="card-label d-block"><i class="fa fa-calendar me-1"></i>' + (value.CreateDate || "-") + '</span>';
+                            cardHtml += '        </div>';
+                            cardHtml += '      </div>';
                             cardHtml += '    </div>'; // Body End
-
+                           
                             // Footer
                             cardHtml += '    <div class="card-footer card-footer-view text-end">';
 
@@ -1523,7 +1540,145 @@ var Aurl = '@Session["APIurl"]';
             }
         });
     }
+    function LoadFilterdata() {
+        $(".clrdivs").html("");
+        var IsValid = true;
+        //#dtpFromDate,#dtpToDate,divErrorOnToDate,divErrorOnFromDate
+        if ($("#dtpFromDate").val() == "") {
+            IsValid = false;
+            $("#divErrorOnFromDate").html("From date should not be empty");
+        }
+        if ($("#dtpToDate").val() == "") {
+            IsValid = false;
+            $("#divErrorOnToDate").html("To date should not be empty");
+        }
+        if ($("#dtpFromDate").val() > $("#dtpToDate").val()) {
+            IsValid = false;
+            $("#divErrorOnFromDate").html("From date should be lessthan To Date");
+        }
+        if (!IsValid) return;
+        var from = $("#dtpFromDate").val();
+        var to = $("#dtpToDate").val();
+        var seluser = $('#cmbUserName').val();
+        var shwall = $('#chkShowAll').is(':checked') ? 1 : 0;
 
+        $.ajax({
+            url: Aurl + "salestransdocuments",
+            type: 'get',
+            contentType: 'json',
+            data: {
+                CompanyCode: strCompanyCode, TransID: 2, UserID: seluser, FromDate: from,
+                ToDate: to, ShowAll: shwall, TypeID: 0
+            },
+            success: function (data) {
+                var Docjsdata = data;// JSON.parse(data);
+                var cardHtml = "";
+                if (Docjsdata.length === 0) {
+                    cardHtml = '<div class="col-md-12 text-center" style="margin-top:20px;"><h5>No records found</h5></div>';
+                } else {
+                    $.each(Docjsdata, function (index, value) {
+
+                        var rowIndex = index;
+
+                        cardHtml += '<div class="col-12 col-md-4 card-item">';
+                        cardHtml += '  <div class="card card-view-item">';
+
+                        // Header
+                        cardHtml += '    <div class="card-header card-header-view">';
+                        cardHtml += '      <i class="fa fa-user me-1"></i> <span>' + (value.CustomerName || "Unknown Customer") + '</span>';
+                        cardHtml += '    </div>';
+
+                        // Body
+                        cardHtml += '    <div class="card-body card-body-view">';
+
+                        // Row 1: Date & Mode
+                        cardHtml += '      <div class="row mb-1">';
+                        cardHtml += '        <div class="col-6 pe-1">';
+                        cardHtml += '          <span class="card-label d-block small"><i class="fa fa-calendar me-1"></i>' + (value.DocDate || "-") + '</span>';
+                        cardHtml += '        </div>';
+                        cardHtml += '        <div class="col-6 ps-1">';
+                        cardHtml += '          <span class="card-label d-block small"><i class="fa fa-credit-card me-1"></i>' + (value.PaymentMode || "-") + '</span>';
+                        cardHtml += '        </div>';
+                        cardHtml += '      </div>';
+
+                        // Row 2: Amount & Beat
+                        cardHtml += '      <div class="row mb-1">';
+                        cardHtml += '        <div class="col-6 pe-1">';
+                        cardHtml += '          <span class="card-label d-block fw-bold text-success small"><i class="fa fa-inr me-1"></i>' + (value.CollectionValue || "0.0") + '</span>';
+                        cardHtml += '        </div>';
+                        cardHtml += '        <div class="col-6 ps-1">';
+                        cardHtml += '          <span class="card-label d-block small"><i class="fa fa-map-marker-alt me-1"></i>' + (value.BeatName || "-") + '</span>';
+                        cardHtml += '        </div>';
+                        cardHtml += '      </div>';
+
+                        // Row 3: Salesman & Status
+                        cardHtml += '      <div class="row">';
+                        cardHtml += '        <div class="col-6 pe-1">';
+                        cardHtml += '          <span class="card-label d-block small"><i class="fa fa-user-tie me-1"></i>' + (value.SalesmanName || "-") + '</span>';
+                        cardHtml += '        </div>';
+
+                        // Status Logic
+                        var status = value.Status || "-";
+                        var statusIcon = "fa fa-info-circle";
+                        var statusClass = "badge text-white";
+
+                        if (status === "Open" || status === "Amendment") {
+                            statusIcon = "fa fa-envelope-open";
+                            statusClass += " bg-primary";
+                        }
+                        else if (status === "Amended") {
+                            statusIcon = "fa fa-pencil-square";
+                            statusClass += " bg-warning";
+                        }
+                        else if (status === "Cancelled") {
+                            statusIcon = "fa fa-ban";
+                            statusClass += " bg-danger";
+                        }
+                        else if (status === "Processed") {
+                            statusIcon = "fa fa-check-circle";
+                            statusClass += " bg-success";
+                        }
+                        else {
+                            statusClass += " bg-secondary";
+                        }
+
+                        cardHtml += '        <div class="col-6 ps-1">';
+                        cardHtml += '          <span class="' + statusClass + '"><i class="' + statusIcon + ' me-1"></i>' + status + '</span>';
+                        cardHtml += '        </div>';
+                        cardHtml += '      </div>';
+                        // Row 4: Create By & Date
+                        cardHtml += '      <div class="row mb-1">';
+                        cardHtml += '        <div class="col-6 pe-1">';
+                        cardHtml += '          <span class="card-label d-block"><i class="fa fa-user me-1"></i>' + (value.UserName || "-") + '</span>';
+                        cardHtml += '        </div>';
+                        cardHtml += '        <div class="col-6 ps-1">';
+                        cardHtml += '          <span class="card-label d-block"><i class="fa fa-calendar me-1"></i>' + (value.CreateDate || "-") + '</span>';
+                        cardHtml += '        </div>';
+                        cardHtml += '      </div>';
+                        cardHtml += '    </div>'; // Body End
+
+                        // Footer
+                        cardHtml += '    <div class="card-footer card-footer-view text-end">';
+
+                        cardHtml += $("#txtViewID").val() == 0 ? '' :
+                            '<button id="btnView' + rowIndex + '" type="button" class="btn btn-sm btn-info clsview me-1" data-id="' + value.ID + '" data-customername="' + value.CustomerName + '">' +
+                            '<i class="fa fa-eye me-1"></i>View</button>';
+
+                        cardHtml += (value.StatusID == 1 || value.StatusID == 3) && $("#txtModifyID").val() == 1 ?
+                            '<button id="btnEdit' + rowIndex + '" type="button" class="btn btn-sm btn-warning clsedit" data-id="' + value.ID + '" data-customername="' + value.CustomerName + '">' +
+                            '<i class="fa fa-pen me-1"></i>Edit</button>' : '';
+
+                        cardHtml += '    </div>';
+
+                        cardHtml += '  </div>';
+                        cardHtml += '</div>';
+
+                    });
+                }
+                $('#divMobCollDocsList').html(cardHtml);
+            }
+        });
+    }
     // Function to filter cards based on search input
     function filterCards() {
         var input, filter, cards, cardContainer, h5, i, txtValue;
@@ -1541,12 +1696,10 @@ var Aurl = '@Session["APIurl"]';
                 cards[i].style.display = "none";
             }
         }
-    }
-    $("#chkShowAll").click(function () {
-        var chkid = $("#chkShowAll").is(":checked") ? 1 : 0
-        GetSetFilterData(7, 0, chkid);        
+    }   
+    $("#btnLoadFilter").click(function () {      
+        LoadFilterdata();
     });
-    
     $(document).on('click', '.clsedit', function () {
         console.log("Row Data : ", this);
         $('input,select,textarea').prop("disabled", false);
@@ -1581,7 +1734,8 @@ var Aurl = '@Session["APIurl"]';
         $("#dvDocuments").show();
         $("#MainHeading").text($("#txtFormName").val());         
         $('#txtSearchCards,#chkShowAll').prop("disabled", false);
-        GetSetFilterData(7, 0, 0);
+        $("#cmbUserName").prop("disabled", !Permissions.AllowAlluser);
+        LoadFilterdata();
     }
     function GetData(nMode, strID = null, strSalesmanID = null) {
         $.ajax({
@@ -2552,7 +2706,18 @@ var Aurl = '@Session["APIurl"]';
         icon.classList.add('bi-plus-lg');
     }
 }
+    function toggleFilterCard() {
+        const body = document.getElementById('filterfieldBody');
+        const icon = document.getElementById('icoToggleFilters');
 
+        if (body.classList.contains('collapsed')) {
+            body.classList.remove('collapsed');
+            icon.classList.replace('bi-plus-lg', 'bi-dash-lg');
+        } else {
+            body.classList.add('collapsed');
+            icon.classList.replace('bi-dash-lg', 'bi-plus-lg');
+        }
+    }
 function toggleNotesCard() {
     const body = document.getElementById('notesBody');
     const icon = document.getElementById('icoToggleNotes');
@@ -2692,4 +2857,32 @@ function toggleNotesCard() {
         $("#txtCustomerID").val(CustID);
         modal.hide();
     });
+    function LoadFieldData(strForm, strSub, strValue, strAssignValue) {
+        $.ajax({
+            url: Aurl + "masterlist",
+            type: 'get',
+            contentType: 'json',
+            data: {
+                CompanyCode: strCompanyCode, FormName: strForm, SubField: strSub, Value: strValue
+            },
+
+            success: function (data) {
+                if (strForm == "users") {
+                    $('#cmbUserName').find("option").remove();
+                    $('#cmbUserName').append($('<option/>', {
+                        value: 0,
+                        text: "-- Select --",
+                    }));
+                    $.each(data, function (i, items) {
+                        $('#cmbUserName').append($('<option/>', {
+                            value: items.ID,
+                            text: items.Name,
+                        }));
+                        $('#cmbUserName').val(UID);
+                    });
+
+                }
+            }
+        });
+    }
 </script>

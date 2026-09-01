@@ -26,13 +26,14 @@ namespace ShineWebMobile.Controllers
                 int UID = Convert.ToInt32(Session["LoginUserID"]);
                 string AssignInvWise = dtPermission.Select("MenuID = 544", null).Length > 0 || UID == 1 ? "1" : "0";
                 string Customerwise = dtPermission.Select("MenuID = 545", null).Length > 0 || UID == 1 ? "1" : "0";
-
+                string Deliveryperm = dtPermission.Select("MenuID = 503", null).Length > 0 || UID == 1 ? "1" : "0";
                 SingleMasterModel dam = new SingleMasterModel();
                 dam.FormName = Name;
                 dam.TransType = TypeID;
                 dam.TransID = TranID;
                 dam.AssignInvoicewise = AssignInvWise;
                 dam.Customerwise = Customerwise;
+                dam.OrderTaken = Deliveryperm;
                 return View(dam);
             }
         }
