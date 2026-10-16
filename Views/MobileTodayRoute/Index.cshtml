@@ -283,16 +283,16 @@
     function SaveData() {
         $(".clrdiv").html("");
         var IsValid = true;//cmbSalesman
-        if ($("#cmbBeat").val() == 0 && $("#cmbSalesman").val() > 0) {
-            $("#divErrBeat").html("Select Beat Name");
-            showErrorSnackbar("Select Beat Name");
-            IsValid = false;
-        }
-        if ($("#cmbBeat").val() > 0 && $("#cmbSalesman").val() == 0) {
-            $("#divErrSalesman").html("Select Salesman Name");
-            showErrorSnackbar("Select Salesman Name");
-            IsValid = false;
-        }
+        //if ($("#cmbBeat").val() == 0 && $("#cmbSalesman").val() > 0) {
+        //    $("#divErrBeat").html("Select Beat Name");
+        //    showErrorSnackbar("Select Beat Name");
+        //    IsValid = false;
+        //}
+        //if ($("#cmbBeat").val() > 0 && $("#cmbSalesman").val() == 0) {
+        //    $("#divErrSalesman").html("Select Salesman Name");
+        //    showErrorSnackbar("Select Salesman Name");
+        //    IsValid = false;
+        //}
         if (IsValid) {
             $("#btnSave").prop("disabled", true);
             GetData(3, $("#cmbBeat").val(), $("#cmbSalesman").val(), $("#cmbBrach").val());

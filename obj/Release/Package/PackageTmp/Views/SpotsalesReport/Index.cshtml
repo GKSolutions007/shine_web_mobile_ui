@@ -650,7 +650,7 @@
         }
 
         .avail-green-badge {
-            font-size: 0.78rem;
+            font-size: 1.2rem;
             padding: 3px 8px;
         }
     }
@@ -1074,12 +1074,23 @@
                         </button>
                     </div>
                 </div>
-                <div class="qty-summary-bar">
-                    <span class="qty-summary-badge">
-                        <i class="bi bi-cart"></i> <span style="font-size:11px;font-weight:500" id="lblQtyItemCount">0</span> Items
-                    </span>
-
-                </div>
+                @*<div class="qty-summary-bar">
+            <span class="qty-summary-badge">
+                <i class="bi bi-cart"></i> <span style="font-size:11px;font-weight:500" id="lblQtyItemCount">0</span> Items
+            </span>
+            <span>
+                Closing Qty
+            </span>
+        </div>*@
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <span class="qty-summary-badge">
+                    <i class="bi bi-cart"></i>
+                    <span style="font-size:11px;font-weight:500" id="lblQtyItemCount">0</span> Items
+                </span>
+                <div class="ssr-avail-inner" style="padding-top: 7px; padding-right: 10px; padding-bottom: 5px">                   
+                    <span class="avail-green-badge"> Closing Qty</span>              
+                </div>               
+            </div>
                 <div id="dvProductRows">
                 </div>
             </div>            

@@ -29,7 +29,7 @@ namespace ShineWebMobile.Controllers
 
                 string EditPartyDetail = dtPermission.Select("MenuID = 559", null).Length > 0 || UID == 1 ? "1" : "0";
                 string EditAddressDetail = dtPermission.Select("MenuID = 560", null).Length > 0 || UID == 1 ? "1" : "0";
-
+                string GeoLocCustomers = dtPermission.Select("MenuID = 568", null).Length > 0 || UID == 1 ? "1" : "0";
                 SingleMasterModel dam = new SingleMasterModel();
                 dam.FormName = Name;
                 dam.EnablePrice = editprice;
@@ -38,6 +38,7 @@ namespace ShineWebMobile.Controllers
                 dam.View = ViewPerm;
                 dam.EditPartyDetail = EditPartyDetail;
                 dam.EditAddressDetail = EditAddressDetail;
+                dam.EnableBranch = GeoLocCustomers;
                 return View(dam);
             }
         }
