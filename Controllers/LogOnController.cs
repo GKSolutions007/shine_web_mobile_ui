@@ -1,22 +1,23 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using ShineWebMobile.Models;
+using ShineWebMobile.Validations;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
-using System.Net.Sockets;
 using System.Net;
+using System.Net.Sockets;
+using System.Reflection.Emit;
+using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
-using ShineWebMobile.Validations;
-using System.Configuration;
-using System.Data.SqlClient;
-using System.Data;
-using ShineWebMobile.Models;
-using System.Web.Security;
-using System.Text.RegularExpressions;
-using System.Web.Services.Description;
-using System.Security.Cryptography;
-using System.Web.UI.WebControls;
 using System.Web.Razor.Editor;
-using System.Reflection.Emit;
+using System.Web.Security;
+using System.Web.Services.Description;
+using System.Web.UI.WebControls;
 
 namespace ShineWebMobile.Controllers
 {
@@ -120,7 +121,7 @@ namespace ShineWebMobile.Controllers
         {
             bool isValid = false;
             string DivIdent = "0";
-            string MsgID = "2", Message = "", Location = "0";
+            string Message = "",MsgID = "2",  Location = "0";
             DataTable dtDivVerify = new DataTable();
             //string MACs = SystemInfo.GetMACAddress();
             //string hd = SystemInfo.GetHDDSerialNo();
@@ -151,7 +152,7 @@ namespace ShineWebMobile.Controllers
                         {
                             Session["CompanyCode"] = aLogon.CompanyCodeID;
                             Session["UserName"] = aLogon.UserName;
-                            Session["LogPWD"] = LoginPassword;
+                            //Session["LogPWD"] = LoginPassword;
                             Session["LPIN"] = "";
                             string UserID = dtCompLogin.Rows[0][1].ToString();
                             #region Mobile Device Validation
@@ -236,6 +237,7 @@ namespace ShineWebMobile.Controllers
                                                         Session["ItemsperPage"] = dtAppconfig.Rows[0]["ItemsperPage"].ToString();
                                                         Session["SpotSalesPriceMode"] = dtAppconfig.Rows[0]["SpotSalesPriceMode"].ToString();
                                                         Session["APIURL"] = ConfigurationManager.AppSettings["apiurl"].ToString();
+                                                        Session["ThemeID"] = dtAppconfig.Rows[0]["ThemeID"].ToString();
                                                         FormsAuthenticationTicket authTicket;
                                                         HttpCookie authCookie;
                                                         int sessionLength = 525600;// (aLogon.RememberMe) ? 525600 : 55600; //525600 = one year
@@ -376,11 +378,13 @@ namespace ShineWebMobile.Controllers
                                         Session["ItemOrderby"] = dtAppconfig.Rows[0]["ItemOrderby"].ToString();
                                         Session["ItemsperPage"] = dtAppconfig.Rows[0]["ItemsperPage"].ToString();
                                         Session["SpotSalesPriceMode"] = dtAppconfig.Rows[0]["SpotSalesPriceMode"].ToString();
+                                        Session["ThemeID"] = dtAppconfig.Rows[0]["ThemeID"].ToString();
                                         //Random RN = new Random();
                                         //int LogToken = Convert.ToInt32(RN.Next(100000, 999999));
                                         //Session["LoginToken"] = LogToken.ToString();
                                         //Session["ConnStr"] = HttpUtility.UrlEncode(clsEncryptDecrypt.Encrypt(strr));//strr; 
                                         Session["APIURL"] = ConfigurationManager.AppSettings["apiurl"].ToString();
+                                        
                                         //Session["GAPI"] = clsEncryptDecrypt.Decrypt(ConfigurationManager.ConnectionStrings["GAPIs"].ConnectionString);
                                         //Session["WEBGKSURL"] = HttpUtility.UrlEncode((ConfigurationManager.ConnectionStrings["WEBGKS"].ConnectionString));
                                         //DataTable dtAppConfigValues = GKS_BL.BL_ExecuteParamSP("uspLoadAppConfigData", 1);

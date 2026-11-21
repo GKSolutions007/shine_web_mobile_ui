@@ -3103,6 +3103,11 @@
         Table.search('').columns().search('').draw();
         $('.chosen-Manuf').val('').trigger('chosen:updated');
         $('.chosen-Category').val('').trigger('chosen:updated');
+        if (nTransMode == 2) {
+            $("#dvMain").hide();
+            $("#dvDocuments").show();
+            $("#MainHeading").text($("#txtFormName").val());
+        }
     }
     function SaveData() {
         //cmbBeatName, cmbSalesManName, txtCustomerName, chosen - Manuf, chosen - Category, txtProductName
@@ -3146,6 +3151,7 @@
                         //alert(items.Message);
                         showSuccessSnackbar(items.Message);
                         ClearForm();
+                        LoadFilterdata();
                         NavigatetoNext("Switch to", SwapCustID, SwapSMID);
                     }
                     else {

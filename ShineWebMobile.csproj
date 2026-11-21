@@ -165,6 +165,7 @@
     <Content Include="Content\5.3.8\bootstrap.min.css" />
     <Content Include="Content\5.3.8\bootstrap.rtl.css" />
     <Content Include="Content\5.3.8\bootstrap.rtl.min.css" />
+    <Content Include="Content\app-theme.css" />
     <Content Include="Content\bootstrap-datetimepicker.css" />
     <Content Include="Content\bootstrap-datetimepicker.min.css" />
     <Content Include="Content\bootstrap-glyphicons.css" />
@@ -196,6 +197,7 @@
     <Content Include="Content\font-awesome.css" />
     <Content Include="Content\font-awesome.min.css" />
     <Content Include="Content\fontawesome.6.0.0.css" />
+    <Content Include="Content\gkbsbuttonstyle.css" />
     <Content Include="Content\Gridmvc.css" />
     <Content Include="Content\index.css" />
     <Content Include="Content\jquery-ui.css" />
@@ -320,6 +322,8 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\jquerychoose.min.js" />
+    <Content Include="Scripts\js\MobileCollectionToggles.js" />
+    <Content Include="Scripts\js\sm-header.js" />
     <Content Include="Scripts\Loadingjs.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />

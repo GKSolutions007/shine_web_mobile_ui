@@ -1,0 +1,703 @@
+﻿/* ============================================================
+   app-theme.css  —  Phase 1 design foundation
+   ------------------------------------------------------------
+   Purpose:
+     Brings the modern-theme.css design tokens into the live app
+     WITHOUT overriding the per-company colours that users set via
+     the Color Settings screen (those are applied at runtime as CSS
+     variables like --gridheaderbackground, --primary-color, button
+     colours, etc.).
+
+   Design rule for this file:
+     - Tokens (palette, spacing, radius, shadows, typography) are
+       additive and safe — they only add new variables.
+     - We DO NOT hard-override .btn / .dataTable / table th colours
+       here, because the DB-driven theme owns those at runtime.
+     - Where we style a surface (cards, inputs, modals shell), we use
+       the DB variable first and fall back to a token, e.g.
+         background: var(--gridheaderbackground, var(--primary-600));
+       so the user's chosen colour always wins when present.
+   ============================================================ */
+
+:root {
+    /* ===== Primary palette (blue/indigo) ===== */
+    --primary-50: #f0f4ff;
+    --primary-100: #e0eaff;
+    --primary-200: #c7d7fe;
+    --primary-300: #a4bcfd;
+    --primary-400: #8098fc;
+    --primary-500: #6366f1;
+    --primary-600: #4f46e5;
+    --primary-700: #4338ca;
+    --primary-800: #3730a3;
+    --primary-900: #312e81;
+    /* ===== Status colours ===== */
+    --success-50: #f0fdf4;
+    --success-500: #22c55e;
+    --success-700: #15803d;
+    --warning-50: #fffbeb;
+    --warning-500: #f59e0b;
+    --warning-700: #b45309;
+    --error-50: #fef2f2;
+    --error-500: #ef4444;
+    --error-700: #b91c1c;
+    /* ===== Neutrals ===== */
+    --neutral-50: #fafafa;
+    --neutral-100: #f5f5f5;
+    --neutral-200: #e5e5e5;
+    --neutral-300: #d4d4d4;
+    --neutral-400: #a3a3a3;
+    --neutral-500: #737373;
+    --neutral-600: #525252;
+    --neutral-700: #404040;
+    --neutral-800: #262626;
+    --neutral-900: #171717;
+    /* ===== Semantic surfaces (light mode) ===== */
+    --bg-primary: #ffffff;
+    --bg-secondary: var(--neutral-50);
+    --bg-tertiary: var(--neutral-100);
+    --bg-elevated: #ffffff;
+    --text-primary: var(--neutral-900);
+    --text-secondary: var(--neutral-600);
+    --text-tertiary: var(--neutral-500);
+    --border-primary: var(--neutral-200);
+    --border-secondary: var(--neutral-300);
+    --border-focus: var(--primary-500);
+    /* ===== Spacing scale ===== */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.5rem;
+    --space-6: 2rem;
+    --space-8: 3rem;
+    --space-10: 4rem;
+    /* ===== Radius ===== */
+    --radius-sm: 0.25rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+    --radius-2xl: 1.5rem;
+    --radius-full: 9999px;
+    /* ===== Shadows ===== */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    /* ===== Typography ===== */
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.125rem;
+    --text-xl: 1.25rem;
+    --text-2xl: 1.5rem;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    /* ===== Transitions ===== */
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===== Dark mode token overrides (opt-in via data-theme="dark" on <html>) ===== */
+[data-theme="dark"] {
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --bg-tertiary: #334155;
+    --bg-elevated: #1e293b;
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --text-tertiary: #94a3b8;
+    --border-primary: #334155;
+    --border-secondary: #475569;
+    --border-focus: var(--primary-400);
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.4);
+}
+
+/* ============================================================
+   Safe, additive component polish.
+   These use utility class names (prefixed .app-*) so they only
+   apply where a view opts in — they never restyle existing
+   .btn / .dataTable / table markup that the DB theme controls.
+   ============================================================ */
+
+/* Card shell for the recommended data-entry pattern */
+.app-card {
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: var(--space-5);
+    margin-bottom: var(--space-4);
+    transition: box-shadow var(--transition-base);
+}
+
+    .app-card:hover {
+        box-shadow: var(--shadow-lg);
+    }
+
+.app-card-title {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-bold);
+    /* DB primary colour wins; falls back to token */
+    color: var(--primary-color, var(--primary-900));
+    margin: 0 0 var(--space-3) 0;
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--border-primary);
+}
+
+/* Page toolbar (title + actions) */
+.app-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    background-color: var(--bg-primary);
+    border-bottom: 1px solid var(--border-primary);
+}
+
+    .app-toolbar h1,
+    .app-toolbar h2 {
+        font-size: var(--text-lg);
+        font-weight: var(--font-weight-bold);
+        color: var(--text-primary);
+        margin: 0;
+    }
+
+.app-toolbar-crumb {
+    font-size: var(--text-xs);
+    color: var(--text-tertiary);
+}
+
+/* Responsive field grid: 2 columns, collapses to 1 under 768px */
+.app-field-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+}
+
+@media (max-width: 768px) {
+    .app-field-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.app-field label {
+    display: block;
+    font-size: var(--text-xs);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.4px;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-1);
+    text-transform: uppercase;
+}
+
+.app-field .form-control {
+    width: 100%;
+    height: 40px;
+    border-radius: var(--radius-md);
+}
+
+/* Status pill */
+.app-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-full);
+    font-size: var(--text-xs);
+    font-weight: var(--font-weight-semibold);
+}
+
+.app-pill-active {
+    background-color: var(--success-50);
+    color: var(--success-700);
+}
+
+.app-pill-inactive {
+    background-color: var(--error-50);
+    color: var(--error-700);
+}
+
+    .app-pill-active::before,
+    .app-pill-inactive::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: var(--radius-full);
+        background-color: currentColor;
+    }
+
+/* Utility helpers */
+.app-fade-in {
+    animation: appFadeIn var(--transition-base) ease-in;
+}
+
+@keyframes appFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* ============================================================
+   Opt-in modal polish (used by redesigned master screens).
+   Scoped so it only affects modals that adopt the pattern via
+   the standard Bootstrap 5 .modal-content structure. These rules
+   are gentle and respect the DB-driven theme where it applies.
+   ============================================================ */
+
+/* Make an .app-field input-group align the add-new button + control on one row */
+.app-field .input-group {
+    width: 100%;
+}
+
+    .app-field .input-group .form-control,
+    .app-field .input-group select.form-control {
+        height: 40px;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+
+    .app-field .input-group .input-group-text {
+        border-top-left-radius: var(--radius-md);
+        border-bottom-left-radius: var(--radius-md);
+        background-color: var(--bg-tertiary);
+        border-color: var(--border-primary);
+        color: var(--text-secondary);
+    }
+
+/* Field-level inline error text */
+.app-field .clrdiv {
+    font-size: var(--text-xs);
+    min-height: 14px;
+    margin-top: var(--space-1);
+}
+
+/* Give the modal body breathing room consistent with the token scale */
+.modal-body .app-field-grid {
+    padding: var(--space-2) var(--space-1);
+}
+
+/* =====================================================================
+   Standard action buttons (Save / Clear / Close / Filter)
+   Loaded globally via the shared layouts so every module gets a
+   consistent button look. Screens that define these classes in their
+   own page-level <style> (e.g. bespoke gradient buttons) still win,
+   since page inline styles are evaluated after this stylesheet.
+   ===================================================================== */
+.btn.btn-save-style,
+.btn.btn-clear-style,
+.btn.btn-close-style,
+.btn.btn-filter-style,
+.btn.btn-draft-style,
+.btn-whatsapp-style, .btn-batch-style, .btn-add-style, .btn-pdf-style, .btn-mail-style, .btn-print-style,
+.btn-preview-style, .btn-edit-style, .btn-variant-style, .btn-cancel-style {
+    border-radius: 9px;
+    font-weight: 600;
+    padding: 7px 18px;
+    border: none;
+    transition: transform .12s ease, box-shadow .12s ease;
+}
+
+    .btn.btn-save-style:active,
+    .btn.btn-clear-style:active,
+    .btn.btn-close-style:active,
+    .btn.btn-filter-style:active,
+    .btn.btn-draft-style:active,
+    .btn-whatsapp-style:active, .btn-batch-style:active, .btn-add-style:active, .btn-pdf-style:active, .btn-mail-style:active, .btn-print-style:active,
+    .btn-preview-style, .btn-edit-style, .btn-variant-style:active, .btn-cancel-style:active {
+        transform: scale(0.97);
+    }
+
+.btn.btn-clear-style {
+    background: #e2e8f0;
+    color: #475569;
+}
+
+    .btn.btn-clear-style:hover {
+        background: #cbd5e1;
+        color: #334155;
+    }
+
+.btn.btn-save-style {
+    background: #16a34a;
+    color: #ffffff;
+}
+
+    .btn.btn-save-style:hover {
+        background: #15803d;
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(22,163,74,0.30);
+    }
+
+.btn.btn-close-style {
+    background: #64748b;
+    color: #ffffff;
+}
+
+    .btn.btn-close-style:hover {
+        background: #475569;
+        color: #fff;
+    }
+
+.btn.btn-filter-style {
+    background: #2563eb;
+    color: #ffffff;
+}
+
+    .btn.btn-filter-style:hover {
+        background: #1d4ed8;
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(37,99,235,0.30);
+    }
+
+/* =====================================================================
+   Redesigned list filter bar (single Date Range pill + All Status toggle)
+   Built at runtime by Scripts/js/sm-daterange.js from the legacy
+   Period / From / To / checkbox markup. Matches Contra / CreditDebitnote.
+   ===================================================================== */
+.sm-dr-hidden-cell {
+    display: none !important;
+}
+
+/* Host cell must fit "dd-mm-yyyy → dd-mm-yyyy" even when it was a col-md-1 / narrow <td>. */
+@media (min-width: 768px) {
+    .sm-dr-host.sm-dr-host {
+        flex: 0 0 auto;
+        width: auto;
+        min-width: 215px;
+        max-width: none;
+    }
+}
+
+.sm-daterange {
+    position: relative;
+    text-align: left;
+}
+
+    .sm-daterange .sm-pill {
+        position: relative;
+        display: block;
+        margin-bottom: 0;
+    }
+
+        .sm-daterange .sm-pill > .sm-pill-ico {
+            position: absolute;
+            left: 11px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            color: #94a3b8;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .sm-daterange .sm-pill > .form-control {
+            border-radius: 20px !important;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            /* !important: pages with "compact control" rules (padding/height !important) otherwise
+       push the text under the calendar icon. */
+            padding-left: 30px !important;
+            height: 34px !important;
+            cursor: pointer;
+            font-size: 13px !important;
+        }
+
+            .sm-daterange .sm-pill > .form-control:focus {
+                background: #fff;
+                border-color: #2563eb;
+                box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+                outline: none;
+            }
+
+        .sm-daterange .sm-pill .labelup {
+            left: 1.6em;
+        }
+
+.sm-daterange-pop {
+    display: none;
+    position: absolute;
+    z-index: 1200;
+    top: calc(100% + 4px);
+    left: 0;
+    width: 300px;
+    background: #fff;
+    border: 1px solid #d7dee8;
+    border-radius: 12px;
+    box-shadow: 0 18px 44px rgba(15,23,42,0.18);
+    padding: 12px;
+}
+
+    .sm-daterange-pop.open {
+        display: block;
+    }
+
+.sm-dr-presets {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.sm-dr-chip {
+    border: 1px solid #bfdbfe;
+    background: #eff6ff;
+    color: #2563eb;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 12px;
+    cursor: pointer;
+}
+
+    .sm-dr-chip:hover, .sm-dr-chip:focus-visible {
+        background: #dbeafe;
+    }
+
+.sm-dr-period {
+    margin-bottom: 12px;
+}
+
+.sm-dr-fields {
+    display: flex;
+    gap: 10px;
+}
+
+    .sm-dr-fields .sm-dr-field {
+        flex: 1 1 0;
+        min-width: 0;
+    }
+
+    .sm-dr-fields .form-label {
+        display: block;
+        margin-bottom: 0;
+    }
+
+.sm-dr-actions {
+    text-align: right;
+    margin-top: 10px;
+}
+
+/* All Status: checkbox -> switch. The input stays focusable (visually hidden, not display:none). */
+.sm-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+    margin: 0;
+    position: relative;
+}
+
+    .sm-toggle input[type="checkbox"] {
+        position: absolute;
+        opacity: 0;
+        width: 1px;
+        height: 1px;
+        margin: 0;
+        pointer-events: none;
+    }
+
+    .sm-toggle .sm-switch {
+        width: 36px;
+        height: 20px;
+        border-radius: 12px;
+        background: #cbd5e1;
+        position: relative;
+        transition: background .15s ease;
+        flex: 0 0 auto;
+    }
+
+        .sm-toggle .sm-switch::after {
+            content: "";
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #fff;
+            transition: left .15s ease;
+            box-shadow: 0 1px 2px rgba(0,0,0,.2);
+        }
+
+    .sm-toggle input:checked + .sm-switch {
+        background: #2563eb;
+    }
+
+        .sm-toggle input:checked + .sm-switch::after {
+            left: 18px;
+        }
+
+    .sm-toggle input:focus-visible + .sm-switch {
+        box-shadow: 0 0 0 3px rgba(37,99,235,0.35);
+    }
+
+    .sm-toggle .sm-toggle-label {
+        font-size: 13px;
+        color: #475569;
+        white-space: nowrap;
+    }
+
+/* Rounded Filter button next to the pill. */
+.sm-dr-bar #btnFilter.btn-filter-style {
+    border-radius: 20px !important;
+    padding: 7px 20px;
+}
+
+/* =====================================================================
+   List page header: header card + pill filters on one row.
+   Used by Payment, Purchase Bill, Purchase Order, Automatic Indent.
+   Markup:
+     <div class="sm-inline-bar">
+       <div class="sm-header-card sm-header-inline">…#MainHeading…</div>
+       <div class="row … sm-filter-row" id="dvDocFilters">
+         <div class="col-…"><span class="form-label sm-pill"><i class="sm-pill-ico"></i><select|input class="form-control"></span></div>
+         …legacy Period / From / To / chkShowAll cells (sm-daterange.js turns them into the pill + toggle)…
+       </div>
+     </div>
+   ===================================================================== */
+.sm-inline-bar {
+    display: flex;
+    align-items: stretch;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 4px 0 5px 0;
+}
+
+    .sm-inline-bar > .sm-filter-row {
+        margin-left: 0;
+        margin-right: 0;
+        flex: 1 1 0;
+        min-width: 0;
+    }
+
+.sm-header-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 4px 10px rgba(30,41,59,0.10);
+    padding: 8px 5px;
+    margin: 4px 0 5px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+    .sm-header-card::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 5px;
+        background: var(--header-bg, #2563eb);
+    }
+
+.sm-header-icon {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: 10px;
+    background: #eff6ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.sm-header-text #MainHeading, #FormHead {
+    font-size: 18px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+    padding: 0;
+}
+
+.sm-header-sub {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+.sm-header-inline {
+    margin: 0;
+    flex: 0 0 auto;
+    min-width: 180px;
+}
+
+@media (max-width: 991px) {
+    .sm-header-inline {
+        width: 100%;
+    }
+}
+
+/* Pill fields (Branch, Party, …). !important beats per-page compact-control rules. */
+.sm-filter-row .sm-pill {
+    position: relative;
+    display: block;
+    margin-bottom: 0;
+    text-align: left;
+}
+
+    .sm-filter-row .sm-pill > .form-control {
+        border-radius: 20px !important;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        padding-left: 25px !important;
+        height: 30px !important;
+        font-size: 12px !important;
+    }
+
+        .sm-filter-row .sm-pill > .form-control:focus {
+            background: #fff;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+            outline: none;
+        }
+
+    .sm-filter-row .sm-pill > .sm-pill-ico {
+        position: absolute;
+        left: 11px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 12px;
+        color: #94a3b8;
+        pointer-events: none;
+        z-index: 2;
+    }
+
+    .sm-filter-row .sm-pill .labelup {
+        left: 1.6em;
+    }
+
+/* Search-select pill: autolist field that opens on click, with a caret on the right. */
+.sm-selectpill .sm-pill-caret {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 11px;
+    color: #94a3b8;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.sm-filter-row .sm-searchselect {
+    padding-right: 28px !important;
+    cursor: pointer;
+}
+
+.sm-filter-row #btnFilter.btn-filter-style {
+    border-radius: 20px !important;
+    padding: 7px 20px;
+}

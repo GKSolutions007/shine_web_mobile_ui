@@ -939,7 +939,7 @@
                             <span class="form-label">
                                 <select class="form-control" id="cmbPrintProfile"><option value="0">Select</option></select>
                             </span>
-                            <div class="text-danger ps-1" id="divErrPrintProfile"></div>
+                            <div class="text-danger ps-1 clrdivserror" id="divErrPrintProfile"></div>
                         </div>
                         @*<div class="col-4">
                                 <div class="form-label fw-bold text-primary">Copies</div>
@@ -2002,6 +2002,12 @@ var Aurl = '@Session["APIurl"]';
                 $("#divErrorOnCustName").html("Select Customer Name from list");
                 showErrorSnackbar("Select Customer Name from list");
             }
+        }
+        //$("#cmbPrintProfile").val()
+        if ($('#cmbPrintProfile').val() == '' || $("#cmbPrintProfile").val() == 0) {
+            IsValid = false;
+            $('#divErrPrintProfile').html('* Select print profile');
+            $('#cmbPrintProfile').focus();
         }
         var branchid = $('#cmbSalesman').val();
         if (isNullOrEmpty(branchid)) {

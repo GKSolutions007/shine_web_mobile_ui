@@ -1,0 +1,74 @@
+﻿.btn-whatsapp-style, .btn-whatsapp-style:hover, .btn-whatsapp-style:focus-visible {
+    background-color: green !important;
+    color: var(--ButtonTextColor) !important;
+}
+
+.btn-batch-style, .btn-batch-style:hover, .btn-batch-style:focus-visible {
+    background-color: var(--BatchButton) !important;
+    color: var(--ButtonTextColor) !important;
+}
+
+.btn-add-style, .btn-add-style:hover, .btn-add-style:focus-visible {
+    background-color: var(--AddButton) !important;
+    color: var(--ButtonTextColor) !important;
+}
+
+.btn-draft-style, .btn-draft-style:hover, .btn-draft-style:focus-visible {
+    background-color: var(--DraftButton) !important;
+    color: var(--ButtonTextColor) !important;
+}
+
+.btn-clear-style, .btn-clear-style:hover, .btn-clear-style:focus-visible {
+    background-color: var(--ClearButton) !important;
+    color: var(--ButtonTextColor) !important;
+}
+
+.btn-close-style, .btn-close-style:hover, .btn-close-style:focus-visible {
+    background-color: var(--CloseButton) !important;
+    color: var(--ButtonTextColor) !important;
+}
+
+.btn-pdf-style, .btn-pdf-style:hover, .btn-pdf-style:focus-visible {
+    background-color: var(--PDFButton) !important;
+    color: var(--ButtonTextColor) !important;
+}
+/*sfsfasdf*/
+.btn-save-style, .btn-save-style:hover, .btn-save-style:focus-visible {
+    background-color: var(--SaveButton) !important;
+    color: var(--ButtonTextColor);
+}
+
+.btn-filter-style, .btn-filter-style:hover, .btn-filter-style:focus-visible {
+    background-color: var(--FilterButton) !important;
+    color: var(--ButtonTextColor) !important;
+}
+
+.btn-mail-style, .btn-mail-style:hover, .btn-mail-style:focus-visible {
+    background-color: var(--MailButton) !important;
+    color: var(--ButtonTextColor) !important;
+}
+
+.btn-print-style, .btn-print-style:hover, .btn-print-style:focus-visible {
+    background-color: var(--PrintButton) !important;
+    color: var(--ButtonTextColor) !important;
+}
+
+.btn-preview-style, .btn-preview-style:hover, .btn-preview-style:focus-visible {
+    background-color: var(--PreviewButton) !important;
+    color: var(--ButtonTextColor) !important;
+}
+
+.btn-edit-style, .btn-edit-style:hover, .btn-edit-style:focus-visible {
+    background-color: var(--editbuttonbgcolor) !important;
+    color: var(--ButtonTextColor) !important;
+}
+
+.btn-cancel-style, .btn-cancel-style:hover, .btn-cancel-style:focus-visible {
+    background-color: var(--cancelbuttonbgcolor) !important;
+    color: var(--ButtonTextColor) !important;
+}
+
+.btn-variant-style, .btn-variant-style:hover, .btn-variant-style:focus-visible {
+    background-color: var(--variantbuttonbgcolor) !important;
+    color: var(--ButtonTextColor);
+}

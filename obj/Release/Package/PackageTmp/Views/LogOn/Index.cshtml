@@ -972,18 +972,20 @@
                 }
 
         function ValidateOTP(strCompCode, nOTPID, strOTP) {
+            var fgusername = $('#txtFgUserName').val().trim()
+            var fgemailVal = $('#txtEmailID').val().trim();
             $.ajax({
                 url: Aurl + "otpverify",
                 type: 'GET',
                 datatype: 'json',
                 //data: { Flag: nFlag, Companycode: DBs, Val1: Param1, Val2: Param2, Val3: Param3, Val4: Param4 },
                 data: {
-                    Companycode: strCompCode, OTPID: nOTPID, OTP: strOTP
+                    Companycode: strCompCode, UserName: fgusername, Email: fgemailVal, OTP: strOTP
                 },
                 success: function (data) {
                     
                         $.each(data, function (i, items) {
-                            if (items.MsgID == "1") {
+                            if (items.MsgID == "0") {
                                 $("#divMessagevercode").html('');
                                 $("#txtOTP").prop("disabled", true);
                                 $('#btnfgVerifyOTP').prop("disabled", true);
@@ -993,12 +995,22 @@
                                 showSuccessSnackbar(items.Message);
                                 //We've detected a sign-in attempt from a new device
                             }
-                            else if (items.MsgID == "2") {
+                            else if (items.MsgID == "1") {
                                 $("#divMessagevercode").html(items.Msg);
                                 document.getElementById("divMessagevercode").style.color = "#ef4444";
                                 $('#dvFgStage1').addClass('fg-shake');
                                 setTimeout(function () { $('#dvFgStage1').removeClass('fg-shake'); }, 400);
                                 showErrorSnackbar(items.Message);
+                            }
+                            else if (items.MsgID == "2") {
+                                $("#divMessagevercode").html(items.Msg);
+                                document.getElementById("divMessagevercode").style.color = "#ef4444";
+                                $('#dvFgStage1').addClass('fg-shake');
+                                setTimeout(function() { $('#dvFgStage1').removeClass('fg-shake'); }, 400);
+                                showErrorSnackbar(items.Message);
+                                setTimeout(() => {
+                                    fgModal.hide();
+                                }, 2000);
                             }
                         });
                 }
@@ -1021,11 +1033,14 @@
                             $('#fgLine1, #fgLine2').addClass('filled');
                             $("#divMessagePasswordSet").html(items.Message);
                             $('#dvFgSuccess').show();
-                            setTimeout(function () { fgModal.hide(); }, 1800);
+                            setTimeout(function () { fgModal.hide(); }, 2500);
                             showSuccessSnackbar(items.Message);
                             //We've detected a sign-in attempt from a new device
                         }
-
+                        else if (items.MsgID == "1") {
+                            showErrorSnackbar(items.Message);
+                            setTimeout(function () { fgModal.hide(); }, 2500);
+                        }
                     });
                 }
             });
